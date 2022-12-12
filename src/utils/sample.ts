@@ -1,3 +1,4 @@
+//주석추가
 export const getCurrentTimestamp = () => {
   const now = new Date();
   return {
