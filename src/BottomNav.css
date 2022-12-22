@@ -19,7 +19,11 @@ nav > div {
     line-height: 45px;
 }
 
+<<<<<<< Updated upstream
 .navbar{
+=======
+/* .navbar{
+>>>>>>> Stashed changes
     transition: all 300ms eas-in;
 }
 
@@ -27,4 +31,8 @@ nav > div {
     width: 100%;
     color: red;
     transform: scale(1.1);
+<<<<<<< Updated upstream
 }
+=======
+} */
+>>>>>>> Stashed changes
