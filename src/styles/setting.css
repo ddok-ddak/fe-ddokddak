@@ -1,0 +1,83 @@
+.username{
+    position: fixed;
+    width: 95px;
+    height: 23px;
+    left: 123px;
+    top: 70px;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: -0.025em;
+
+    color: #000000;
+}
+.box {
+    width: 150px;
+    height: 150px; 
+    border-radius: 70%;
+    overflow: hidden;
+}
+
+.profile{
+    position: fixed;
+    width: 72px;
+    height: 72px;
+    left: 26px;
+    top: 46px;
+    border-radius: 70%;
+    background: #D9D9D9;
+}
+
+.tag{
+    position: absolute;
+    width: 5px;
+    height: 13px;
+    left: 247px;
+    top: 75px;
+
+    border: 1px solid #000000;
+}
+
+ul {
+    text-align: center;
+    list-style-position: inside;
+    list-style:none;
+    padding-left: 30px;
+}
+li {
+    margin: 20px 0px;
+}
+
+
+.items{
+    list-style:none;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.025em;
+
+    color: #000000;
+}
+
+.item{
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.025em;
+
+    color: #000000;
+}
