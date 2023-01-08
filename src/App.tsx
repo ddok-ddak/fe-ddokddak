@@ -6,6 +6,7 @@ import SamplePage from './pages/SamplePage';
 import RecordPage from './pages/RecordPage';
 import StatisticsPage from './pages/StatisticsPage';
 import SettingsPage from './pages/SettingsPage';
+import SettingsPage2 from './pages/SettingsPage2';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SamplePage />} />
         <Route path="/record" element={<RecordPage />} />
-        <Route path="/statistics" element={<StatisticsPage />} />
+        {/* <Route path="/statistics" element={<StatisticsPage />} /> */}
+        <Route path="/statistics" element={<SettingsPage2 />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </div>
