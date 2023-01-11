@@ -30,19 +30,7 @@
     left: 26px;
     top: 46px;
     border-radius: 70%;
-    background: #e0e0e0;
 }
-
-/* .arrow:after {
-    content: '';
-    display:inline-block;
-    width: 0.8rem;
-    height: 0.8rem;
-    margin-left: 0.5rem;
-    border-top: 0.1rem solid #333;
-    border-right: 0.1rem solid #333;
-    transform: rotate(45deg);
-} */
 
 ul {
     text-align: center;
@@ -55,10 +43,6 @@ li {
     margin: 10px 0px;
     text-align: left;
     padding: 8px 15px 8px 15px;
-}
-
-li:hover{
-    background-color:#eeeeee
 }
 
 .items{
