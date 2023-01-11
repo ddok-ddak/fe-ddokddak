@@ -38,7 +38,14 @@ const SettingPage = () => {
 
   return (
     <>
-      <Box sx={{ display: 'flex', alignItems: 'center', padding: '32px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          paddingLeft: '32px',
+          paddingTop: '32px',
+        }}
+      >
         <Avatar sx={{ width: 72, height: 72, marginRight: '20px' }}>H</Avatar>
         <Typography variant="h5">{'00 회원님'}</Typography>
         <ChevronRightIcon sx={{ ml: '40px' }} />
