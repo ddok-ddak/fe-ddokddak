@@ -10,17 +10,19 @@ import BottomNav from './components/layout/BottomNav';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './styles';
 import CreateRecoredPage from './pages/record/CreateRecordPage';
+import SetCategoryPage from './pages/record/SetCategoryPage';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <Routes>
-          <Route path="/" element={<Navigate to="/record"/>} />
+          <Route path="/" element={<Navigate to="/record" />} />
           <Route path="/record" element={<RecordPage />} />
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/record/create" element={<CreateRecoredPage />} />
+          <Route path="/record/create/category" element={<SetCategoryPage />} />
         </Routes>
         <BottomNav />
       </ThemeProvider>

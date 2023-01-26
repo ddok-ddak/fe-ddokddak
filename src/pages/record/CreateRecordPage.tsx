@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { Link } from 'react-router-dom';
 import DaysChip from '../../components/date/DaysChip';
 import FlexBox from '../../components/common/FlexBox';
 import CommonHeader from '../../components/layout/CommonHeader';
@@ -139,7 +140,9 @@ const CreateRecoredPage = (): ReactElement => {
         </Container>
         <Divider />
         <Container sx={{ textAlign: 'right' }}>
-          <Button variant="text">카테고리 설정</Button>
+          <Button variant="text" component={Link} to="/record/create/category">
+            카테고리 설정
+          </Button>
         </Container>
         <Container
           sx={{
