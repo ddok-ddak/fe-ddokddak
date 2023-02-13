@@ -45,6 +45,11 @@ const CommonHeader = (props: CommonHeaderProps) => {
               {props.rightButtonIcon}
             </IconButton>
           )}
+          {props.isShowBackButton && (
+            <Button variant="text" color="secondary">
+              완료
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
