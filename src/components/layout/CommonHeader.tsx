@@ -1,3 +1,4 @@
+import CheckIcon from "@material-ui/icons/Check";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
@@ -16,7 +17,8 @@ export interface CommonHeaderProps {
   isShowBackButton?: boolean;
   rightButtonIcon?: ReactElement;
   isShowRightButton?: boolean;
-  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {};
+  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {
+  };
 }
 
 const CommonHeader = (props: CommonHeaderProps) => {
@@ -43,6 +45,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
           {props.isShowRightButton && (
             <IconButton onClick={props.onClickRightButton}>
               {props.rightButtonIcon}
+              <CheckIcon />
             </IconButton>
           )}
         </Toolbar>
