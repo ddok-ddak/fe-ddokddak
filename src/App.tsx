@@ -7,23 +7,27 @@ import RecordPage from './pages/record/RecordPage';
 import StatisticsPage from './pages/statistics/StatisticsPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import BottomNav from './components/layout/BottomNav';
-import { ThemeProvider } from '@mui/material';
+import { Box, ThemeProvider } from '@mui/material';
 import { theme } from './styles';
 import CreateRecoredPage from './pages/record/CreateRecordPage';
-import SetCategoryPage from './pages/record/SetCategoryPage';
+import CategoryPage from './pages/category/CategoryPage';
+import CreateCategoryPage from './pages/category/CreateCategoryPage';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/record" />} />
-          <Route path="/record" element={<RecordPage />} />
-          <Route path="/statistics" element={<StatisticsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/record/create" element={<CreateRecoredPage />} />
-          <Route path="/record/create/category" element={<SetCategoryPage />} />
-        </Routes>
+        <Box sx={{ paddingBottom: '56px' }}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/record" />} />
+            <Route path="/record" element={<RecordPage />} />
+            <Route path="/statistics" element={<StatisticsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/record/create" element={<CreateRecoredPage />} />
+            <Route path="/category" element={<CategoryPage />} />
+            <Route path="/category/add" element={<CreateCategoryPage />} />
+          </Routes>
+        </Box>
         <BottomNav />
       </ThemeProvider>
     </BrowserRouter>

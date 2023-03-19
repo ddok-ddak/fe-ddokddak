@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 export default interface CommonResponse<T = any> {
   successOrNot: string;
@@ -16,7 +16,9 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
   });
 
   instance.interceptors.request.use(
-    async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
+    async (
+      config: InternalAxiosRequestConfig,
+    ): Promise<InternalAxiosRequestConfig> => {
       const sessionUser = {
         idToken: '1111',
         sessionId: '213123',
