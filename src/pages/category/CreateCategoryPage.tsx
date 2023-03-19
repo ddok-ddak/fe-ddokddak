@@ -6,6 +6,7 @@ import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import { categories } from '../../store/tempData';
 import AddIcon from '@mui/icons-material/Add';
+import { ColorResult, SwatchesPicker } from 'react-color';
 
 export interface MainCategory {
   title: string;
@@ -19,7 +20,16 @@ export interface SubCategory {
 }
 
 const CreateCategoryPage = () => {
-  const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
+  const [selectedColor, setSelectedColor] = useState('#dddddd');
+  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const onColorComplete = (
+    color: ColorResult,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setSelectedColor(color.hex);
+    setShowColorPicker(false);
+  };
 
   return (
     <>
@@ -34,8 +44,18 @@ const CreateCategoryPage = () => {
         <Box sx={{ display: 'flex', alignItems: ' center' }}>
           <Typography variant="body1">색상</Typography>
           <Spacer x={24} />
-          <Circle color={'#dddddd'} size={40} />
+          <Circle
+            color={selectedColor}
+            size={40}
+            onClick={() => setShowColorPicker(!showColorPicker)}
+          />
         </Box>
+        {showColorPicker && (
+          <>
+            <Spacer y={12} />
+            <SwatchesPicker onChangeComplete={onColorComplete} />
+          </>
+        )}
       </Box>
     </>
   );
