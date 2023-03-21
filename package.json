@@ -6,6 +6,10 @@
     "@babel/core": "^7.16.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+<<<<<<< HEAD
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.3",
+=======
     "@fullcalendar/core": "^6.0.3",
     "@fullcalendar/daygrid": "^6.0.3",
     "@fullcalendar/interaction": "^6.0.3",
@@ -13,6 +17,7 @@
     "@fullcalendar/timegrid": "^6.0.3",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.10.17",
+>>>>>>> dev
     "@mui/styled-engine-sc": "^5.10.16",
     "@mui/styles": "^5.11.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
@@ -21,6 +26,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
+<<<<<<< HEAD
+=======
     "axios": "^1.2.1",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -46,6 +53,7 @@
     "jest-resolve": "^27.4.2",
     "jest-watch-typeahead": "^1.0.0",
     "mini-css-extract-plugin": "^2.4.5",
+>>>>>>> dev
     "mui": "^0.0.1",
     "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
@@ -54,9 +62,12 @@
     "postcss-preset-env": "^7.0.1",
     "prompts": "^2.4.2",
     "react": "^18.2.0",
+<<<<<<< HEAD
+=======
     "react-app-polyfill": "^3.0.0",
     "react-chartjs-2": "^5.1.0",
     "react-dev-utils": "^12.0.1",
+>>>>>>> dev
     "react-dom": "^18.2.0",
     "react-refresh": "^0.11.0",
     "react-router-dom": "^6.4.5",
