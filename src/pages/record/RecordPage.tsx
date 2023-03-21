@@ -3,6 +3,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
+import moment from 'moment-timezone';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
@@ -21,18 +22,19 @@ const renderEventContent = (eventInfo: any) => {
   );
 };
 
-const INITIAL_EVENTS = [
-  {
-    id: '0',
-    title: 'All-day event',
-    start: new Date().toISOString().replace(/T.*$/, ''),
-  },
-  {
-    id: '1',
-    title: 'Timed event',
-    start: new Date().toISOString().replace(/T.*$/, '') + 'T12:00:00',
-  },
-];
+// const INITIAL_EVENTS = [
+//   {
+//     id: '0',
+//     title: 'test1',
+//     start: new Date().toISOString().replace(/T.*$/, '')+'T15:00:00',
+//   },
+//   {
+//     id: '1',
+//     title: 'test2',
+//     start: '2023-03-21T07:00:00',
+//     end: '2023-03-21T07:30:00',
+//   },
+// ];
 
 const RecordPage = () => {
   const navigation = useNavigate();
@@ -48,12 +50,56 @@ const RecordPage = () => {
     setSelectedDate(selectedDate);
     navigation('/record/create');
   };
+
   const handleEventClick = (e: any) => {
     console.log(e);
   };
   const handleEvents = (e: any) => {
     console.log(e);
   };
+
+  ////시간소비 활동 API - 조회
+  // useEffect(() => {
+  //   async function fetchEvents() {
+  //     const res = await fetch('http://localhost:8080/api/v1/activity-records');
+  //     const data = await res.json();
+  //     if (data.length > 0) {
+  //       const events = data.map((item: any) => {
+  //         return {
+  //           id: item.categoryId,
+  //           title: item.categoryName,
+  //           start: new Date(item.startedAt),
+  //           end: new Date(item.finishedAt),
+  //         };
+  //       });
+  //       setEvents(events);
+  //     }
+  //   }
+  //   fetchEvents();
+  // }, []);
+
+  // const handleRecordCreate = async (info: EventInput) => {
+  //   const newEvent = {
+  //     id: events.length + 1,
+  //     title: info.categoryName,
+  //     start: info.startedAt,
+  //     end: info.finishedAt,
+  //   };
+  //   setEvents([...events, newEvent]);
+  // };
+
+  //로컬에 저장
+  const timezone = 'Asia/Seoul';
+  const initialEvents = (): EventInput[] => {
+  
+  const events = JSON.parse(localStorage.getItem('events') || '[]');
+  return events.map((event) => ({
+    id: event.id.toString(),
+    title: event.title,
+    start:moment.tz(event.start, timezone).format('YYYY-MM-DDTHH:mm:ss'),
+    end: moment.tz(event.end, timezone).format('YYYY-MM-DDTHH:mm:ss'),
+  }));
+};
 
   return (
     <div>
@@ -79,11 +125,13 @@ const RecordPage = () => {
           selectable={true}
           selectMirror={true}
           // dayMaxEvents={true}
-          initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+          // initialEvents={initialEvents} // alternatively, use the `events` setting to fetch from a feed
+          events={initialEvents()}
           select={handleDateSelect}
           eventContent={renderEventContent} // custom render function
           eventClick={handleEventClick}
           eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+          // eventAdd={handleRecordCreate}
           /* you can update a remote database when these fire:
           eventAdd={function(){}}
           eventChange={function(){}}

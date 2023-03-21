@@ -17,12 +17,17 @@ export interface CommonHeaderProps {
   isShowBackButton?: boolean;
   rightButtonIcon?: ReactElement;
   isShowRightButton?: boolean;
-  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {
-  };
+  // onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {};
+  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
+
+  // const handleRightButtonClick = () => {
+  //   navigation('/record');
+  // };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -43,7 +48,8 @@ const CommonHeader = (props: CommonHeaderProps) => {
             {props.title}
           </Typography>
           {props.isShowRightButton && (
-            <IconButton onClick={props.onClickRightButton}>
+            // <IconButton onClick={handleRightButtonClick}>
+                <IconButton onClick={props.onClickRightButton}>
               {props.rightButtonIcon}
               <CheckIcon />
             </IconButton>

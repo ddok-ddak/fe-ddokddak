@@ -11,20 +11,23 @@ import {
   useTheme,
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useRecoilState } from 'recoil';
 
 import Circle from '@/components/common/Circle';
 import FlexBox from '@/components/common/FlexBox';
 import DaysChip from '@/components/date/DaysChip';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { MainCategory } from '@/pages/category/CategoryPage';
-import { selectedTimeRangeState } from '@/store/record';
+import { recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
+
 // import styles from './CreateRecordPage.module.css';
 
 export interface SelectedRangeData {
   start: Date;
   end: Date;
 }
+
 
 /**
  * 임시 data
@@ -85,18 +88,97 @@ const getAMPM = (date: Date) => {
   return ampm;
 };
 
-const CreateRecoredPage = (): ReactElement => {
+const CreateRecoredPage  = (): ReactElement => {
   const selectedDate = useRecoilValue(selectedTimeRangeState);
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
   const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
 
+  const [recoilCategoryValue, setRecoilCategoryValue] = useRecoilState(recoilCategory);
+  const [recoilSubCategoryValue, setRecoilSubCategoryValue] = useRecoilState(recoilSubCategory);
+
   useEffect(() => {
     setSelectedSubCategoryIdx(0);
-  }, [selectedCategoryIdx]);
+    setRecoilCategoryValue(selectedCategoryIdx);
+  }, [selectedCategoryIdx, setRecoilCategoryValue]);
+
+  useEffect(() => {
+    setRecoilSubCategoryValue(selectedSubCategoryIdx);
+  }, [selectedSubCategoryIdx, setRecoilSubCategoryValue]);
+  console.log(recoilCategoryValue, recoilSubCategoryValue);
+
+
+  //날짜 형식 2023-01-01T13:00:00 KST으로 포멧
+const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+  
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')} KST`;
+  };
+
+  console.log('selectedDate.start: ',selectedDate.start);
+  //Wed Mar 22 2023 07:00:00 GMT+0900 (한국 표준시)
+  console.log('formatDate(selectedDate.start): ', formatDate(selectedDate.start));
+  //2023-03-22T07:00:00 KST
+  console.log('formatDate(selectedDate.end): ', formatDate(selectedDate.end));
+
+  const navigate = useNavigate();
+  ////시간소비 활동 API - 등록
+  // const postData = async () => {
+  //   const res = await fetch('http://localhost:8080/api/v1/activity-records', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json;charset=UTF-8',
+  //       'Content-Length': '165',
+  //       'Host': 'localhost:8080',
+  //     },
+  //     body: JSON.stringify({
+  //       categoryId: 1,
+  //       startedAt: formatDate(selectedDate.start),
+  //       finishedAt: formatDate(selectedDate.end),
+  //       content: "test-activity",
+  //       timeUnit: 30,
+  //     }),
+  //   });
+  //   if (res.ok) {
+  //     navigate('/record'); // 페이지 이동
+  //   } else {
+  //     console.log('error');
+  //   }
+  //   const data = await res.json();
+  //   console.log(data);
+  // };
+
+  function removeKST(str: string): string {
+    return str.replace(/ KST$/, '');
+  }
+
+  ////로컬에 저장
+  const handleRecordCreate = (): void =>  {
+    // localStorage.clear();
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+  
+    const newEvent = {
+      id: String(events.length),
+      title: String(recoilCategoryValue),
+      start: removeKST(formatDate(selectedDate.start)),
+      end: removeKST(formatDate(selectedDate.end))
+    };
+  
+    events.push(newEvent);
+    localStorage.setItem('events', JSON.stringify(events));
+    console.log(events);
+    navigate('/record');
+  };
 
   return (
     <>
-      <CommonHeader title={'기록하기'} isShowBackButton={true} isShowRightButton={true}/>
+      <CommonHeader title={'기록하기'} isShowBackButton={true} isShowRightButton={true}
+      // onClickRightButton={postData}/>
+      onClickRightButton={handleRecordCreate}/>
       <Container>
         <Container
           sx={{
@@ -157,7 +239,11 @@ const CreateRecoredPage = (): ReactElement => {
                 variant="filled"
                 color="primary"
                 size="medium"
-                onClick={() => setSelectedCategoryIdx(idx)}
+                onClick={() => {
+                  setSelectedCategoryIdx(idx);
+                }
+                }
+
               />
             ) : (
               <Chip
@@ -165,7 +251,9 @@ const CreateRecoredPage = (): ReactElement => {
                 label={category.title}
                 variant="outlined"
                 size="medium"
-                onClick={() => setSelectedCategoryIdx(idx)}
+                onClick={() => {
+                  setSelectedCategoryIdx(idx);
+                }}
               />
             ),
           )}
