@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/pages/SettingsPage.tsx
 import React from 'react';
 import {
   Avatar,
@@ -24,6 +25,10 @@ import TuneIcon from '@mui/icons-material/Tune';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LogoutIcon from '@mui/icons-material/Logout';
+=======
+import { Typography } from '@mui/material';
+import React from 'react';
+>>>>>>> dev:src/pages/settings/SettingsPage.tsx
 
 const SettingPage = () => {
   const [open1, setOpen1] = React.useState(true);
