@@ -1,53 +1,53 @@
 import { Avatar, Box, Button, Container, Input } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { ReactElement, useEffect, useCallback, useState } from 'react';
-import { Typography } from '@mui/material';
-import React from 'react';
-import type { ChangeEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import * as U from '../../utils';
-import { useAuth } from '../../contexts';
-import { currentUserInfo } from '@/store/info';
-import PortalAuth from '../../containers/portalAuth/portalAuth';
+// import { ReactElement, useEffect, useCallback, useState } from 'react';
+// import { Typography } from '@mui/material';
+// import React from 'react';
+// import type { ChangeEvent } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import * as U from '../../utils';
+// import { useAuth } from '../../contexts';
+// import { currentUserInfo } from '@/store/info';
+// import PortalAuth from '../../containers/portalAuth/portalAuth';
 
-const [currentUserInfo, setCurrentUserInfo] = useRecoilState(currentUserInfo);
+// const [currentUserInfo, setCurrentUserInfo] = useRecoilState(currentUserInfo);
 
-type LoginFormType = Record<'email' | 'password', string>;
-const initialFormState = { email: '', password: '' };
+// type LoginFormType = Record<'email' | 'password', string>;
+// const initialFormState = { email: '', password: '' };
 
 export default function Login() {
-    const [{ email, password }, setForm] =
-      useState<LoginFormType>(initialFormState);
-    const changed = useCallback(
-      (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
-        setForm((obj) => ({ ...obj, [key]: e.target.value }));
-      },
-      [],
-    );
+//     const [{ email, password }, setForm] =
+//       useState<LoginFormType>(initialFormState);
+//     const changed = useCallback(
+//       (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
+//         setForm((obj) => ({ ...obj, [key]: e.target.value }));
+//       },
+//       [],
+//     );
 
-      const navigate = useNavigate();
-      const { login } = useAuth();
+//       const navigate = useNavigate();
+//       const { login } = useAuth();
 
-      const loginAccount = useCallback(() => {
-        login(email, password, () => navigate('/record'));
-      }, [email, password, navigate, login]);
+//       const loginAccount = useCallback(() => {
+//         login(email, password, () => navigate('/record'));
+//       }, [email, password, navigate, login]);
 
-    useEffect(() => {
-      U.readObjectP<LoginFormType>('user')
-        .then((user) => {
-          if (user) setForm(user);
-        })
-        .catch((e) => {});
-    }, []);
-    //   const Login = (props) => {
-    //   const [portalClicked, setPortalClicked] = useState(false);
-    //   const [loginClicked, setLoginClicked] = useState(true);
-    //   const handlePortal = () => {
-    //     setPortalClicked(!portalClicked);
-    //   };
-    //   const handleLoginClicked = () => {
-    //     setLoginClicked(!loginClicked);
-    //   };
+//     useEffect(() => {
+//       U.readObjectP<LoginFormType>('user')
+//         .then((user) => {
+//           if (user) setForm(user);
+//         })
+//         .catch((e) => {});
+//     }, []);
+//     //   const Login = (props) => {
+//     //   const [portalClicked, setPortalClicked] = useState(false);
+//     //   const [loginClicked, setLoginClicked] = useState(true);
+//     //   const handlePortal = () => {
+//     //     setPortalClicked(!portalClicked);
+//     //   };
+//     //   const handleLoginClicked = () => {
+//     //     setLoginClicked(!loginClicked);
+//     //   };
   return (
     <Container>
       <Box
@@ -72,8 +72,8 @@ export default function Login() {
           name="email"
           placeholder="이메일 주소를 입력해주세요"
           fullWidth
-            value={email}
-            onChange={changed('email')}
+            // value={email}
+            // onChange={changed('email')}
         />
 
         <h3>비밀번호</h3>
@@ -81,8 +81,8 @@ export default function Login() {
           name="password"
           placeholder="비밀번호를 입력해주세요"
           fullWidth
-            value={password}
-            onChange={changed('password')}
+            // value={password}
+            // onChange={changed('password')}
         />
         <Container sx={{ padding: '16px' }}></Container>
         <Button
@@ -90,7 +90,7 @@ export default function Login() {
           color="primary"
           size="large"
           fullWidth
-            onClick={loginAccount}
+            // onClick={loginAccount}
         >
           로그인
         </Button>
