@@ -16,3 +16,8 @@ export const recoilSubCategory = atom({
   key: 'recoilSubCategory',
   default: 0,
 });
+
+export const selectedDaysState = atom<number[]>({
+  key: 'selectedDaysState',
+  default: [],
+});

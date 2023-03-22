@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, selectedDaysState  } from 'recoil';
 
 import Circle from '@/components/common/Circle';
 import FlexBox from '@/components/common/FlexBox';
@@ -90,6 +90,7 @@ const getAMPM = (date: Date) => {
 
 const CreateRecoredPage  = (): ReactElement => {
   const selectedDate = useRecoilValue(selectedTimeRangeState);
+  const [selectedDays, setSelectedDays] = useState<number[]>([]);
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
   const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
 
@@ -105,7 +106,6 @@ const CreateRecoredPage  = (): ReactElement => {
     setRecoilSubCategoryValue(selectedSubCategoryIdx);
   }, [selectedSubCategoryIdx, setRecoilSubCategoryValue]);
   console.log(recoilCategoryValue, recoilSubCategoryValue);
-
 
   //날짜 형식 2023-01-01T13:00:00 KST으로 포멧
 const formatDate = (date: Date): string => {
@@ -174,6 +174,15 @@ const formatDate = (date: Date): string => {
     navigate('/record');
   };
 
+  // 요일 여러개 선택
+  const handleDayChipClick = (dayIndex: number) => {
+    if (selectedDays.includes(dayIndex)) {
+      setSelectedDays(selectedDays.filter((selectedDay) => selectedDay !== dayIndex));
+    } else {
+      setSelectedDays([...selectedDays, dayIndex]);
+    }
+  };
+
   return (
     <>
       <CommonHeader title={'기록하기'} isShowBackButton={true} isShowRightButton={true}
@@ -187,13 +196,14 @@ const formatDate = (date: Date): string => {
             marginTop: '8px',
           }}
         >
-          <DaysChip title="일" isSelected={selectedDate.start.getDay() === 0} />
-          <DaysChip title="월" isSelected={selectedDate.start.getDay() === 1} />
-          <DaysChip title="화" isSelected={selectedDate.start.getDay() === 2} />
-          <DaysChip title="수" isSelected={selectedDate.start.getDay() === 3} />
-          <DaysChip title="목" isSelected={selectedDate.start.getDay() === 4} />
-          <DaysChip title="금" isSelected={selectedDate.start.getDay() === 5} />
-          <DaysChip title="토" isSelected={selectedDate.start.getDay() === 6} />
+          <DaysChip title="월" isSelected={selectedDate.start.getDay() === 1 || selectedDays.includes(1)} onClick={() => handleDayChipClick(1)} />
+          <DaysChip title="화" isSelected={selectedDate.start.getDay() === 2 || selectedDays.includes(2)} onClick={() => handleDayChipClick(2)} />
+          <DaysChip title="수" isSelected={selectedDate.start.getDay() === 3 || selectedDays.includes(3)} onClick={() => handleDayChipClick(3)} />
+          <DaysChip title="목" isSelected={selectedDate.start.getDay() === 4 || selectedDays.includes(4)} onClick={() => handleDayChipClick(4)} />
+          <DaysChip title="금" isSelected={selectedDate.start.getDay() === 5 || selectedDays.includes(5)} onClick={() => handleDayChipClick(5)} />
+          <DaysChip title="토" isSelected={selectedDate.start.getDay() === 6 || selectedDays.includes(6)} onClick={() => handleDayChipClick(6)} />
+          <DaysChip title="일" isSelected={selectedDate.start.getDay() === 0 || selectedDays.includes(0)} onClick={() => handleDayChipClick(0)} />
+
         </Container>
         <Container
           sx={{
