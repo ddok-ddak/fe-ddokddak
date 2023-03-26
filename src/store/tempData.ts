@@ -7,6 +7,7 @@ export const categories: MainCategory[] = [
   {
     title: '직장',
     color: '#20FFD7',
+    id: 0,
     subCategories: [
       { title: '업무', color: '#C2FFF4' },
       { title: '야근', color: '#C2FFF4' },
@@ -16,39 +17,43 @@ export const categories: MainCategory[] = [
   },
   {
     title: '성장',
-    color: '#20FFD7',
+    color: '#00796b',
+    id: 1,
     subCategories: [
-      { title: '독서', color: '#C2FFF4' },
-      { title: '강의', color: '#C2FFF4' },
-      { title: '자격증', color: '#C2FFF4' },
+      { title: '독서', color: '#b2dfdb' },
+      { title: '강의', color: '#b2dfdb' },
+      { title: '자격증', color: '#b2dfdb' },
     ],
   },
   {
     title: '관계',
-    color: '#20FFD7',
+    color: '#f06292',
+    id: 2,
     subCategories: [
-      { title: '친구', color: '#C2FFF4' },
-      { title: '가족', color: '#C2FFF4' },
-      { title: '연인', color: '#C2FFF4' },
+      { title: '친구', color: '#f8bbd0' },
+      { title: '가족', color: '#f8bbd0' },
+      { title: '연인', color: '#f8bbd0' },
     ],
   },
   {
     title: '건강',
-    color: '#20FFD7',
+    color: '#2196f3',
+    id: 3,
     subCategories: [
-      { title: '잠', color: '#C2FFF4' },
-      { title: '식사', color: '#C2FFF4' },
-      { title: '운동', color: '#C2FFF4' },
+      { title: '잠', color: '#bbdefb' },
+      { title: '식사', color: '#bbdefb' },
+      { title: '운동', color: '#bbdefb' },
     ],
   },
   {
     title: '낭비',
-    color: '#20FFD7',
+    color: '#f44336',
+    id: 4,
     subCategories: [
-      { title: 'SNS', color: '#C2FFF4' },
-      { title: '웹서핑', color: '#C2FFF4' },
-      { title: '미디어', color: '#C2FFF4' },
-      { title: '멍', color: '#C2FFF4' },
+      { title: 'SNS', color: '#ffcdd2' },
+      { title: '웹서핑', color: '#ffcdd2' },
+      { title: '미디어', color: '#ffcdd2' },
+      { title: '멍', color: '#ffcdd2' },
     ],
   },
 ];

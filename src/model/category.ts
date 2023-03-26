@@ -1,7 +1,7 @@
 export interface Category {
+  id: number;
   name: string;
   color: string;
   level: number;
-  mainCategoryId: number;
-  memberId: number;
+  mainCategory: string;
 }
