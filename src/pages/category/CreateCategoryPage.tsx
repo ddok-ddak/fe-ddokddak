@@ -36,7 +36,6 @@ const CreateCategoryPage = () => {
   };
 
   const handleSave = async () => {
-    console.log(selectedSubCategory);
     let response;
     if (mode === 'add') {
       response = await addSubCategory({
