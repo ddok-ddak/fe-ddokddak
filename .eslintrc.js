@@ -20,17 +20,5 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/ban-types': 'off',
     'react/react-in-jsx-scope': 'off',
-    'import/first': 'error',
-    'import/newline-after-import': 'error',
-    'import/no-duplicates': 'error',
-    'import/order': [
-      'error',
-      {
-        alphabetize: {
-          order: 'asc',
-        },
-        'newlines-between': 'always',
-      },
-    ],
   },
 };
