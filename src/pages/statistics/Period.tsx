@@ -1,10 +1,24 @@
-import { AppBar, Tabs, Tab, Box, Grid, TextField } from '@mui/material';
+import {
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  Grid,
+  TextField,
+  TextFieldProps,
+} from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { useState, SyntheticEvent, useEffect } from 'react';
+import {
+  useState,
+  SyntheticEvent,
+  useEffect,
+  JSXElementConstructor,
+  ReactElement,
+} from 'react';
 
 import WeekPicker from './WeekPicker';
 
@@ -92,20 +106,17 @@ const Period = () => {
         }}
       >
         {periodType === 'BY_DAY' && (
-          <TextField
-            type="date"
+          <DatePicker
             value={value}
             onChange={(newValue) => {
-              setValue(dayjs(newValue.target.value));
+              if (newValue) {
+                setValue(newValue);
+              }
             }}
-            sx={{ width: 220 }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              min: '2023-01-01',
-              max: currDate,
-            }}
+            inputFormat="YYYY년 MM월 DD일"
+            renderInput={(params: any) => (
+              <TextField {...params} helperText={null} />
+            )}
           />
         )}
         {periodType === 'BY_WEEK' && (
@@ -114,6 +125,7 @@ const Period = () => {
         {periodType === 'BY_MONTH' && (
           <DatePicker
             views={['year', 'month']}
+            inputFormat="YYYY년 MM월"
             value={value}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}

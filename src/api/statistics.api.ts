@@ -1,19 +1,21 @@
 import { callAPI } from './common/api';
 
-export interface StaticsResponse {
-  
+export interface StatisticsDetail {
+  categoryId: number;
+  categoryName: string;
+  categoryColor: string;
+  parentId?: number;
+  level: number;
+  timeSum: number;
+  children?: StatisticsDetail[];
 }
 
-export const getTest = async (): Promise<StaticsResponse> => {
+export const getTest = async (): Promise<StatisticsDetail[]> => {
   const response = await callAPI({
     url: `/users`,
     method: 'GET',
   });
 
-  const returnData:StaticsResponse ={
-    users: response.users,
-    total: response.total,
-  }
 
-  return returnData;
+  return response;
 };

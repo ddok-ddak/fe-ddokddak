@@ -64,13 +64,12 @@ function Day(props: PickersDayProps<Dayjs> & { selectedDay?: Dayjs | null }) {
   );
 }
 
-const WeekPicker = ({value, setValue}: any) => {
+const WeekPicker = ({ value, setValue }: any) => {
   const renderWeekPickerDay = (
     date: Dayjs,
     selectedDates: Array<Dayjs | null>,
     pickersDayProps: PickersDayProps<Dayjs>,
   ) => {
-
     if (!value) {
       return <PickersDay {...pickersDayProps} />;
     }
@@ -97,14 +96,17 @@ const WeekPicker = ({value, setValue}: any) => {
     <DatePicker
       value={value}
       onChange={(newValue) => {
-        const result = {from: dayjs(newValue).startOf('week'), to: dayjs(newValue).endOf('week') }
+        const result = {
+          from: dayjs(newValue).startOf('week'),
+          to: dayjs(newValue).endOf('week'),
+        };
         // setValue(result)
       }}
       renderDay={renderWeekPickerDay}
       renderInput={(params) => <TextField {...params} />}
-      inputFormat="YYYY년 M월 D일 ~"
+      inputFormat="YYYY년 MM월 DD일 ~"
     />
   );
-}
+};
 
 export default WeekPicker;

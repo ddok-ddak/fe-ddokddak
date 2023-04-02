@@ -141,10 +141,11 @@ const ChartContainer = () => {
         <Box
           key={idx}
           sx={{
-            padding: '15px',
+            padding: '8px',
             display: 'flex',
             justifyContent: 'space-evenly',
-            marginTop: '20px',
+            marginTop: '8px',
+            alignItems: 'center',
           }}
         >
           <Circle color={data.color} size={40} />
