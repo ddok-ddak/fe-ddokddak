@@ -3,24 +3,25 @@ import {
   Button,
   Chip,
   Container,
-  createStyles,
   Divider,
   TextField,
   Theme,
   Typography,
+  createStyles,
   useTheme,
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
-import DaysChip from '../../components/date/DaysChip';
-import FlexBox from '../../components/common/FlexBox';
-import CommonHeader from '../../components/layout/CommonHeader';
-import { selectedTimeRangeState } from '../../store/record';
-import { MainCategory } from '../category/CategoryPage';
+import { useRecoilValue } from 'recoil';
+
 // import styles from './CreateRecordPage.module.css';
 import Circle from '../../components/common/Circle';
+import FlexBox from '../../components/common/FlexBox';
+import DaysChip from '../../components/date/DaysChip';
+import CommonHeader from '../../components/layout/CommonHeader';
+import { selectedTimeRangeState } from '../../store/record';
 import { categories } from '../../store/tempData';
+import { MainCategory } from '../category/CategoryPage';
 
 export interface SelectedRangeData {
   start: Date;
@@ -102,8 +103,8 @@ const CreateRecoredPage = (): ReactElement => {
           {categories.map((category, idx) =>
             idx === selectedCategoryIdx ? (
               <Chip
-                key={category.title}
-                label={category.title}
+                key={category.name}
+                label={category.name}
                 variant="filled"
                 color="primary"
                 size="medium"
@@ -111,8 +112,8 @@ const CreateRecoredPage = (): ReactElement => {
               />
             ) : (
               <Chip
-                key={category.title}
-                label={category.title}
+                key={category.name}
+                label={category.name}
                 variant="outlined"
                 size="medium"
                 onClick={() => setSelectedCategoryIdx(idx)}
@@ -130,8 +131,8 @@ const CreateRecoredPage = (): ReactElement => {
           {categories &&
             categories[selectedCategoryIdx].subCategories.map((sub, idx) => (
               <Circle
-                key={sub.title}
-                label={sub.title}
+                key={sub.name}
+                label={sub.name}
                 color={sub.color}
                 size={40}
                 onClick={() => {

@@ -1,26 +1,28 @@
+import AddIcon from '@mui/icons-material/Add';
 import { Divider, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+
+import { getCategories } from '../../api/category.api';
 import Circle from '../../components/common/Circle';
+import FolderTop from '../../components/common/FolderTop';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
-import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
-import FolderTop from '../../components/common/FolderTop';
-import { useSetRecoilState } from 'recoil';
 import { selectedSubCategoryState } from '../../store/category';
-import { getCategories } from '../../api/category.api';
 
 export interface MainCategory {
-  id: number;
-  title: string;
+  categoryId: number;
+  name: string;
+  level?: number;
   color: string;
   subCategories: SubCategory[];
 }
 
 export interface SubCategory {
-  id?: number;
-  title: string;
+  categoryId?: number;
+  name: string;
   color: string;
   mainCategoryId?: number;
 }
@@ -34,8 +36,8 @@ const CategoryPage = () => {
 
   const getAllCategories = async () => {
     const response = await getCategories();
-    if (response.successOrNot === 'Y') {
-      setCategories(response.data);
+    if (response.result) {
+      setCategories(response.result);
     } else {
       alert('Error');
     }
@@ -64,7 +66,7 @@ const CategoryPage = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  {category.title}
+                  {category.name}
                 </Typography>
               </Box>
               <Box
@@ -74,7 +76,7 @@ const CategoryPage = () => {
                   width: '267px',
                   margin: 'auto',
                 }}
-                key={category.title}
+                key={category.name}
               >
                 {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography variant="h5">{category.title}</Typography>
@@ -92,7 +94,7 @@ const CategoryPage = () => {
                   {categories[idx].subCategories.map((sub, subIdx) => (
                     <Grid item key={subIdx}>
                       <Circle
-                        label={sub.title}
+                        label={sub.name}
                         color={sub.color}
                         size={40}
                         onClick={() => {
@@ -113,6 +115,7 @@ const CategoryPage = () => {
                       size={40}
                       onClick={() => {
                         setSelectedSubCategory({
+                          mainCategoryId: category.categoryId,
                           color: '#D9D9D9',
                         } as SubCategory);
                         navigation('/category/add', {

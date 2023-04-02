@@ -5,6 +5,7 @@ export default interface CommonResponse<T = any> {
   statusCode: string;
   errorMessage?: string;
   data?: any;
+  result?: any;
 }
 
 export const getInstance = (isLoading = true, params?: any): AxiosInstance => {

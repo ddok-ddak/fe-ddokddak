@@ -31,7 +31,7 @@ export const addSubCategory = async (request: SubCategory) => {
     url: `/api/v1/categories`,
     method: 'POST',
     body: {
-      name: request.title,
+      name: request.name,
       color: request.color,
       level: 1,
       mainCategoryId: request.mainCategoryId,
@@ -47,8 +47,8 @@ export const updateSubCategory = async (request: SubCategory) => {
     url: `/api/v1/categories/value`,
     method: 'PUT',
     body: {
-      categoryId: request.id,
-      name: request.title,
+      categoryId: request.categoryId,
+      name: request.name,
       color: request.color,
     },
     params: {

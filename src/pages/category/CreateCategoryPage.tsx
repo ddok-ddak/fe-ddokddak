@@ -1,26 +1,27 @@
+import AddIcon from '@mui/icons-material/Add';
 import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { useState, useEffect } from 'react';
-import Circle from '../../components/common/Circle';
-import Spacer from '../../components/common/Spacer';
-import CommonHeader from '../../components/layout/CommonHeader';
-import { categories } from '../../store/tempData';
-import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 import { ColorResult, SwatchesPicker } from 'react-color';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
 import {
   addSubCategory,
   deleteCategory,
   updateSubCategory,
 } from '../../api/category.api';
-import { useRecoilValue } from 'recoil';
+import Circle from '../../components/common/Circle';
+import Spacer from '../../components/common/Spacer';
+import CommonHeader from '../../components/layout/CommonHeader';
 import { selectedSubCategoryState } from '../../store/category';
+import { categories } from '../../store/tempData';
 
 const CreateCategoryPage = () => {
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
   const [selectedColor, setSelectedColor] = useState(selectedSubCategory.color);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [inputName, setInputName] = useState(selectedSubCategory.title);
+  const [inputName, setInputName] = useState(selectedSubCategory.name);
   const navigation = useNavigate();
   const location = useLocation();
   const mainCategoryId = selectedSubCategory.mainCategoryId;
@@ -35,22 +36,26 @@ const CreateCategoryPage = () => {
   };
 
   const handleSave = async () => {
+    console.log(selectedSubCategory);
     let response;
     if (mode === 'add') {
       response = await addSubCategory({
-        mainCategoryId: mainCategoryId,
-        title: inputName,
+        mainCategoryId: selectedSubCategory.mainCategoryId,
+        name: inputName,
         color: selectedColor,
       });
     } else {
-      response = await updateSubCategory({
-        mainCategoryId: mainCategoryId,
-        title: inputName,
-        color: selectedColor,
-      });
+      if (selectedSubCategory.categoryId) {
+        response = await updateSubCategory({
+          mainCategoryId: mainCategoryId,
+          name: inputName,
+          color: selectedColor,
+          categoryId: selectedSubCategory.categoryId,
+        });
+      }
     }
 
-    if (response.successOrNot === 'Y') {
+    if (response?.successOrNot === 'Y') {
       alert('Successfully created');
       navigation(-1);
     } else {
@@ -60,7 +65,7 @@ const CreateCategoryPage = () => {
 
   const handleDelete = async () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const response = await deleteCategory(selectedSubCategory.id!);
+    const response = await deleteCategory(selectedSubCategory.categoryId!);
     if (response.successOrNot === 'Y') {
       alert('Successfully created');
       navigation(-1);
