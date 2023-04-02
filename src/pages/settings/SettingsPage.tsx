@@ -10,8 +10,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import '../styles/setting.css';
-import '../styles/index';
+
 // import InboxIcon from '@mui/icons-material/MoveToInbox';
 // import StarBorder from '@mui/icons-material/StarBorder';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';

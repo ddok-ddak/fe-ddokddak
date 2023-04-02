@@ -1,4 +1,5 @@
 import { callAPI } from './common/api';
+import CommonResponse from './http';
 
 export interface StatisticsDetail {
   categoryId: number;
@@ -10,12 +11,20 @@ export interface StatisticsDetail {
   children?: StatisticsDetail[];
 }
 
-export const getTest = async (): Promise<StatisticsDetail[]> => {
+export interface StatisticsRequest {
+  fromStartedAt: string;
+  toFinishedAt: string;
+}
+
+export const getStatisticsData = async (request: StatisticsRequest) => {
   const response = await callAPI({
-    url: `/users`,
+    url: `/api/v1/activity-records/stats`,
     method: 'GET',
+    params: {
+      memberId: 1,
+      ...request,
+    },
   });
 
-
-  return response;
+  return response as CommonResponse;
 };

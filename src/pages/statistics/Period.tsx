@@ -1,3 +1,4 @@
+import { getStatisticsData, StatisticsRequest } from '@/api/statistics.api';
 import {
   AppBar,
   Tabs,
@@ -49,24 +50,49 @@ const Period = () => {
   const [periodType, setPeriodType] = useState<PeriodType>(
     periodTypeList[0].id,
   );
-  const handlePeriodChange = (e: SyntheticEvent, value: PeriodType) => {
-    setPeriodType(value);
+  const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodType) => {
+    setPeriodType(selectedDate);
   };
 
   const currDate = new Date().toISOString().slice(0, 10);
-  const [value, setValue] = useState(dayjs(currDate));
+  const [selectedDate, setSelectedDate] = useState(dayjs(currDate));
+  const [requtestDate, setRequtestDate] = useState<StatisticsRequest>({
+    fromStartedAt: '',
+    toFinishedAt: '',
+  });
+
+  const getStatistics = async (request: StatisticsRequest) => {
+    const response = await getStatisticsData({
+      ...request,
+    });
+    console.log(response);
+  };
 
   useEffect(() => {
+    let finishedAt = '';
     if (periodType === 'BY_DAY') {
-      console.log('BY_DAY: ', value);
+      finishedAt = `${selectedDate
+        .add(1, 'day')
+        .format('YYYY-MM-DD')}T00:00:00`;
     } else if (periodType === 'BY_MONTH') {
-      console.log('BY_MONTH: ', value.month() + 1);
+      finishedAt = `${selectedDate
+        .add(1, 'month')
+        .format('YYYY-MM-DD')}T00:00:00`;
     } else if (periodType === 'BY_WEEK') {
-      console.log('BY_WEEK: ', value);
+      finishedAt = `${selectedDate
+        .add(1, 'week')
+        .format('YYYY-MM-DD')}T00:00:00`;
     } else if (periodType === 'BY_YEAR') {
-      console.log('BY_YEAR: ', value.year());
+      finishedAt = `${selectedDate
+        .add(1, 'year')
+        .format('YYYY-MM-DD')}T00:00:00`;
     }
-  }, [value]);
+
+    getStatistics({
+      fromStartedAt: `${selectedDate.format('YYYY-MM-DD')}T00:00:00`,
+      toFinishedAt: finishedAt,
+    });
+  }, [selectedDate]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -107,10 +133,10 @@ const Period = () => {
       >
         {periodType === 'BY_DAY' && (
           <DatePicker
-            value={value}
+            value={selectedDate}
             onChange={(newValue) => {
               if (newValue) {
-                setValue(newValue);
+                setSelectedDate(newValue);
               }
             }}
             inputFormat="YYYY년 MM월 DD일"
@@ -120,20 +146,20 @@ const Period = () => {
           />
         )}
         {periodType === 'BY_WEEK' && (
-          <WeekPicker value={value} setValue={setValue} />
+          <WeekPicker value={selectedDate} setSelectedDate={setSelectedDate} />
         )}
         {periodType === 'BY_MONTH' && (
           <DatePicker
             views={['year', 'month']}
             inputFormat="YYYY년 MM월"
-            value={value}
+            value={selectedDate}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}
             onChange={(newValue: any) => {
               if (!newValue) {
                 return;
               }
-              setValue(newValue);
+              setSelectedDate(newValue);
             }}
             renderInput={(params: any) => (
               <TextField {...params} helperText={null} />
@@ -143,14 +169,14 @@ const Period = () => {
         {periodType === 'BY_YEAR' && (
           <DatePicker
             views={['year']}
-            value={value}
+            value={selectedDate}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}
             onChange={(newValue: any) => {
               if (!newValue) {
                 return;
               }
-              setValue(newValue);
+              setSelectedDate(newValue);
             }}
             renderInput={(params) => (
               <TextField {...params} helperText={null} />
