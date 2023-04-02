@@ -10,6 +10,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { addDays } from 'date-fns';
 import { ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState, selectedDaysState  } from 'recoil';
@@ -158,18 +159,19 @@ const formatDate = (date: Date): string => {
 
   ////로컬에 저장
   const handleRecordCreate = (): void =>  {
-    // localStorage.clear();
     const events = JSON.parse(localStorage.getItem('events') || '[]');
+    selectedDays.push(selectedDate.start.getDay());
+
+    // selectedDays에 있는 모든 요일에 대해 일정 추가
+    const newEvents = selectedDays.map((dayIndex) => ({
+      id: String(events.length + 1), // 기존 이벤트 수보다 1 증가
+      title: categories.find((category) => category.title === ['직장', '성장', '관계', '건강', '낭비'][recoilCategoryValue])?.title,
+      start: removeKST(formatDate(addDays(selectedDate.start, dayIndex))),
+      end: removeKST(formatDate(addDays(selectedDate.end, dayIndex)))
+    }));
   
-    const newEvent = {
-      id: String(events.length),
-      title: String(recoilCategoryValue),
-      start: removeKST(formatDate(selectedDate.start)),
-      end: removeKST(formatDate(selectedDate.end))
-    };
-  
-    events.push(newEvent);
-    localStorage.setItem('events', JSON.stringify(events));
+    // 기존 이벤트와 새로운 이벤트를 합쳐서 localStorage에 저장
+    localStorage.setItem('events', JSON.stringify([...events, ...newEvents]));
     console.log(events);
     navigate('/record');
   };
@@ -181,6 +183,7 @@ const formatDate = (date: Date): string => {
     } else {
       setSelectedDays([...selectedDays, dayIndex]);
     }
+    return selectedDays;
   };
 
   return (
