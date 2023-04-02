@@ -2,6 +2,8 @@ import './App.css';
 import { ThemeProvider } from '@mui/material';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import Modal from './components/common/Modal';
+
 import BottomNav from '@/components/layout/BottomNav';
 import FindIDPage from '@/pages/auth/FindID';
 import ResetPWPage from '@/pages/auth/ResetPW';
@@ -29,6 +31,7 @@ function App() {
           <Route path="/record/create" element={<CreateRecoredPage />} />
         </Routes>
         <BottomNav />
+        <Modal />
       </ThemeProvider>
     </BrowserRouter>
   );
