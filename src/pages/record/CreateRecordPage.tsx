@@ -1,27 +1,22 @@
 import {
-  Box,
   Button,
   Chip,
   Container,
   Divider,
   TextField,
-  Theme,
   Typography,
-  createStyles,
-  useTheme,
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-// import styles from './CreateRecordPage.module.css';
-import Circle from '../../components/common/Circle';
-import FlexBox from '../../components/common/FlexBox';
-import DaysChip from '../../components/date/DaysChip';
-import CommonHeader from '../../components/layout/CommonHeader';
-import { selectedTimeRangeState } from '../../store/record';
 import { categories } from '../../store/tempData';
-import { MainCategory } from '../category/CategoryPage';
+
+import Circle from '@/components/common/Circle';
+import FlexBox from '@/components/common/FlexBox';
+import DaysChip from '@/components/date/DaysChip';
+import CommonHeader from '@/components/layout/CommonHeader';
+import { selectedTimeRangeState } from '@/store/record';
 
 export interface SelectedRangeData {
   start: Date;
