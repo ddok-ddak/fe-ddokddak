@@ -24,13 +24,10 @@ export interface CommonHeaderProps {
 const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
 
-  // const handleRightButtonClick = () => {
-  //   navigation('/record');
-  // };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ background: 'transparent', boxShadow: 'none', fontWeight: 'bold',
+      color: 'grey.600' }}>
         <Toolbar>
           {props.isShowBackButton && (
             <IconButton
@@ -44,11 +41,10 @@ const CommonHeader = (props: CommonHeaderProps) => {
               <ArrowBackIosNewIcon />
             </IconButton>
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {props.title}
           </Typography>
           {props.isShowRightButton && (
-            // <IconButton onClick={handleRightButtonClick}>
                 <IconButton onClick={props.onClickRightButton}>
               {props.rightButtonIcon}
               <CheckIcon />
