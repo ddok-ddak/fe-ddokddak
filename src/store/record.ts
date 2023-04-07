@@ -1,10 +1,17 @@
 import { atom } from 'recoil';
+// import { atom, selector } from 'recoil';
 
 import { SelectedRangeData } from '@/pages/record/CreateRecordPage';
+
 
 export const selectedTimeRangeState = atom({
   key: 'selectedTimeRangeState',
   default: {} as SelectedRangeData,
+});
+
+export const categories = atom<Category[]>({
+  key: "categories",
+  default: [],
 });
 
 export const recoilCategory = atom({
@@ -19,5 +26,21 @@ export const recoilSubCategory = atom({
 
 export const selectedDaysState = atom<number[]>({
   key: 'selectedDaysState',
+  default: [],
+});
+
+type SubCategory = {
+  title: string;
+  color: string;
+};
+
+type Category = {
+  title: string;
+  color: string;
+  subCategories: SubCategory[];
+};
+
+export const categoriesState = atom<Category[]>({
+  key: 'categoriesState',
   default: [],
 });
