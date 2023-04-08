@@ -1,14 +1,12 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import { EventInput } from '@fullcalendar/common';
 import dayjs from 'dayjs';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
-import React, { useState,useEffect } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-
 import { SelectedRangeData } from './CreateRecordPage';
 
 import Spacer from '@/components/common/Spacer';
@@ -27,6 +25,7 @@ interface Event {
   start: Date;
   end: Date;
 }
+
 
 const renderEventContent = (eventInfo: any) => {
   return (
@@ -121,25 +120,58 @@ const RecordPage = () => {
       const data = await res.json();
   
       if (data.message === "Success") {
-        const events = data.result.map((item: any) => {
-          const startedAt = item.startedAt.replace(" KST", "")
-          const finishedAt = item.startedAt.replace(" KST", "")
-          return {
-            id: item.categoryId,
-            title: item.categoryName,
+        const activityRecords = data.result;
+
+        const events: Event[] = [];
+
+        // 기록이 연속된지 확인
+        for (let i = 0; i < activityRecords.length; i++) {
+          const item = activityRecords[i];
+          const startedAt = item.startedAt.replace(" KST", "");
+          let finishedAt = item.startedAt.replace(" KST", "");
+          const categoryId = item.categoryId;
+          const categoryName = item.categoryName;
+
+          let nextIndex = i + 1;
+
+          // 다음 기록이 연속된 기록인지 확인
+          while (nextIndex < activityRecords.length && activityRecords[nextIndex].categoryId === categoryId) {
+            finishedAt = activityRecords[nextIndex].startedAt.replace(" KST", "");
+            i++;
+            nextIndex++;
+          }
+
+          events.push({
+            id: categoryId,
+            title: categoryName,
             start: startedAt,
             end: finishedAt,
-            resourceId: item.categoryId,
-          };
-        });
-  
+          });
+        }
+
         setEvents(events);
         console.log("events: ", events);
       }
-    }catch (error) {
+    } catch (error) {
       console.error(error);
     }
-  }
+  };
+
+  useEffect(() => {
+    const initialInfo = { start: new Date() };
+    fetchEvents(initialInfo);
+  }, []);
+
+  
+  const handleEventContent = (arg: any) => {
+    return (
+      <div>
+        <b>{arg.timeText}</b>
+        <i>{arg.event.title}</i>
+      </div>
+    );
+  };
+
   return (
     <div>
       <CommonHeader title={'일주일 기록하기'} />
@@ -158,11 +190,13 @@ const RecordPage = () => {
             center: "title",
             right: "next",
           }}
+          dayHeaderFormat={{ day: "numeric" }} //일만 표시
+          // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
           titleFormat={renderTitle}
           datesSet={(info) => {
             const title = renderTitle(info);
             fetchEvents(info);
-          }}
+          }} 
           eventColor="#FF8999"
           initialView="timeGridWeek"
           editable={true}
