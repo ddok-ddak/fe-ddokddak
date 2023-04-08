@@ -118,51 +118,58 @@ const RecordPage = () => {
         `http://localhost:8080/api/v1/activity-records?memberId=${encodeURIComponent(member)}&fromStartedAt=${encodeURIComponent(fromStartedAt)}&toStartedAt=${encodeURIComponent(toStartedAt)}`
       );
       const data = await res.json();
-  
-      if (data.message === "Success") {
-        const activityRecords = data.result;
 
-        const events: Event[] = [];
+    if (data.message === "Success") {
+      let events: Event[] = [];
+      let currentEvent: Event | null = null;
 
-        // 기록이 연속된지 확인
-        for (let i = 0; i < activityRecords.length; i++) {
-          const item = activityRecords[i];
-          const startedAt = item.startedAt.replace(" KST", "");
-          let finishedAt = item.startedAt.replace(" KST", "");
-          const categoryId = item.categoryId;
-          const categoryName = item.categoryName;
+      // 각 activity record에 대해 처리
+      data.result.forEach((item: any) => {
+        const startedAt = item.startedAt.replace(" KST", "");
+        const finishedAt = item.finishedAt.replace(" KST", "");
 
-          let nextIndex = i + 1;
+        const event: Event = {
+          id: item.categoryId,
+          title: item.categoryName,
+          start: startedAt,
+          end: finishedAt,
+        };
 
-          // 다음 기록이 연속된 기록인지 확인
-          while (nextIndex < activityRecords.length && activityRecords[nextIndex].categoryId === categoryId) {
-            finishedAt = activityRecords[nextIndex].startedAt.replace(" KST", "");
-            i++;
-            nextIndex++;
+        if (currentEvent) {
+          // 이전 이벤트가 존재하는 경우
+          if (event.start === currentEvent.end && event.title === currentEvent.title) {
+            // 연속된 이벤트인 경우 이어서 표시
+            currentEvent.end = event.end;
+          } else {
+            // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
+            events.push(currentEvent);
+            currentEvent = event;
           }
-
-          events.push({
-            id: categoryId,
-            title: categoryName,
-            start: startedAt,
-            end: finishedAt,
-          });
+        } else {
+          // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
+          currentEvent = event;
         }
+      });
 
-        setEvents(events);
-        console.log("events: ", events);
+      // 마지막 이벤트가 남아 있는 경우 events에 추가
+      if (currentEvent) {
+        events.push(currentEvent);
       }
-    } catch (error) {
-      console.error(error);
+
+      setEvents(events);
+      console.log("events: ", events);
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   useEffect(() => {
     const initialInfo = { start: new Date() };
     fetchEvents(initialInfo);
   }, []);
 
-  
+
   const handleEventContent = (arg: any) => {
     return (
       <div>
