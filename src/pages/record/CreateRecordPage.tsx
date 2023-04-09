@@ -190,7 +190,7 @@ const CreateRecordPage= (): ReactElement => {
   }> {
 
     const newEvents = {
-      categoryId: selectedCategoryIdx,
+      categoryId: selectedCategoryIdx+1,
       name,
       startedAt,
       finishedAt,
