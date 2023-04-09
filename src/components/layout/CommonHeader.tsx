@@ -1,5 +1,4 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box,
   AppBar,

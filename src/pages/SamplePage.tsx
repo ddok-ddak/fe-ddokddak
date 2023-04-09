@@ -1,4 +1,4 @@
-import SampleButton from '../components/SampleButton';
+import SampleButton from '@/components/SampleButton';
 
 import { Typography } from '@mui/material';
 

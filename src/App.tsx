@@ -13,6 +13,8 @@ import RecordPage from './pages/record/RecordPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import StatisticsPage from './pages/statistics/StatisticsPage';
 
+import Modal from './components/common/Modal';
+
 import CreateRecoredPage from '@/pages/record/CreateRecordPage';
 import { theme } from '@/styles';
 
@@ -37,6 +39,7 @@ function App() {
         </Box>
 
         <BottomNav />
+        <Modal />
       </ThemeProvider>
     </BrowserRouter>
   );

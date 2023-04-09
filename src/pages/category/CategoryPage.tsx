@@ -71,9 +71,9 @@ const CategoryPage = () => {
               </Box>
               <Box
                 sx={{
-                  padding: '16px 32px',
+                  padding: '16px',
                   backgroundColor: '#f2f2f2',
-                  width: '267px',
+                  width: '299px',
                   margin: 'auto',
                 }}
                 key={category.name}
@@ -90,9 +90,9 @@ const CategoryPage = () => {
                   ></Box>
                 </Box> */}
 
-                <Grid container gap={3} sx={{ padding: '20px 0px' }}>
+                <Grid container gap={2} sx={{ padding: '15px 0px' }}>
                   {categories[idx].subCategories.map((sub, subIdx) => (
-                    <Grid item key={subIdx}>
+                    <Grid item key={subIdx} width="60px">
                       <Circle
                         label={sub.name}
                         color={sub.color}
