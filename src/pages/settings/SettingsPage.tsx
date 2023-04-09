@@ -1,6 +1,5 @@
 /* eslint-disable import/order */
 import React from 'react';
-
 import {
   Avatar,
   Box,
@@ -12,10 +11,6 @@ import {
   Typography,
 } from '@mui/material';
 
-// import '../styles/setting.css';
-// import '../styles/index';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import StarBorder from '@mui/icons-material/StarBorder';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
