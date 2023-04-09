@@ -1,5 +1,4 @@
 import { atom } from 'recoil';
-// import { atom, selector } from 'recoil';
 
 import { SelectedRangeData } from '@/pages/record/CreateRecordPage';
 
@@ -16,12 +15,12 @@ export const categories = atom<Category[]>({
 
 export const recoilCategory = atom({
   key: 'recoilCategory',
-  default: 0,
+  default: 1,
 });
 
 export const recoilSubCategory = atom({
   key: 'recoilSubCategory',
-  default: 0,
+  default: 1,
 });
 
 export const selectedDaysState = atom<number[]>({
@@ -30,12 +29,12 @@ export const selectedDaysState = atom<number[]>({
 });
 
 type SubCategory = {
-  title: string;
+  name: string;
   color: string;
 };
 
 type Category = {
-  title: string;
+  name: string;
   color: string;
   subCategories: SubCategory[];
 };
