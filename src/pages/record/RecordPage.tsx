@@ -16,6 +16,7 @@ import { selectedTimeRangeState } from '@/store/record';
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
+import '../../styles/custom-calendar-styles.css';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -29,10 +30,9 @@ interface Event {
 
 const renderEventContent = (eventInfo: any) => {
   return (
-    <>
-      <b>{eventInfo.timeText}</b>
-      <i>{eventInfo.event.title}</i>
-    </>
+    <div style={{ textAlign: 'center', margin: 'auto' }}>
+      {eventInfo.event.title}
+    </div>
   );
 };
 
@@ -170,15 +170,6 @@ const RecordPage = () => {
   }, []);
 
 
-  const handleEventContent = (arg: any) => {
-    return (
-      <div>
-        <b>{arg.timeText}</b>
-        <i>{arg.event.title}</i>
-      </div>
-    );
-  };
-
   return (
     <div>
       <CommonHeader title={'일주일 기록하기'} />
@@ -197,11 +188,11 @@ const RecordPage = () => {
             center: "title",
             right: "next",
           }}
-          dayHeaderFormat={{ day: "numeric" }} //일만 표시
-          // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
-          titleFormat={renderTitle}
+          dayHeaderFormat={{ day: 'numeric' }} //일만 표시
+        // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
+        titleFormat={renderTitle}
           datesSet={(info) => {
-            const title = renderTitle(info);
+            // const title = renderTitle(info);
             fetchEvents(info);
           }} 
           eventColor="#FF8999"
