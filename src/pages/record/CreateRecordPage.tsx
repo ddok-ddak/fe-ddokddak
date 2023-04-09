@@ -21,7 +21,7 @@ import FlexBox from '@/components/common/FlexBox';
 import DaysChip from '@/components/date/DaysChip';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { MainCategory } from '@/pages/category/CategoryPage';
-import { categoriesState, categories  , selectedDaysState, recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
+import { categoriesState, ategories  , selectedDaysState, recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
 import { useSetRecoilState } from 'recoil';
 // import {categoriesState, selectedTimeRangeState } from '@/store/record';
 
@@ -181,9 +181,9 @@ const CreateRecordPage= (): ReactElement => {
 
   
   ////시간소비 활동 API - 등록
-  async function postData(title: string, startedAt: string, finishedAt: string): Promise<{
+  async function postData(name: string, startedAt: string, finishedAt: string): Promise<{
     categoryId: number;
-    title: string;
+    name: string;
     startedAt: string;
     finishedAt: string;
     timeUnit: number;
@@ -191,7 +191,7 @@ const CreateRecordPage= (): ReactElement => {
 
     const newEvents = {
       categoryId: selectedCategoryIdx,
-      title,
+      name,
       startedAt,
       finishedAt,
       timeUnit: 30,
@@ -216,7 +216,7 @@ const CreateRecordPage= (): ReactElement => {
     const data = await res.json();
     return {
       categoryId: data.categoryId,
-      title: data.title,
+      name: data.name,
       startedAt: data.startedAt,
       finishedAt: data.finishedAt,
       timeUnit: data.timeUnit,
@@ -301,10 +301,10 @@ const CreateRecordPage= (): ReactElement => {
   };
 
   function handleRightButtonClick() {
-    const title = categories[selectedCategoryIdx].title;
+    const name = categories[selectedCategoryIdx].name;
     const startedAt = formatDate(selectedDate.start);
     const finishedAt = formatDate(selectedDate.end);
-    postData(title, startedAt, finishedAt);
+    postData(name, startedAt, finishedAt);
   }
   return (
     <>
@@ -365,8 +365,8 @@ const CreateRecordPage= (): ReactElement => {
           {categories.map((category, idx) =>
             idx === selectedCategoryIdx ? (
               <Chip
-                key={category.title}
-                label={category.title}
+              key={category.name}
+              label={category.name}
                 variant="filled"
                 color="primary"
                 size="medium"
@@ -377,8 +377,8 @@ const CreateRecordPage= (): ReactElement => {
               />
             ) : (
               <Chip
-                key={category.title}
-                label={category.title}
+                key={category.name}
+                label={category.name}
                 variant="outlined"
                 size="medium"
                 onClick={() => {
@@ -398,8 +398,8 @@ const CreateRecordPage= (): ReactElement => {
         >
           {categories[selectedCategoryIdx]?.subCategories.map((sub, idx) => (
               <Chip
-                key={sub.title}
-                label={sub.title}
+                key={sub.name}
+                label={sub.name}
                 variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
                 size="medium"
                 onClick={() => {
