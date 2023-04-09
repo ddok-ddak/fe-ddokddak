@@ -1,117 +1,25 @@
 import {
-  Box,
   Button,
   Chip,
   Container,
-  createStyles,
   Divider,
   TextField,
-  Theme,
   Typography,
-  useTheme,
 } from '@mui/material';
-import { addDays } from 'date-fns';
 import { ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useRecoilState  } from 'recoil';
-import axios from 'axios';
+import { useRecoilValue, useRecoilState } from 'recoil';
 
-import Circle from '@/components/common/Circle';
 import FlexBox from '@/components/common/FlexBox';
 import DaysChip from '@/components/date/DaysChip';
 import CommonHeader from '@/components/layout/CommonHeader';
-import { MainCategory } from '@/pages/category/CategoryPage';
-import { categoriesState, ategories  , selectedDaysState, recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
-import { useSetRecoilState } from 'recoil';
-// import {categoriesState, selectedTimeRangeState } from '@/store/record';
-
-// import styles from './CreateRecordPage.module.css';
+import { categoriesState, selectedDaysState, recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
 
 export interface SelectedRangeData {
   start: Date;
   end: Date;
 }
 
-// type SubCategory = {
-//   title: string;
-//   color: string;
-// };
-
-// type Category = {
-//   title: string;
-//   color: string;
-//   subCategories: SubCategory[];
-// };
-
-/**
- * 임시 data
- */
-// const categories: MainCategory[] = [
-//   {
-//     title: '직장',
-//     color: '#20FFD7',
-//     subCategories: [
-//       { title: '업무', color: '#C2FFF4' },
-//       { title: '야근', color: '#C2FFF4' },
-//       { title: '출장', color: '#C2FFF4' },
-//       { title: '회식', color: '#C2FFF4' },
-//     ],
-//   },
-//   {
-//     title: '성장',
-//     color: '#20FFD7',
-//     subCategories: [
-//       { title: '강의', color: '#C2FFF4' },
-//       { title: '독서', color: '#C2FFF4' },
-//       { title: '자격증', color: '#C2FFF4' },
-//     ],
-//   },
-//   {
-//     title: '관계',
-//     color: '#20FFD7',
-//     subCategories: [
-//       { title: '가족', color: '#C2FFF4' },
-//       { title: '연인', color: '#C2FFF4' },
-//       { title: '친구', color: '#C2FFF4' },
-//     ],
-//   },
-//   {
-//     title: '건강',
-//     color: '#20FFD7',
-//     subCategories: [
-//       { title: '식사', color: '#C2FFF4' },
-//       { title: '운동', color: '#C2FFF4' },
-//       { title: '잠', color: '#C2FFF4' },
-//     ],
-//   },
-//   {
-//     title: '낭비',
-//     color: '#20FFD7',
-//     subCategories: [
-//       { title: 'SNS', color: '#C2FFF4' },
-//       { title: '미디어', color: '#C2FFF4' },
-//       { title: '멍', color: '#C2FFF4' },
-//       { title: '웹서핑', color: '#C2FFF4' },
-//     ],
-//   },
-// ];
-
-// type SubCategory = {
-//   title: string;
-//   color: string;
-// };
-
-// type Category = {
-//   title: string;
-//   color: string;
-//   subCategories: SubCategory[];
-// };
-
-// const categoriesState = atom<Category[]>({
-//   key: 'categoriesState',
-//   default: [],
-// });
-  
 const getAMPM = (date: Date) => {
   const hours = date.getHours();
   const ampm = hours > 12 ? 'PM' : 'AM';
@@ -222,75 +130,13 @@ const CreateRecordPage= (): ReactElement => {
       timeUnit: data.timeUnit,
     };
   };
-  /**
-   * 요일 여러개 선택 해서 post
-  **/
 
-  // const events: Event[] = [];
-  // async function postData(
-  //   title: string,
-  //   startedAt: string,
-  //   finishedAt: string
-  // ): Promise<{
-  //   id: number;
-  //   categoryId: number;
-  //   title: string;
-  //   startedAt: string;
-  //   finishedAt: string;
-  //   timeUnit: number;
-  // }[]> {
-  //   const newEvents = selectedDays.map((day) => {
-  //     const categoryId = categories[selectedCategoryIdx];
-  //     const eventCount = events.length + 1;
-  //     const id = eventCount;
-  //     return {
-  //       id,
-  //       categoryId,
-  //       title,
-  //       startedAt: formatDate(data.startedAt),
-  //       finishedAt: formatDate(data.finishedAt),
-  //       timeUnit: 30,
-  //     };
-  //   });
-  
-  //   const res = await fetch("http://localhost:8080/api/v1/activity-records?memberId=1", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json;charset=UTF-8",
-  //       Host: "localhost:8080",
-  //     },
-  //     body: JSON.stringify(newEvents),
-  //   });
-  
-  //   if (res.ok) {
-  //     setSelectedDays([]);
-  //     navigate("/record");
-  //   } else {
-  //     console.log("에러 발생");
-  //   }
-  
-  //   const data = await res.json();
-  //   return data.map((d: any) => ({
-  //     id: d.id,
-  //     categoryId: d.categoryId,
-  //     title: d.title,
-  //     startedAt: d.startedAt,
-  //     finishedAt: d.finishedAt,
-  //     timeUnit: d.timeUnit,
-  //   }));
-  // }
-
-  
   console.log("categories: ", categories);
   console.log("selectedCategoryIdx: ",selectedCategoryIdx);
   console.log("categories[selectedCategoryIdx]?.subCategories: ", categories[selectedCategoryIdx]?.subCategories);
 
-  // function removeKST(str: string): string {
-  //   return str.replace(/ KST$/, '');
-  // }
 
-
-  // // // 요일 여러개 선택
+  //요일 여러개 선택
   const handleDayChipClick = (dayIndex: number) => {
     if (selectedDays.includes(dayIndex)) {
       setSelectedDays(selectedDays.filter((selectedDay) => selectedDay !== dayIndex));

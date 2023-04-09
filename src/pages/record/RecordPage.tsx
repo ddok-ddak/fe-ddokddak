@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayjs from 'dayjs';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
-import React, { useRef,useState,useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate, useHistory } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { SelectedRangeData } from './CreateRecordPage';
@@ -35,20 +35,6 @@ const renderEventContent = (eventInfo: any) => {
     </div>
   );
 };
-
-// const INITIAL_EVENTS = [
-//   {
-//     id: '0',
-//     title: 'test1',
-//     start: new Date().toISOString().replace(/T.*$/, '')+'T15:00:00',
-//   },
-//   {
-//     id: '1',
-//     title: 'test2',
-//     start: '2023-04-05T07:00:00 KST',
-//     end: '2023-04-05T07:30:00 KST',
-//   },
-// ];
 
 const RecordPage = () => {
   const navigation = useNavigate();
@@ -192,7 +178,6 @@ const RecordPage = () => {
         // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
         titleFormat={renderTitle}
           datesSet={(info) => {
-            // const title = renderTitle(info);
             fetchEvents(info);
           }} 
           eventColor="#FF8999"
