@@ -20,7 +20,7 @@ const DaysChip = (props: DaysChipProps) => {
         width: '24px',
         height: '24px',
         textAlign: 'center',
-        backgroundColor: `${props.isSelected && 'aqua'}`,
+        backgroundColor: `${props.isSelected && '#e3f2fd'}`,
       }}
       onClick={handleClick}
     >

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import BottomNav from '@/components/layout/BottomNav';
 import CreateRecoredPage from '@/pages/record/CreateRecordPage';
 import RecordPage from '@/pages/record/RecordPage';
+// import UpdateRecordPage from '@/pages/record/UpdateRecordPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import StatisticsPage from '@/pages/statistics/StatisticsPage';
 import { theme } from '@/styles';
@@ -19,6 +20,7 @@ function App() {
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/record/create" element={<CreateRecoredPage />} />
+          {/* <Route path="/record/update" element={<UpdateRecordPage />} /> */}
         </Routes>
         <BottomNav />
       </ThemeProvider>
