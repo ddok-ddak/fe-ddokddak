@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 export interface CircleProps {
   size: number;
   color: any;
-  onClick: any;
+  onClick?: any;
   label?: string;
   selected?: boolean;
+  children?: any;
 }
 
 const Circle = (props: CircleProps) => {
@@ -28,7 +29,9 @@ const Circle = (props: CircleProps) => {
             borderRadius: '50%',
             border: '2px solid red',
           }}
-        />
+        >
+          {props.children}
+        </div>
       ) : (
         <div
           style={{
@@ -38,7 +41,9 @@ const Circle = (props: CircleProps) => {
             boxShadow: `0 0 0 2px ${props.color} inset`,
             borderRadius: '50%',
           }}
-        />
+        >
+          {props.children}
+        </div>
       )}
 
       {props.label && (

@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import React from 'react';
 import {
   Avatar,
@@ -9,17 +10,16 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-// import StarBorder from '@mui/icons-material/StarBorder';
+
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
-import TuneIcon from '@mui/icons-material/Tune';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import TuneIcon from '@mui/icons-material/Tune';
 
 const SettingPage = () => {
   const [open1, setOpen1] = React.useState(true);

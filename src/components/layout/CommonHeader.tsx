@@ -16,7 +16,9 @@ export interface CommonHeaderProps {
   isShowBackButton?: boolean;
   rightButtonIcon?: ReactElement;
   isShowRightButton?: boolean;
-  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClickRightButton?: any;
+  onClickRightIconButton?: any;
 }
 
 const CommonHeader = (props: CommonHeaderProps) => {
@@ -40,10 +42,25 @@ const CommonHeader = (props: CommonHeaderProps) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {props.title}
           </Typography>
-          {props.isShowRightButton && (
-            <IconButton onClick={props.onClickRightButton}>
+          {props.rightButtonIcon && (
+            <IconButton
+              onClick={() => {
+                props.onClickRightIconButton();
+              }}
+            >
               {props.rightButtonIcon}
             </IconButton>
+          )}
+          {props.isShowRightButton && (
+            <Button
+              variant="text"
+              color="secondary"
+              onClick={() => {
+                props.onClickRightButton();
+              }}
+            >
+              완료
+            </Button>
           )}
         </Toolbar>
       </AppBar>
