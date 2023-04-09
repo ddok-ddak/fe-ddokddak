@@ -1,4 +1,4 @@
-import { Container, Box, Typography } from '@mui/material';
+import { Container, Box, Typography, LinearProgress } from '@mui/material';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -7,43 +7,21 @@ import {
   CategoryScale,
   registerables,
 } from 'chart.js';
-import { MouseEvent, useRef } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { Chart } from 'react-chartjs-2';
 import Carousel from 'react-material-ui-carousel';
 
 import Circle from '@/components/common/Circle';
+import { useRecoilState } from 'recoil';
+import { statisticsResultState } from '@/store/statistics';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
-const pieData = {
-  // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  datasets: [
-    {
-      // label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
 const options = {
   responsive: true,
+  showTooltips: true,
+
   plugins: {
     legend: {
       position: 'top' as const,
@@ -51,30 +29,35 @@ const options = {
     title: {
       display: true,
     },
-  },
-};
-const barData = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      label: '',
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    labels: {
+      render: 'label',
+      title: {
+        font: {
+          weight: 'bold',
+        },
+      },
+      value: {
+        color: 'green',
+      },
     },
-  ],
+    datalabels: {
+      formatter: (val: any, ctx: any) =>
+        ctx.chart.data.labels[ctx.dataIndex] + '\n' + val + '시간',
+    },
+  },
+  showToolTip: true,
 };
-
-/* 임시 데이터 */
-const datasets = [
-  { title: '업무', color: 'pink', value: 50 },
-  { title: '야근', color: 'grey', value: 30 },
-  { title: '출장', color: 'black', value: 90 },
-];
 
 const ChartContainer = () => {
+  const [statisticsResult, setStatisticsResult] = useRecoilState(
+    statisticsResultState,
+  );
+  const [totalSum, setTotalSum] = useState(0);
+  // const [chartData, setChartData] = useState()
+
   const carouselOption = {
     autoPlay: false,
-    animation: 'slide',
+    // animation: 'slide',
     duration: 0,
     fullHeightHoverWrapper: {
       height: '100%',
@@ -93,18 +76,14 @@ const ChartContainer = () => {
     console.log(chart.getDatasetMeta(0), event);
   };
 
-  const barChartRef = useRef<ChartJS>(null);
-  const handleClickBarChart = (event: MouseEvent<HTMLCanvasElement>) => {
-    const { current: chart } = barChartRef;
-
-    if (!chart) {
-      return;
-    }
-
-    const xClick = chart.scales.x.getValueForPixel(event.nativeEvent.offsetX);
-    const element = chart.getDatasetMeta(0).data[xClick];
-    console.log(chart.getDatasetMeta(0), xClick, element);
-  };
+  useEffect(() => {
+    const total = statisticsResult.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.timeSum + 10,
+      0,
+    );
+    setTotalSum(total);
+    console.log(total);
+  }, [statisticsResult]);
 
   return (
     <>
@@ -118,13 +97,31 @@ const ChartContainer = () => {
         >
           <Chart
             ref={pieChartRef}
-            type={'pie'}
-            data={pieData}
+            type={'doughnut'}
+            data={{
+              // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+              labels: [...statisticsResult.map((data) => data.categoryName)],
+              datasets: [
+                {
+                  data: [...statisticsResult.map((data) => data.timeSum + 10)],
+                  backgroundColor: [
+                    ...statisticsResult.map(
+                      (data) => `${data.categoryColor}45`,
+                    ),
+                  ],
+                  borderColor: [
+                    ...statisticsResult.map((data) => `${data.categoryColor}`),
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            }}
             options={options}
             onClick={handleClickPieChart}
+            plugins={[ChartDataLabels]}
           />
         </Box>
-        <Box
+        {/* <Box
           sx={{ height: '400px', display: 'flex', justifyContent: 'center' }}
         >
           <Chart
@@ -134,10 +131,10 @@ const ChartContainer = () => {
             options={options}
             onClick={handleClickBarChart}
           />
-        </Box>
+        </Box> */}
       </Carousel>
 
-      {datasets.map((data, idx) => (
+      {statisticsResult.map((data, idx) => (
         <Box
           key={idx}
           sx={{
@@ -145,14 +142,31 @@ const ChartContainer = () => {
             display: 'flex',
             justifyContent: 'space-evenly',
             marginTop: '8px',
-            alignItems: 'center',
+            alignItems: 'flex-end',
           }}
         >
-          <Circle color={data.color} size={40} />
-          <progress id={`progress-${idx}`} max="100" value={data.value}>
-            {data.value}%
-          </progress>
-          <Typography>{data.title}</Typography>
+          <Circle color={data.categoryColor} size={40} />
+          <Box sx={{ width: '60%' }}>
+            <Typography>{data.categoryName}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ width: '100%', mr: 1 }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={data.timeSum + 10}
+                  sx={{ height: 10, borderRadius: 5 }}
+                />
+              </Box>
+              <Box sx={{ minWidth: 35 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                >{`${Math.round(
+                  ((data.timeSum + 10) / totalSum) * 100,
+                )}%`}</Typography>
+              </Box>
+            </Box>
+          </Box>
+          <Typography>{data.timeSum + 10}시간</Typography>
         </Box>
       ))}
     </>

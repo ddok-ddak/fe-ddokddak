@@ -54,7 +54,7 @@ const CreateCategoryPage = () => {
       }
     }
 
-    if (response?.successOrNot === 'Y') {
+    if (response?.status === 'SUCCESS') {
       alert('Successfully created');
       navigation(-1);
     } else {
@@ -65,7 +65,7 @@ const CreateCategoryPage = () => {
   const handleDelete = async () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const response = await deleteCategory(selectedSubCategory.categoryId!);
-    if (response.successOrNot === 'Y') {
+    if (response.status === 'SUCCESS') {
       alert('Successfully created');
       navigation(-1);
     } else {

@@ -1,10 +1,9 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 export default interface CommonResponse<T = any> {
-  successOrNot: string;
+  status: string;
   statusCode: string;
   errorMessage?: string;
-  data?: any;
   result?: any;
 }
 
@@ -50,10 +49,10 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     },
     async (error: any): Promise<any> => {
       const unknownError: CommonResponse = {
-        successOrNot: 'N',
+        status: 'FAIL',
         statusCode: 'UNKNOWN.ERROR',
         errorMessage: error.message,
-        data: {},
+        result: {},
       };
 
       return unknownError;

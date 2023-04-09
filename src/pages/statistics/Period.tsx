@@ -1,25 +1,17 @@
-import { getStatisticsData, StatisticsRequest } from '@/api/statistics.api';
 import {
-  AppBar,
-  Tabs,
-  Tab,
-  Box,
-  Grid,
-  TextField,
-  TextFieldProps,
-} from '@mui/material';
+  getStatisticsData,
+  StatisticsDetail,
+  StatisticsRequest,
+} from '@/api/statistics.api';
+import { statisticsResultState } from '@/store/statistics';
+import { AppBar, Tabs, Tab, Box, Grid, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {
-  useState,
-  SyntheticEvent,
-  useEffect,
-  JSXElementConstructor,
-  ReactElement,
-} from 'react';
+import { useState, SyntheticEvent, useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import WeekPicker from './WeekPicker';
 
@@ -56,16 +48,15 @@ const Period = () => {
 
   const currDate = new Date().toISOString().slice(0, 10);
   const [selectedDate, setSelectedDate] = useState(dayjs(currDate));
-  const [requtestDate, setRequtestDate] = useState<StatisticsRequest>({
-    fromStartedAt: '',
-    toFinishedAt: '',
-  });
+  const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
+    statisticsResultState,
+  );
 
   const getStatistics = async (request: StatisticsRequest) => {
     const response = await getStatisticsData({
       ...request,
     });
-    console.log(response);
+    setStatisticsResult(response.result);
   };
 
   useEffect(() => {
@@ -146,15 +137,24 @@ const Period = () => {
           />
         )}
         {periodType === 'BY_WEEK' && (
-          <WeekPicker value={selectedDate} setSelectedDate={setSelectedDate} />
+          <WeekPicker
+            value={selectedDate}
+            setSelectedDate={setSelectedDate}
+            onChange={(newValue: any) => {
+              console.log(newValue);
+              if (!newValue) {
+                return;
+              }
+              setSelectedDate(newValue);
+            }}
+          />
         )}
         {periodType === 'BY_MONTH' && (
           <DatePicker
             views={['year', 'month']}
+            openTo="month"
             inputFormat="YYYY년 MM월"
             value={selectedDate}
-            minDate={dayjs('2023-01-01')}
-            maxDate={dayjs(currDate)}
             onChange={(newValue: any) => {
               if (!newValue) {
                 return;

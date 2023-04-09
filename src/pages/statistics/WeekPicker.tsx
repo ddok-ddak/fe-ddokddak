@@ -1,3 +1,4 @@
+import { isPropsEqual } from '@fullcalendar/core/internal';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -64,7 +65,7 @@ function Day(props: PickersDayProps<Dayjs> & { selectedDay?: Dayjs | null }) {
   );
 }
 
-const WeekPicker = ({ value, setValue }: any) => {
+const WeekPicker = ({ value, setValue, onChange }: any) => {
   const renderWeekPickerDay = (
     date: Dayjs,
     selectedDates: Array<Dayjs | null>,
@@ -96,11 +97,7 @@ const WeekPicker = ({ value, setValue }: any) => {
     <DatePicker
       value={value}
       onChange={(newValue) => {
-        const result = {
-          from: dayjs(newValue).startOf('week'),
-          to: dayjs(newValue).endOf('week'),
-        };
-        // setValue(result)
+        onChange(dayjs(newValue).startOf('week'));
       }}
       renderDay={renderWeekPickerDay}
       renderInput={(params) => <TextField {...params} />}
