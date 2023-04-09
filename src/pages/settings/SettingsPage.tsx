@@ -1,26 +1,26 @@
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import StarBorder from '@mui/icons-material/StarBorder';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import TuneIcon from '@mui/icons-material/Tune';
+
 import {
   Avatar,
   Box,
-  Button,
   Collapse,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   Typography,
 } from '@mui/material';
+import '../../styles/index';
+// import InboxIcon from '@mui/icons-material/MoveToInbox';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+// import StarBorder from '@mui/icons-material/StarBorder';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+import TuneIcon from '@mui/icons-material/Tune';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import LogoutIcon from '@mui/icons-material/Logout';
 import React from 'react';
 
 const SettingPage = () => {
