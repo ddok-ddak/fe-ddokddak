@@ -1,4 +1,5 @@
-
+/* eslint-disable import/order */
+import React from 'react';
 import {
   Avatar,
   Box,
@@ -9,21 +10,22 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import '../../styles/index';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-// import StarBorder from '@mui/icons-material/StarBorder';
+
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
-import TuneIcon from '@mui/icons-material/Tune';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React from 'react';
+
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import TuneIcon from '@mui/icons-material/Tune';
+import { useNavigate } from 'react-router-dom';
 
 const SettingPage = () => {
+  const navigation = useNavigate();
+
   const [open1, setOpen1] = React.useState(true);
   const [open2, setOpen2] = React.useState(true);
 
@@ -64,6 +66,15 @@ const SettingPage = () => {
                 <ColorLensOutlinedIcon />
               </ListItemIcon>
               <ListItemText primary="테마 설정" />
+            </ListItemButton>
+            <ListItemButton
+              sx={{ pl: 4 }}
+              onClick={() => navigation('/category')}
+            >
+              <ListItemIcon>
+                <ColorLensOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="카테고리 설정" />
             </ListItemButton>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>

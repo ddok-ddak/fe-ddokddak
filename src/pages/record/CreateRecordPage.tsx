@@ -7,6 +7,11 @@ import {
   Typography,
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useRecoilValue, useRecoilState } from 'recoil';
+
+import { categories } from '../../store/tempData';
+import Circle from '@/components/common/Circle';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
@@ -199,9 +204,11 @@ const CreateRecordPage= (): ReactElement => {
         </Container>
         <Divider />
         <Container sx={{ textAlign: 'right' }}>
-          <Button variant="text">카테고리 설정</Button>
-          </Container>
-          <Container
+          <Button variant="text" component={Link} to="/category">
+            카테고리 설정
+          </Button>
+        </Container>
+        <Container
           sx={{
             display: 'flex',
             justifyContent: 'space-evenly',
@@ -225,6 +232,8 @@ const CreateRecordPage= (): ReactElement => {
               <Chip
                 key={category.name}
                 label={category.name}
+                key={category.name}
+                label={category.name}
                 variant="outlined"
                 size="medium"
                 onClick={() => {
@@ -242,12 +251,14 @@ const CreateRecordPage= (): ReactElement => {
             padding: '16px',
           }}
         >
-          {categories[selectedCategoryIdx]?.subCategories.map((sub, idx) => (
-              <Chip
+          {categories &&
+            categories[selectedCategoryIdx].subCategories.map((sub, idx) => (
+              <Circle
                 key={sub.name}
                 label={sub.name}
                 variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
-                size="medium"
+                color={sub.color}
+                size={40}
                 onClick={() => {
                   setSelectedSubCategoryIdx(idx);
                 }}
