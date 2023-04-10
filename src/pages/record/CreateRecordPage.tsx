@@ -8,13 +8,11 @@ import {
 } from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useRecoilState  } from 'recoil';
 
 import { categories } from '../../store/tempData';
 import Circle from '@/components/common/Circle';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useRecoilState } from 'recoil';
-
 import FlexBox from '@/components/common/FlexBox';
 import DaysChip from '@/components/date/DaysChip';
 import CommonHeader from '@/components/layout/CommonHeader';
@@ -25,6 +23,7 @@ export interface SelectedRangeData {
   end: Date;
 }
 
+  
 const getAMPM = (date: Date) => {
   const hours = date.getHours();
   const ampm = hours > 12 ? 'PM' : 'AM';
@@ -135,13 +134,13 @@ const CreateRecordPage= (): ReactElement => {
       timeUnit: data.timeUnit,
     };
   };
-
+  
   console.log("categories: ", categories);
   console.log("selectedCategoryIdx: ",selectedCategoryIdx);
   console.log("categories[selectedCategoryIdx]?.subCategories: ", categories[selectedCategoryIdx]?.subCategories);
 
 
-  //요일 여러개 선택
+  // 요일 여러개 선택
   const handleDayChipClick = (dayIndex: number) => {
     if (selectedDays.includes(dayIndex)) {
       setSelectedDays(selectedDays.filter((selectedDay) => selectedDay !== dayIndex));
@@ -204,11 +203,11 @@ const CreateRecordPage= (): ReactElement => {
         </Container>
         <Divider />
         <Container sx={{ textAlign: 'right' }}>
-          <Button variant="text" component={Link} to="/category">
+        <Button variant="text" component={Link} to="/category">
             카테고리 설정
           </Button>
-        </Container>
-        <Container
+          </Container>
+          <Container
           sx={{
             display: 'flex',
             justifyContent: 'space-evenly',
@@ -232,8 +231,6 @@ const CreateRecordPage= (): ReactElement => {
               <Chip
                 key={category.name}
                 label={category.name}
-                key={category.name}
-                label={category.name}
                 variant="outlined"
                 size="medium"
                 onClick={() => {
@@ -251,18 +248,17 @@ const CreateRecordPage= (): ReactElement => {
             padding: '16px',
           }}
         >
-          {categories &&
-            categories[selectedCategoryIdx].subCategories.map((sub, idx) => (
+          {categories[selectedCategoryIdx]?.subCategories.map((sub, idx) => (
               <Circle
-                key={sub.name}
-                label={sub.name}
-                variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
-                color={sub.color}
-                size={40}
-                onClick={() => {
-                  setSelectedSubCategoryIdx(idx);
-                }}
-              />
+              key={sub.name}
+              label={sub.name}
+              variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
+              color={sub.color}
+              size={40}
+              onClick={() => {
+                setSelectedSubCategoryIdx(idx);
+              }}
+            />
             ))}
         </Container>
         <Divider />
