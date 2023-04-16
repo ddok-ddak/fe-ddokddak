@@ -9,14 +9,31 @@ import {
 import { ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useRecoilState  } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState  } from 'recoil';
 
-import { categories } from '../../store/tempData';
+import { getCategories } from '../../api/category.api';
+import { addRecord } from '../../api/record.api';
+
 import Circle from '@/components/common/Circle';
 import FlexBox from '@/components/common/FlexBox';
 import DaysChip from '@/components/date/DaysChip';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { categoriesState, selectedDaysState, recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
+
+export interface MainCategory {
+  categoryId: number;
+  name: string;
+  level?: number;
+  color: string;
+  subCategories: SubCategory[];
+}
+
+export interface SubCategory {
+  categoryId?: number;
+  name: string;
+  color: string;
+  mainCategoryId?: number;
+}
 
 export interface SelectedRangeData {
   start: Date;
@@ -32,7 +49,11 @@ const getAMPM = (date: Date) => {
 
 
 const CreateRecordPage= (): ReactElement => {
-  const [categories, setCategories] = useRecoilState(categoriesState);
+  // const setSelectedSubCategory = useSetRecoilState<SubCategory>(
+  //   selectedSubCategoryState,
+  // );
+  const [categories, setCategories] = useState<MainCategory[]>([]);
+
 
   const selectedDate = useRecoilValue(selectedTimeRangeState);
   const [selectedDays, setSelectedDays] = useRecoilState(selectedDaysState);
@@ -43,20 +64,20 @@ const CreateRecordPage= (): ReactElement => {
   const [recoilSubCategoryValue, setRecoilSubCategoryValue] = useRecoilState(recoilSubCategory);
 
 
-  //카테고리 API 요청해서 렌더링
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const memberId = 1;
-      const res = await fetch(`http://localhost:8080/api/v1/categories?memberId=${encodeURIComponent(memberId)}`);
-      const data = await res.json();
-      setCategories(data.result);
+  //카테고리 API 요청
+  const getAllCategories = async () => {
+    const response = await getCategories();
+    if (response.result) {
+      setCategories(response.result);
+    } else {
+      alert('Error');
     }
-    fetchCategories();
-    
-  }, [setCategories]);
+  };
 
-  console.log("categories: ",categories);
-  //
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
   useEffect(() => {
     setSelectedSubCategoryIdx(0);
   }, [selectedCategoryIdx]);
@@ -70,7 +91,6 @@ const CreateRecordPage= (): ReactElement => {
   useEffect(() => {
     setRecoilSubCategoryValue(selectedSubCategoryIdx);
   }, [selectedSubCategoryIdx, setRecoilSubCategoryValue]);
-  console.log(recoilCategoryValue, recoilSubCategoryValue);
 
   // 날짜 형식 2023-01-01T13:00:00 KST으로 포맷
   const formatDate = (date: Date): string => {
@@ -83,63 +103,52 @@ const CreateRecordPage= (): ReactElement => {
 
     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')} KST`;
   };
-  console.log('selectedDate.start: ',selectedDate.start);
-  //Wed Mar 22 2023 07:00:00 GMT+0900 (한국 표준시)
-  console.log('formatDate(selectedDate.start): ', formatDate(selectedDate.start));
-  //2023-03-22T07:00:00 KST
-  console.log('formatDate(selectedDate.end): ', formatDate(selectedDate.end));
-
   const navigate = useNavigate();
 
   
-  ////시간소비 활동 API - 등록
+  //시간소비 활동 API - 등록
   async function postData(name: string, startedAt: string, finishedAt: string): Promise<{
     categoryId: number;
     name: string;
-    startedAt: string;
-    finishedAt: string;
+    fromStartedAt: string;
+    toStartedAt: string;
     timeUnit: number;
-  }> {
-
-    const newEvents = {
-      categoryId: selectedCategoryIdx+1,
-      name,
-      startedAt,
-      finishedAt,
-      timeUnit: 30,
+} | undefined> {
+    const newRecord = {
+        categoryId: selectedCategoryIdx + 1,
+        name,
+        startedAt,
+        finishedAt,
+        timeUnit: 30,
     };
-  
-    const res = await fetch("http://localhost:8080/api/v1/activity-records?memberId=1", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Host": "localhost:8080",
-      },
-      body: JSON.stringify(newEvents),
-    });
-  
-    if (res.ok) {
-      setSelectedDays([]);
-      navigate("/record");
+
+    const response = await addRecord(newRecord);
+    if (response.ok && 'result' in response) {
+        const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+        return {
+            categoryId,
+            name,
+            fromStartedAt: startedAt,
+            toStartedAt: finishedAt,
+            timeUnit,
+        };
     } else {
-      console.log("에러 발생");
+        console.log("에러 발생");
+        return undefined;
     }
-  
-    const data = await res.json();
-    return {
-      categoryId: data.categoryId,
-      name: data.name,
-      startedAt: data.startedAt,
-      finishedAt: data.finishedAt,
-      timeUnit: data.timeUnit,
-    };
-  };
-  
-  console.log("categories: ", categories);
-  console.log("selectedCategoryIdx: ",selectedCategoryIdx);
-  console.log("categories[selectedCategoryIdx]?.subCategories: ", categories[selectedCategoryIdx]?.subCategories);
+}
 
+function handleRightButtonClick() {
+    const name = categories[selectedCategoryIdx].name;
+    const startedAt = formatDate(selectedDate.start);
+    const finishedAt = formatDate(selectedDate.end);
 
+    postData(name, startedAt, finishedAt);
+    navigate("/record");
+}
+
+  
+  
   // 요일 여러개 선택
   const handleDayChipClick = (dayIndex: number) => {
     if (selectedDays.includes(dayIndex)) {
@@ -150,12 +159,6 @@ const CreateRecordPage= (): ReactElement => {
     return selectedDays;
   };
 
-  function handleRightButtonClick() {
-    const name = categories[selectedCategoryIdx].name;
-    const startedAt = formatDate(selectedDate.start);
-    const finishedAt = formatDate(selectedDate.end);
-    postData(name, startedAt, finishedAt);
-  }
   return (
     <>
       <CommonHeader title={'기록하기'} isShowBackButton={true} isShowRightButton={true} onClickRightButton={handleRightButtonClick}/>
