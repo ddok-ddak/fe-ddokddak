@@ -88,6 +88,7 @@ const CreateRecordPage= (): ReactElement => {
     setRecoilCategoryValue(selectedCategoryIdx);
   }, [selectedCategoryIdx, setRecoilCategoryValue]);
 
+  console.log(selectedSubCategoryIdx);
   useEffect(() => {
     setRecoilSubCategoryValue(selectedSubCategoryIdx);
   }, [selectedSubCategoryIdx, setRecoilSubCategoryValue]);
@@ -109,48 +110,50 @@ const CreateRecordPage= (): ReactElement => {
   //시간소비 활동 API - 등록
   async function postData(name: string, startedAt: string, finishedAt: string): Promise<{
     categoryId: number;
+    subCategoryId: number;
     name: string;
     fromStartedAt: string;
     toStartedAt: string;
     timeUnit: number;
-  } | undefined> {
-    const newRecord = {
-      categoryId: selectedCategoryIdx + 1,
+} | undefined> {
+  const newRecord = {
+    categoryId: categories[selectedCategoryIdx].categoryId,
+    subCategoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
+    name,
+    startedAt,
+    finishedAt,
+    timeUnit: 30,
+  };
+  
+  const response = await addRecord(newRecord);
+  
+  if (response.result) {
+    const { categoryId, subCategoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+    setSelectedDays([]);
+    navigate("/record");
+    return {
+      categoryId,
+      subCategoryId,
       name,
-      startedAt,
-      finishedAt,
-      timeUnit: 30,
+      fromStartedAt: startedAt,
+      toStartedAt: finishedAt,
+      timeUnit,
     };
-  
-    const response = await addRecord(newRecord);
-  
-    if (response.result) {
-      const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
-      setSelectedDays([]);
-      navigate("/record");
-      return {
-        categoryId,
-        name,
-        fromStartedAt: startedAt,
-        toStartedAt: finishedAt,
-        timeUnit,
-      };
-    } else {
-      console.log("에러 발생");
-      return undefined;
-    }
+  } else {
+    console.log("에러 발생");
+    return undefined;
   }
-  
-  function handleRightButtonClick() {
-    const name = categories[selectedCategoryIdx].name;
-    const startedAt = formatDate(selectedDate.start);
-    const finishedAt = formatDate(selectedDate.end);
-  
-    postData(name, startedAt, finishedAt);
-  }
+}
 
-  
-  
+function handleRightButtonClick() {
+  const name = categories[selectedCategoryIdx]?.subCategories[selectedSubCategoryIdx]?.name;
+  const startedAt = formatDate(selectedDate.start);
+  const finishedAt = formatDate(selectedDate.end);
+
+  postData(name, startedAt, finishedAt);
+}
+
+
   // 요일 여러개 선택
   const handleDayChipClick = (dayIndex: number) => {
     if (selectedDays.includes(dayIndex)) {
@@ -172,13 +175,13 @@ const CreateRecordPage= (): ReactElement => {
             marginTop: '8px',
           }}
         >
-          <DaysChip title="일" isSelected={selectedDate.start.getDay() === 0 || selectedDays.includes(0)} onClick={() => handleDayChipClick(0)} />
-          <DaysChip title="월" isSelected={selectedDate.start.getDay() === 1 || selectedDays.includes(1)} onClick={() => handleDayChipClick(1)} />
-          <DaysChip title="화" isSelected={selectedDate.start.getDay() === 2 || selectedDays.includes(2)} onClick={() => handleDayChipClick(2)} />
-          <DaysChip title="수" isSelected={selectedDate.start.getDay() === 3 || selectedDays.includes(3)} onClick={() => handleDayChipClick(3)} />
-          <DaysChip title="목" isSelected={selectedDate.start.getDay() === 4 || selectedDays.includes(4)} onClick={() => handleDayChipClick(4)} />
-          <DaysChip title="금" isSelected={selectedDate.start.getDay() === 5 || selectedDays.includes(5)} onClick={() => handleDayChipClick(5)} />
-          <DaysChip title="토" isSelected={selectedDate.start.getDay() === 6 || selectedDays.includes(6)} onClick={() => handleDayChipClick(6)} />
+        <DaysChip title="일" isSelected={selectedDate.start.getDay() === 0 || selectedDays.includes(0)} onClick={() => handleDayChipClick(0)} underline={new Date().getDay() === 0} />
+        <DaysChip title="월" isSelected={selectedDate.start.getDay() === 1 || selectedDays.includes(1)} onClick={() => handleDayChipClick(1)} underline={new Date().getDay() === 1} />
+        <DaysChip title="화" isSelected={selectedDate.start.getDay() === 2 || selectedDays.includes(2)} onClick={() => handleDayChipClick(2)} underline={new Date().getDay() === 2} />
+        <DaysChip title="수" isSelected={selectedDate.start.getDay() === 3 || selectedDays.includes(3)} onClick={() => handleDayChipClick(3)} underline={new Date().getDay() === 3} />
+        <DaysChip title="목" isSelected={selectedDate.start.getDay() === 4 || selectedDays.includes(4)} onClick={() => handleDayChipClick(4)} underline={new Date().getDay() === 4} />
+        <DaysChip title="금" isSelected={selectedDate.start.getDay() === 5 || selectedDays.includes(5)} onClick={() => handleDayChipClick(5)} underline={new Date().getDay() === 5} />
+        <DaysChip title="토" isSelected={selectedDate.start.getDay() === 6 || selectedDays.includes(6)} onClick={() => handleDayChipClick(6)} underline={new Date().getDay() === 6} />
 
         </Container>
         <Container
@@ -257,9 +260,10 @@ const CreateRecordPage= (): ReactElement => {
               <Circle
               key={sub.name}
               label={sub.name}
-              // variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
+              variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
               color={sub.color}
               size={40}
+              selected={selectedSubCategoryIdx === idx}
               onClick={() => {
                 setSelectedSubCategoryIdx(idx);
               }}
