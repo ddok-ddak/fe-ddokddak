@@ -113,39 +113,41 @@ const CreateRecordPage= (): ReactElement => {
     fromStartedAt: string;
     toStartedAt: string;
     timeUnit: number;
-} | undefined> {
+  } | undefined> {
     const newRecord = {
-        categoryId: selectedCategoryIdx + 1,
-        name,
-        startedAt,
-        finishedAt,
-        timeUnit: 30,
+      categoryId: selectedCategoryIdx + 1,
+      name,
+      startedAt,
+      finishedAt,
+      timeUnit: 30,
     };
-
+  
     const response = await addRecord(newRecord);
-    if (response.ok && 'result' in response) {
-        const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
-        return {
-            categoryId,
-            name,
-            fromStartedAt: startedAt,
-            toStartedAt: finishedAt,
-            timeUnit,
-        };
+  
+    if (response.result) {
+      const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+      setSelectedDays([]);
+      navigate("/record");
+      return {
+        categoryId,
+        name,
+        fromStartedAt: startedAt,
+        toStartedAt: finishedAt,
+        timeUnit,
+      };
     } else {
-        console.log("에러 발생");
-        return undefined;
+      console.log("에러 발생");
+      return undefined;
     }
-}
-
-function handleRightButtonClick() {
+  }
+  
+  function handleRightButtonClick() {
     const name = categories[selectedCategoryIdx].name;
     const startedAt = formatDate(selectedDate.start);
     const finishedAt = formatDate(selectedDate.end);
-
+  
     postData(name, startedAt, finishedAt);
-    navigate("/record");
-}
+  }
 
   
   
@@ -255,7 +257,7 @@ function handleRightButtonClick() {
               <Circle
               key={sub.name}
               label={sub.name}
-              variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
+              // variant={selectedSubCategoryIdx === idx ? 'filled' : 'outlined'}
               color={sub.color}
               size={40}
               onClick={() => {
