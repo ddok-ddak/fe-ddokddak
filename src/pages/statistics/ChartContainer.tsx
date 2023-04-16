@@ -72,7 +72,6 @@ const ChartContainer = () => {
       {/* <Carousel {...carouselOption}> */}
       <Box
         sx={{
-          height: '400px',
           display: 'flex',
           justifyContent: 'center',
           padding: '20px',
@@ -136,6 +135,12 @@ const ChartContainer = () => {
                   sx={{
                     height: 10,
                     borderRadius: 5,
+                    '&.MuiLinearProgress-root': {
+                      backgroundColor: '#F5F5F5 !important',
+                    },
+                    '& > .MuiLinearProgress-bar': {
+                      backgroundColor: data.categoryColor,
+                    },
                   }}
                 />
               </Box>
