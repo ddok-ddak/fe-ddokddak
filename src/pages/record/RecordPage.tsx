@@ -5,10 +5,11 @@ import dayjs from 'dayjs';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
 import React, { useState,useEffect } from 'react';
-import { useNavigate, useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { SelectedRangeData } from './CreateRecordPage';
 
+import { ActivityRecord, getRecord } from '../../api/record.api';
 import Spacer from '@/components/common/Spacer';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { selectedTimeRangeState } from '@/store/record';
@@ -59,7 +60,6 @@ const RecordPage = () => {
   const handleEventClick = (e: any) => {
     console.log(e);
     const url = `/record/update/${e.event.id}`;
-    console.log(url);
     // const url = `/record/update`;
     // navigation(url);
   };
@@ -75,45 +75,36 @@ const RecordPage = () => {
     console.log(e);
   };
 
-  ////시간소비 활동 API - 조회
+  //시간소비 활동 API - 조회
   const member= 1;
   const [events, setEvents] = useState<Event[]>([]);
   
   function renderTitle(info: any) {
-    console.log(info.start, info.end);
     const startDate = dayjs(info.start.marker).day(0).format('M월 D일 일요일');
     const endDate = dayjs(info.start.marker).day(6).format('M월 D일 토요일');
   return `${startDate} ~ ${endDate}`;
   }
 
-
-  useEffect(() => {
-    const initialInfo = { start: new Date() };
-    fetchEvents(initialInfo);
-  }, []);
-  
-  const fetchEvents = async (info: any) => {
+  const getAllRecords = async (info: any) => {
     const fromStartedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
     const toStartedAt = dayjs(info.start).day(6).hour(3).format('YYYY-MM-DDT03:00:00');
   
-    console.log('fromStartedAt:', fromStartedAt); // YYYY-MM-DDT04:00:00
-    console.log('toStartedAt:', toStartedAt); // YYYY-MM-DDT03:00:00
-    console.log(fromStartedAt, toStartedAt);
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/v1/activity-records?memberId=${encodeURIComponent(member)}&fromStartedAt=${encodeURIComponent(fromStartedAt)}&toStartedAt=${encodeURIComponent(toStartedAt)}`
-      );
-      const data = await res.json();
+      const response = await getRecord(member, fromStartedAt, toStartedAt);
+  
+      console.log(response.result);
+      if (response.result) {
+        const activityRecords = response.result as ActivityRecord[];
+  
+        let events: Event[] = [];
+        let currentEvent: Event | null = null;
+  
+        // 각 activity record에 대해 처리
+      activityRecords.forEach((item: ActivityRecord) => {
+        const startedAt = dayjs(item.startedAt.replace(" KST", "")).toDate();;
+        const finishedAt = dayjs(item.finishedAt.replace(" KST", "")).toDate();;
 
-    if (data.message === "Success") {
-      let events: Event[] = [];
-      let currentEvent: Event | null = null;
-
-      // 각 activity record에 대해 처리
-      data.result.forEach((item: any) => {
-        const startedAt = item.startedAt.replace(" KST", "");
-        const finishedAt = item.finishedAt.replace(" KST", "");
-
+        // console.log(startedAt,finishedAt);
         const event: Event = {
           id: item.categoryId,
           title: item.categoryName,
@@ -123,7 +114,7 @@ const RecordPage = () => {
 
         if (currentEvent) {
           // 이전 이벤트가 존재하는 경우
-          if (event.start === currentEvent.end && event.title === currentEvent.title) {
+          if (dayjs(event.start).isSame(currentEvent.end) && event.title === currentEvent.title) {
             // 연속된 이벤트인 경우 이어서 표시
             currentEvent.end = event.end;
           } else {
@@ -138,21 +129,19 @@ const RecordPage = () => {
       });
 
       // 마지막 이벤트가 남아 있는 경우 events에 추가
-      if (currentEvent) {
+      if (currentEvent !== null) {
         events.push(currentEvent);
       }
 
       setEvents(events);
-      console.log("events: ", events);
     }
   } catch (error) {
     console.error(error);
   }
 };
-
   useEffect(() => {
     const initialInfo = { start: new Date() };
-    fetchEvents(initialInfo);
+    getAllRecords(initialInfo);
   }, []);
 
 
@@ -178,7 +167,7 @@ const RecordPage = () => {
         // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
         titleFormat={renderTitle}
           datesSet={(info) => {
-            fetchEvents(info);
+            getAllRecords(info);
           }} 
           eventColor="#FF8999"
           initialView="timeGridWeek"
