@@ -16,7 +16,7 @@ import { selectedTimeRangeState } from '@/store/record';
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-
+import moment from 'moment';
 import '../../styles/custom-calendar-styles.css';
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,6 +36,7 @@ const renderEventContent = (eventInfo: any) => {
     </div>
   );
 };
+
 
 const RecordPage = () => {
   const navigation = useNavigate();
@@ -104,7 +105,6 @@ const RecordPage = () => {
         const startedAt = dayjs(item.startedAt.replace(" KST", "")).toDate();;
         const finishedAt = dayjs(item.finishedAt.replace(" KST", "")).toDate();;
 
-        // console.log(startedAt,finishedAt);
         const event: Event = {
           id: item.categoryId,
           title: item.categoryName,
@@ -144,6 +144,7 @@ const RecordPage = () => {
     getAllRecords(initialInfo);
   }, []);
 
+  
 
   return (
     <div>
@@ -163,8 +164,26 @@ const RecordPage = () => {
             center: "title",
             right: "next",
           }}
-          dayHeaderFormat={{ day: 'numeric' }} //일만 표시
-        // dayHeaderContent={handleDayHeaderContent}  //토요일은 파란색, 일요일은 빨간색으로 표시
+          dayHeaderFormat={{ day: 'numeric' }} // 요일을 숫자로 표시
+          dayHeaderContent={(args) => {
+            const underlineStyle = {
+              borderBottom: '4px solid #FF8999',
+              paddingBottom: '4px',
+              width: '40px',
+              height: '3px',
+            };
+            const isToday = dayjs(args.date).tz('Asia/Seoul').isSame(new Date(), 'day');
+            const dayNumber = args.date.getDate();
+            const color = args.date.getDay() === 0 ? '#FF4444' : args.date.getDay() === 6 ? '#3B66FF' : '##4B4B4B';
+        
+            return (
+              <div>
+                <div style={{ color }}>{dayNumber}</div>
+                {isToday && <div style={underlineStyle}></div>}
+              </div>
+            );
+          }}
+          // dayCellContent={renderDayCellContent}
         titleFormat={renderTitle}
           datesSet={(info) => {
             getAllRecords(info);
