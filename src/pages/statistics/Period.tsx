@@ -32,10 +32,10 @@ export interface IPeriodType {
 }
 
 const periodTypeList: IPeriodType[] = [
-  { title: '일별', id: 'BY_DAY' },
-  { title: '주별', id: 'BY_WEEK' },
-  { title: '월별', id: 'BY_MONTH' },
-  { title: '연별', id: 'BY_YEAR' },
+  { title: '하루', id: 'BY_DAY' },
+  { title: '일주일', id: 'BY_WEEK' },
+  { title: '한 달', id: 'BY_MONTH' },
+  { title: '일 년', id: 'BY_YEAR' },
 ];
 
 const Period = () => {
@@ -89,7 +89,14 @@ const Period = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       {/* 날짜 선택 타입 시작 */}
       <Box sx={{ bgcolor: 'background.paper' }}>
-        <AppBar position="static">
+        <AppBar
+          position="static"
+          color="transparent"
+          elevation={0}
+          sx={{
+            boxShadow: '0px 5px 3px 1px rgba(0,0,0,0.05)',
+          }}
+        >
           <Tabs
             value={periodType}
             onChange={handlePeriodChange}
@@ -119,7 +126,6 @@ const Period = () => {
           alignItems: 'center',
           justifyContent: 'center',
           padding: 1,
-          borderBottom: 1,
         }}
       >
         {periodType === 'BY_DAY' && (
@@ -132,7 +138,13 @@ const Period = () => {
             }}
             inputFormat="YYYY년 MM월 DD일"
             renderInput={(params: any) => (
-              <TextField {...params} helperText={null} />
+              <TextField
+                {...params}
+                helperText={null}
+                sx={{
+                  '& fieldset': { border: 'none' },
+                }}
+              />
             )}
           />
         )}
@@ -162,7 +174,13 @@ const Period = () => {
               setSelectedDate(newValue);
             }}
             renderInput={(params: any) => (
-              <TextField {...params} helperText={null} />
+              <TextField
+                {...params}
+                helperText={null}
+                sx={{
+                  '& fieldset': { border: 'none' },
+                }}
+              />
             )}
           />
         )}
@@ -172,6 +190,7 @@ const Period = () => {
             value={selectedDate}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}
+            inputFormat="YYYY년"
             onChange={(newValue: any) => {
               if (!newValue) {
                 return;
@@ -179,7 +198,13 @@ const Period = () => {
               setSelectedDate(newValue);
             }}
             renderInput={(params) => (
-              <TextField {...params} helperText={null} />
+              <TextField
+                {...params}
+                helperText={null}
+                sx={{
+                  '& fieldset': { border: 'none' },
+                }}
+              />
             )}
           />
         )}

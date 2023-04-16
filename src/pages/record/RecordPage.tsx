@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
+import './fullcalendar.scss';
 
 import { SelectedRangeData } from './CreateRecordPage';
 
@@ -57,7 +58,7 @@ const RecordPage = () => {
 
   return (
     <div>
-      <CommonHeader title={'메인화면'} />
+      <CommonHeader title={'일주일 기록하기'} />
       <Container
         sx={{
           height: 'calc(100vh - 112px)',
@@ -78,7 +79,21 @@ const RecordPage = () => {
           editable={true}
           selectable={true}
           selectMirror={true}
+          titleFormat={(date) => {
+            const toDate = date;
+            console.log(date);
+            // YYYY년 MM월
+            return `${date.date.year}년 ${date.date.month + 1}월 ${
+              date.date.day
+            }일 ~ ${(date.end?.month || 0) + 1}월 ${
+              (date.end?.day || 0) - 1
+            }일`;
+          }}
           // dayMaxEvents={true}
+          dayHeaderFormat={{
+            weekday: 'short',
+            day: '2-digit',
+          }}
           initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
           select={handleDateSelect}
           eventContent={renderEventContent} // custom render function

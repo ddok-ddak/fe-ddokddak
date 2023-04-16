@@ -108,10 +108,10 @@ const CategoryPage = () => {
                       />
                     </Grid>
                   ))}
-                  <Grid item>
+                  <Grid item width="60px">
                     <Circle
                       label="추가"
-                      color={'#dddddd'}
+                      color={categories[idx].subCategories[0].color}
                       size={40}
                       onClick={() => {
                         setSelectedSubCategory({
@@ -125,7 +125,10 @@ const CategoryPage = () => {
                         });
                       }}
                     >
-                      <AddIcon fontSize="large" sx={{ margin: '2.5px' }} />
+                      <AddIcon
+                        fontSize="large"
+                        sx={{ margin: '2.5px', color: 'white' }}
+                      />
                     </Circle>
                   </Grid>
                 </Grid>

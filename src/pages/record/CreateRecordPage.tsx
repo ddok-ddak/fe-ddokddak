@@ -90,9 +90,9 @@ const CreateRecoredPage = (): ReactElement => {
         </Container>
         <Container
           sx={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
             padding: '16px',
+            overflow: 'auto',
+            whiteSpace: 'nowrap',
           }}
         >
           {categories.map((category, idx) =>
@@ -104,6 +104,14 @@ const CreateRecoredPage = (): ReactElement => {
                 color="primary"
                 size="medium"
                 onClick={() => setSelectedCategoryIdx(idx)}
+                sx={{
+                  backgroundColor: '#FF7184',
+                  color: 'white',
+                  height: '43px',
+                  width: '90px',
+                  borderRadius: '24px',
+                  margin: '0 12px',
+                }}
               />
             ) : (
               <Chip
@@ -112,6 +120,13 @@ const CreateRecoredPage = (): ReactElement => {
                 variant="outlined"
                 size="medium"
                 onClick={() => setSelectedCategoryIdx(idx)}
+                sx={{
+                  color: '#949494',
+                  height: '43px',
+                  width: '90px',
+                  margin: '0 12px',
+                  borderRadius: '24px',
+                }}
               />
             ),
           )}
@@ -138,11 +153,12 @@ const CreateRecoredPage = (): ReactElement => {
             ))}
         </Container>
         <Divider />
-        <Container sx={{ padding: '16px' }}>
+        <Container sx={{ padding: '24px' }}>
           <TextField
             hiddenLabel
             id="filled-hidden-label-normal"
             placeholder="메모하기"
+            variant="standard"
             fullWidth
           />
         </Container>

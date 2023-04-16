@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Spacer from '../common/Spacer';
 
 export interface CommonHeaderProps {
   title: string;
@@ -24,21 +25,32 @@ const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
-          {props.isShowBackButton && (
+          {props.isShowBackButton ? (
             <IconButton
               size="large"
               edge="start"
-              color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
               onClick={() => navigation(-1)}
             >
               <ArrowBackIosNewIcon />
             </IconButton>
+          ) : (
+            <Spacer x={52} />
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            component="div"
+            sx={{
+              flexGrow: 1,
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '700',
+              lineHeight: '16px',
+              color: '#949494',
+            }}
+          >
             {props.title}
           </Typography>
           {props.rightButtonIcon && (
@@ -50,16 +62,17 @@ const CommonHeader = (props: CommonHeaderProps) => {
               {props.rightButtonIcon}
             </IconButton>
           )}
-          {props.isShowRightButton && (
+          {props.isShowRightButton ? (
             <Button
               variant="text"
-              color="secondary"
               onClick={() => {
                 props.onClickRightButton();
               }}
             >
               완료
             </Button>
+          ) : (
+            <Spacer x={52} />
           )}
         </Toolbar>
       </AppBar>
