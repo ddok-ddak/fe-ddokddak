@@ -75,8 +75,22 @@ const ChartContainer = () => {
           display: 'flex',
           justifyContent: 'center',
           padding: '20px',
+          position: 'relative',
         }}
       >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '180px',
+            textAlign: 'center',
+            color: '#FF7184',
+            fontSize: '16px',
+            fontWeight: '700',
+          }}
+        >
+          총 <br />
+          {totalSum}시간
+        </Box>
         <Chart
           ref={pieChartRef}
           type={'doughnut'}
