@@ -21,11 +21,21 @@ import '../../styles/custom-calendar-styles.css';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+// interface Event {
+//   id: number;
+//   title: string;
+//   start: Date;
+//   end: Date;
+//   backgroundColor: string;
+// }
+
 interface Event {
   id: number;
   title: string;
   start: Date;
   end: Date;
+  categoryId: number;
+  color: string;
 }
 
 
@@ -36,7 +46,6 @@ const renderEventContent = (eventInfo: any) => {
     </div>
   );
 };
-
 
 const RecordPage = () => {
   const navigation = useNavigate();
@@ -59,7 +68,7 @@ const RecordPage = () => {
   // }
 
   const handleEventClick = (e: any) => {
-    console.log(e);
+    console.log(e.event.id);
     const url = `/record/update/${e.event.id}`;
     // const url = `/record/update`;
     // navigation(url);
@@ -99,6 +108,7 @@ const RecordPage = () => {
   
         let events: Event[] = [];
         let currentEvent: Event | null = null;
+        console.log(activityRecords);
   
         // 각 activity record에 대해 처리
       activityRecords.forEach((item: ActivityRecord) => {
@@ -106,10 +116,12 @@ const RecordPage = () => {
         const finishedAt = dayjs(item.finishedAt.replace(" KST", "")).toDate();;
 
         const event: Event = {
-          id: item.categoryId,
+          id: item.activityRecordId,
           title: item.categoryName,
           start: startedAt,
           end: finishedAt,
+          categoryId: item.categoryId,
+          color: item.categoryColor,
         };
 
         if (currentEvent) {
@@ -144,7 +156,7 @@ const RecordPage = () => {
     getAllRecords(initialInfo);
   }, []);
 
-  
+
 
   return (
     <div>
@@ -188,9 +200,9 @@ const RecordPage = () => {
           datesSet={(info) => {
             getAllRecords(info);
           }} 
-          eventColor="#FF8999"
+
           initialView="timeGridWeek"
-          editable={true}
+          editable={false}
           selectable={true}
           selectMirror={true}
           // dayMaxEvents={true}
