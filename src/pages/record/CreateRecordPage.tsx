@@ -53,8 +53,9 @@ const getAMPM = (date: Date) => {
 const StyledChip = styled(Chip)(({ theme, isSelected, backgroundColor }) => ({
   marginRight: '16px',
   marginBottom: '16px',
-  minWidth: '90px',
-  minHeight: '43px',
+  minWidth: '95px',
+  minHeight: '50px',
+  borderRadius: '50px',
   cursor: 'grab',
   '&:hover': {
     backgroundColor: isSelected ? backgroundColor : theme.palette.action.hover, 
@@ -238,11 +239,12 @@ const handleDayChipClick = (dayIndex: number) => {
             <Typography variant="h5">{getAMPM(selectedDate.end)}</Typography>
           </FlexBox>
         </Container>
-        <Divider />
+        <Divider sx={{ bgcolor: '#FFDCE1', border: '2px solid #FFDCE1' }} />
+
         <Container sx={{ textAlign: 'right' }}>
-        <Button variant="text" component={Link} to="/category">
-            카테고리 설정
-          </Button>
+        <Button variant="text" component={Link} to="/category" sx={{ color: '#949494', paddingTop: '17px' }}>
+          카테고리 설정
+        </Button>
           </Container>
           <Container
             sx={{
@@ -252,7 +254,7 @@ const handleDayChipClick = (dayIndex: number) => {
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
               '-webkit-overflow-scrolling': 'touch',
-              padding: '16px',
+              padding: '15px',
             }}
           >
             {categories.map((category, idx) =>
@@ -286,7 +288,7 @@ const handleDayChipClick = (dayIndex: number) => {
           sx={{
             display: 'flex',
             justifyContent: 'space-evenly',
-            padding: '16px',
+            paddingBottom: '30px',
           }}
         >
           {categories[selectedCategoryIdx]?.subCategories.map((sub, idx) => (
@@ -303,7 +305,8 @@ const handleDayChipClick = (dayIndex: number) => {
             />
             ))}
         </Container>
-        <Divider />
+        <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
+
         <Container sx={{ padding: '16px' }}>
           <TextField
             hiddenLabel
