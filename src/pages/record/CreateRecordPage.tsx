@@ -245,40 +245,43 @@ const handleDayChipClick = (dayIndex: number) => {
           </Button>
           </Container>
           <Container
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            overflowX: 'scroll',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            '-webkit-overflow-scrolling': 'touch',
-            padding: '16px',
-          }}
-        >
-          {categories.map((category, idx) =>
-            idx === selectedCategoryIdx ? (
-              <StyledChip
-                key={category.name}
-                label={category.name}
-                variant="filled"
-                onClick={() => {
-                  setSelectedCategoryIdx(idx);
-                  setSelectedSubCategoryIdx(0);
-                }}
-              />
-            ) : (
-              <StyledChip
-                key={category.name}
-                label={category.name}
-                variant="outlined"
-                onClick={() => {
-                  setSelectedCategoryIdx(idx);
-                  setSelectedSubCategoryIdx(0);
-                }}
-              />
-            )
-          )}
-        </Container>
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              overflowX: 'scroll',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              '-webkit-overflow-scrolling': 'touch',
+              padding: '16px',
+            }}
+          >
+            {categories.map((category, idx) =>
+              idx === selectedCategoryIdx ? (
+                <StyledChip
+                  key={category.name}
+                  label={category.name}
+                  variant="filled"
+                  isSelected={true}
+                  backgroundColor={category.color}
+                  onClick={() => {
+                    setSelectedCategoryIdx(idx);
+                    setSelectedSubCategoryIdx(0);
+                  }}
+                />
+              ) : (
+                <StyledChip
+                  key={category.name}
+                  label={category.name}
+                  variant="outlined"
+                  isSelected={false}
+                  onClick={() => {
+                    setSelectedCategoryIdx(idx);
+                    setSelectedSubCategoryIdx(0);
+                  }}
+                />
+              )
+            )}
+          </Container>
         <Container
           sx={{
             display: 'flex',
