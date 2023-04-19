@@ -16,18 +16,9 @@ import { selectedTimeRangeState } from '@/store/record';
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import moment from 'moment';
 import '../../styles/custom-calendar-styles.css';
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-// interface Event {
-//   id: number;
-//   title: string;
-//   start: Date;
-//   end: Date;
-//   backgroundColor: string;
-// }
 
 interface Event {
   id: number;
@@ -207,6 +198,7 @@ const RecordPage = () => {
           selectMirror={true}
           // dayMaxEvents={true}
           // initialEvents={events} // alternatively, use the `events` setting to fetch from a feed
+          selectLongPressDelay={300} //모바일 기준 300이상 길게 누르면 이벤트 발생
           events = {events}
           eventDidMount={(info) => {
             console.log('Event did mount:', info.event);

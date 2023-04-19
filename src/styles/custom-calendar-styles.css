@@ -1,9 +1,10 @@
 .fc-event-main {
-    position: relative;
+    position: absolute;
     color: black !important;
     display: flex;
     align-items: center;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px 5px 0px 0px;
 }
 
 .fc-event-main::after {
@@ -13,7 +14,7 @@
     left: 0;
     right: 0;
     height: calc(100% - 8px);
-    background-color: #FFF;
+    background-color: #FFFF;
     z-index: -1;
 }
 
@@ -35,9 +36,6 @@
     border: none !important;
 }
 
-body .fc .fc-day-today {
-    background-color: transparent;
-}
 
 .fc-day-sun, .fc-day-tue, .fc-day-thu, .fc-day-sat {
     background-color: #F5F5F5 !important;
