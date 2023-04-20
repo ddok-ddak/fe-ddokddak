@@ -1,4 +1,6 @@
+import CheckIcon from "@material-ui/icons/Check";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box,
   AppBar,
@@ -15,16 +17,17 @@ export interface CommonHeaderProps {
   isShowBackButton?: boolean;
   rightButtonIcon?: ReactElement;
   isShowRightButton?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClickRightButton?: any;
-  onClickRightIconButton?: any;
+  // onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {};
+  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ background: 'transparent', boxShadow: 'none', fontWeight: 'bold',
+      color: 'grey.600' }}>
         <Toolbar>
           {props.isShowBackButton && (
             <IconButton
@@ -38,28 +41,14 @@ const CommonHeader = (props: CommonHeaderProps) => {
               <ArrowBackIosNewIcon />
             </IconButton>
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {props.title}
           </Typography>
-          {props.rightButtonIcon && (
-            <IconButton
-              onClick={() => {
-                props.onClickRightIconButton();
-              }}
-            >
-              {props.rightButtonIcon}
-            </IconButton>
-          )}
           {props.isShowRightButton && (
-            <Button
-              variant="text"
-              color="secondary"
-              onClick={() => {
-                props.onClickRightButton();
-              }}
-            >
-              완료
-            </Button>
+                <IconButton onClick={props.onClickRightButton}>
+              {props.rightButtonIcon}
+              <CheckIcon />
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>
