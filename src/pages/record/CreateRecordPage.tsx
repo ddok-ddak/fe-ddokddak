@@ -93,6 +93,7 @@ const CreateRecordPage= (): ReactElement => {
     if (response.result) {
       setCategories(response.result);
       console.log(response.result.color);
+      console.log(response.result.categoryId);
     } else {
       alert('Error');
     }
@@ -133,15 +134,13 @@ const CreateRecordPage= (): ReactElement => {
   //시간소비 활동 API - 등록
   async function postData(name: string, startedAt: string, finishedAt: string): Promise<{
     categoryId: number;
-    subCategoryId: number;
     name: string;
     fromStartedAt: string;
     toStartedAt: string;
     timeUnit: number;
 } | undefined> {
   const newRecord = {
-    categoryId: categories[selectedCategoryIdx].categoryId,
-    subCategoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
+    categoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
     name,
     startedAt,
     finishedAt,
@@ -149,14 +148,14 @@ const CreateRecordPage= (): ReactElement => {
   };
   
   const response = await addRecord(newRecord);
+  console.log(response);
   
   if (response.result) {
-    const { categoryId, subCategoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+    const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
     setSelectedDays([]);
     navigate("/record");
     return {
       categoryId,
-      subCategoryId,
       name,
       fromStartedAt: startedAt,
       toStartedAt: finishedAt,
