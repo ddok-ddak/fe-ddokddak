@@ -1,0 +1,46 @@
+.fc-event-main {
+    position: absolute;
+    color: black !important;
+    display: flex;
+    align-items: center;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px 5px 0px 0px;
+}
+
+.fc-event-main::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% - 8px);
+    background-color: #FFFF;
+    z-index: -1;
+}
+
+.fc-event-title {
+    z-index: 1;
+}
+.fc-event {
+    border-color: white !important;
+  }
+
+.fc-toolbar-title {
+    font-size: 20px !important;
+    color: #4B4B4B !important;
+}
+
+.fc-button {
+    border-radius: 50% !important;
+    background-color: #FFC5CC !important;
+    border: none !important;
+}
+
+
+.fc-day-sun, .fc-day-tue, .fc-day-thu, .fc-day-sat {
+    background-color: #F5F5F5 !important;
+}
+
+.fc-day-mon, .fc-day-wed, .fc-day-fri {
+    background-color: transparent !important;
+}
