@@ -9,10 +9,6 @@ export interface DaysChipProps {
 }
 
 const DaysChip = (props: DaysChipProps) => {
-  const handleClick = useCallback(() => {
-    props.onClick();
-  }, [props.onClick]);
-
   return (
     <Box
   sx={{
@@ -27,7 +23,7 @@ const DaysChip = (props: DaysChipProps) => {
     alignItems: 'center',
     justifyContent: 'center',
   }}
-  onClick={handleClick}
+  onClick={props.onClick}
 >
   <Typography
     sx={{
