@@ -88,7 +88,7 @@ const RecordPage = () => {
 
   const getAllRecords = async (info: any) => {
     const fromStartedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
-    const toStartedAt = dayjs(info.start).day(6).hour(3).format('YYYY-MM-DDT03:00:00');
+    const toStartedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(3).format('YYYY-MM-DDT03:00:00');
   
     try {
       const response = await getRecord(member, fromStartedAt, toStartedAt);
