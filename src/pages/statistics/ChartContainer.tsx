@@ -81,7 +81,7 @@ const ChartContainer = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '180px',
+            top: '45%',
             textAlign: 'center',
             color: '#FF7184',
             fontSize: '16px',
