@@ -5,6 +5,11 @@
     align-items: center;
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 5px 5px 0px 0px;
+    
+}
+:root {
+    --fc-event-bg-color: #FFC5CC ;
+    --fc-event-border-color: #FFC5CC;
 }
 
 .fc-event-main::after {
@@ -30,13 +35,28 @@
     color: #4B4B4B !important;
 }
 
-.fc-button {
+@media (max-width: 767px) {
+    .fc-toolbar-title {
+        font-size: 16px !important;
+    }
+}
+
+.fc-button{
     border-radius: 50% !important;
     background-color: #FFC5CC !important;
     border: none !important;
+    width: 40px; 
+    height: 40px;
+    padding: 10px;
 }
 
+.fc-icon{
+    font-size: 1em !important;
+}
 
+.fc-col-header-cell {
+    font-size: 14px;
+}
 .fc-day-sun, .fc-day-tue, .fc-day-thu, .fc-day-sat {
     background-color: #F5F5F5 !important;
 }
