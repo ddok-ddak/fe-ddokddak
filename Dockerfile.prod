@@ -1,0 +1,16 @@
+FROM node:alpine as build
+
+WORKDIR /app
+# package.json을 복사해서 디펜던시를 재설정 및 설치하는 레이어를 분리하여 최적화
+COPY package.json . 
+RUN yarn install
+
+# 전체 파일 복사
+COPY . .
+RUN yarn build
+
+FROM nginx as produce
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
