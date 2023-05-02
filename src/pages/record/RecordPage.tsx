@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { SelectedRangeData } from './CreateRecordPage';
 
-import { ActivityRecord, getRecord } from '../../api/record.api';
+import { getRecord } from '../../api/record.api';
 import Spacer from '@/components/common/Spacer';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { selectedTimeRangeState } from '@/store/record';
@@ -53,25 +53,11 @@ const RecordPage = () => {
     navigation('/record/create');
   };
 
-  // const history = useHistory();
-  // const handleEventClick = (e: any) => {
-  //   history.push(`/record/update?start=${e.start}&end=${e.end}&category=${e.category}`);
-  // }
-
   const handleEventClick = (e: any) => {
     console.log(e.event.id);
     const url = `/record/update/${e.event.id}`;
-    // const url = `/record/update`;
-    // navigation(url);
   };
 
-  // const handleEventClick = (info: EventClickArg) => {
-  //   const event = clickInfo.event;
-
-  //   const { id, title, start, end } = event;
-
-  //   // history.push(`/record/update?id=${id}&title=${title}&start=${start}&end=${end}`);
-  // };
   const handleEvents = (e: any) => {
     console.log(e);
   };
@@ -95,14 +81,14 @@ const RecordPage = () => {
   
       console.log(response.result);
       if (response.result) {
-        const activityRecords = response.result as ActivityRecord[];
+        const activityRecords = response.result;
   
         let events: Event[] = [];
         let currentEvent: Event | null = null;
         console.log(activityRecords);
   
         // 각 activity record에 대해 처리
-      activityRecords.forEach((item: ActivityRecord) => {
+      activityRecords.forEach((item: any) => {
         const startedAt = dayjs(item.startedAt.replace(" KST", "")).toDate();;
         const finishedAt = dayjs(item.finishedAt.replace(" KST", "")).toDate();;
 
@@ -198,7 +184,7 @@ const RecordPage = () => {
           selectMirror={true}
           // dayMaxEvents={true}
           // initialEvents={events} // alternatively, use the `events` setting to fetch from a feed
-          selectLongPressDelay={300} //모바일 기준 300이상 길게 누르면 이벤트 발생
+          selectLongPressDelay={100} //모바일 기준 100이상 길게 누르면 이벤트 발생
           events = {events}
           eventDidMount={(info) => {
             console.log('Event did mount:', info.event);
