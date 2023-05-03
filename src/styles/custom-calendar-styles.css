@@ -39,6 +39,9 @@
     .fc-toolbar-title {
         font-size: 16px !important;
     }
+    .fc-event-main{
+        font-size: 11px;
+    }
 }
 
 .fc-button{

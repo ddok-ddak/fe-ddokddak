@@ -1,9 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import { useCallback } from 'react';
 
 export interface DaysChipProps {
   title: string;
-  isSelected: boolean;
+  isselected: boolean;
   onClick: () => void;
   underline: boolean;
 }
@@ -17,7 +16,7 @@ const DaysChip = (props: DaysChipProps) => {
     width: '24px',
     height: '24px',
     textAlign: 'center',
-    backgroundColor: `${props.isSelected && '#FFDCE1'}`,
+    backgroundColor: `${props.isselected && '#FFDCE1'}`,
     textDecoration: `${props.underline && 'underline #FF7184 4px'}`,
     display: 'flex',
     alignItems: 'center',
@@ -27,7 +26,7 @@ const DaysChip = (props: DaysChipProps) => {
 >
   <Typography
     sx={{
-      color: `${props.isSelected ? 'inherit' : 'text.primary'}`,
+      color: `${props.isselected ? 'inherit' : 'text.primary'}`,
     }}
   >
     {props.title}

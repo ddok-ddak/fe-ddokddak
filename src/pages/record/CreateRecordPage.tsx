@@ -1,6 +1,7 @@
 import {
   Button,
   Chip,
+  ChipProps,
   Container,
   Divider,
   TextField,
@@ -42,7 +43,6 @@ export interface SelectedRangeData {
   start: Date;
   end: Date;
 }
-
   
 const getAMPM = (date: Date) => {
   const hours = date.getHours();
@@ -50,7 +50,14 @@ const getAMPM = (date: Date) => {
   return ampm;
 };
 
-const StyledChip = styled(Chip)(({ theme, isSelected, backgroundColor }) => ({
+interface StyledChipProps extends ChipProps{
+  isselected: boolean;
+  variant: 'filled' | 'outlined';
+  backgroundColor: string;
+  onClick?: () => void;
+}
+
+const StyledChip = styled(Chip)<StyledChipProps>(({ theme, isselected, backgroundColor }) => ({
   marginRight: '16px',
   marginBottom: '16px',
   minWidth: '95px',
@@ -58,10 +65,10 @@ const StyledChip = styled(Chip)(({ theme, isSelected, backgroundColor }) => ({
   borderRadius: '50px',
   cursor: 'grab',
   '&:hover': {
-    backgroundColor: isSelected ? backgroundColor : theme.palette.action.hover, 
+    backgroundColor: isselected ? backgroundColor : theme.palette.action.hover,
     cursor: 'grabbing',
   },
-  backgroundColor: isSelected ? backgroundColor : 'transparent',
+  backgroundColor: isselected ? backgroundColor : 'transparent',
 }));
 
 
@@ -77,15 +84,17 @@ const CreateRecordPage= (): ReactElement => {
   const [recoilCategoryValue, setRecoilCategoryValue] = useRecoilState(recoilCategory);
   const [recoilSubCategoryValue, setRecoilSubCategoryValue] = useRecoilState(recoilSubCategory);
 
+
+// 초기 선택된 요일을 state에 저장
+useEffect(() => {
   const getInitialSelectedDays = (): number[] => {
     const dayIndex = selectedDate.start.getDay();
     return [dayIndex];
   };
   
-  // 초기 선택된 요일을 state에 저장
-  useEffect(() => {
-    setSelectedDays(getInitialSelectedDays());
-  }, [setSelectedDays]);
+  const initialSelectedDays = getInitialSelectedDays();
+  setSelectedDays(initialSelectedDays);
+}, [selectedDate.start, setSelectedDays]);
 
   //카테고리 API 요청
   const getAllCategories = async () => {
@@ -107,15 +116,16 @@ const CreateRecordPage= (): ReactElement => {
     setSelectedSubCategoryIdx(0);
   }, [selectedCategoryIdx]);
 
-  //선택한 메인카테고리, sub카테고리 recoil에 저장
+
+  // 선택한 메인카테고리, sub카테고리 recoil에 저장
   useEffect(() => {
     setSelectedSubCategoryIdx(0);
     setRecoilCategoryValue(selectedCategoryIdx);
-  }, [selectedCategoryIdx, setRecoilCategoryValue]);
+  }, [selectedCategoryIdx, setRecoilCategoryValue, recoilCategoryValue]);
 
   useEffect(() => {
     setRecoilSubCategoryValue(selectedSubCategoryIdx);
-  }, [selectedSubCategoryIdx, setRecoilSubCategoryValue]);
+  }, [selectedSubCategoryIdx, setRecoilSubCategoryValue, recoilCategoryValue]);
 
   // 날짜 형식 2023-01-01T13:00:00 KST으로 포맷
   function formatDate(date: Date): string {
@@ -132,48 +142,52 @@ const CreateRecordPage= (): ReactElement => {
 
   
   //시간소비 활동 API - 등록
-  async function postData(name: string, startedAt: string, finishedAt: string): Promise<{
+  async function postData(
+    name: string,
+    startedAt: string,
+    finishedAt: string
+  ): Promise<{
     categoryId: number;
     name: string;
-    fromStartedAt: string;
-    toStartedAt: string;
+    startedAt: string;
+    finishedAt: string;
     timeUnit: number;
-} | undefined> {
-  const newRecord = {
-    categoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
-    name,
-    startedAt,
-    finishedAt,
-    timeUnit: 30,
-  };
-  
-  const response = await addRecord(newRecord);
-  console.log(response);
-  
-  if (response.result) {
-    const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
-    setSelectedDays([]);
-    navigate("/record");
-    return {
-      categoryId,
+  } | undefined> {
+    const newRecord = {
+      categoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
       name,
-      fromStartedAt: startedAt,
-      toStartedAt: finishedAt,
-      timeUnit,
+      startedAt,
+      finishedAt,
+      timeUnit: 30,
     };
-  } else {
-    console.log("에러 발생");
-    return undefined;
+    
+    const response = await addRecord(newRecord);
+    console.log(response);
+    
+    if (response.result) {
+      const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+      setSelectedDays([]);
+      navigate("/record");
+      return {
+        categoryId,
+        name,
+        startedAt,
+        finishedAt,
+        timeUnit,
+      };
+    } else {
+      console.log("에러 발생");
+      return undefined;
+    }
   }
-}
-
-async function postAllDays(name: string, startedAt: string, finishedAt: string, selectedDays: number[]): Promise<void> {
-  for (const dayIndex of selectedDays) {
-    const startedAtOfDay = formatDate(new Date(addDays(selectedDate.start, dayIndex - selectedDays[0])));
-    const finishedAtOfDay = formatDate(new Date(addDays(selectedDate.end, dayIndex - selectedDays[0])));
-    await postData(name, startedAtOfDay, finishedAtOfDay);
+  
+  async function postAllDays(name: string, startedAt: string, finishedAt: string, selectedDays: number[]): Promise<void> {
+    for (const dayIndex of selectedDays) {
+      const startedAtOfDay = formatDate(new Date(addDays(selectedDate.start, dayIndex - selectedDays[0])));
+      const finishedAtOfDay = formatDate(new Date(addDays(selectedDate.end, dayIndex - selectedDays[0])));
+      await postData(name, startedAtOfDay, finishedAtOfDay);
+    }
   }
-}
 
 function handleRightButtonClick() {
   const name = categories[selectedCategoryIdx]?.subCategories[selectedSubCategoryIdx]?.name;
@@ -204,13 +218,13 @@ const handleDayChipClick = (dayIndex: number) => {
             marginTop: '8px',
           }}
         >
-        <DaysChip title="일" isSelected={selectedDate.start.getDay() === 0 || selectedDays.includes(0)} onClick={() => handleDayChipClick(0)} underline={new Date().getDay() === 0} />
-        <DaysChip title="월" isSelected={selectedDate.start.getDay() === 1 || selectedDays.includes(1)} onClick={() => handleDayChipClick(1)} underline={new Date().getDay() === 1} />
-        <DaysChip title="화" isSelected={selectedDate.start.getDay() === 2 || selectedDays.includes(2)} onClick={() => handleDayChipClick(2)} underline={new Date().getDay() === 2} />
-        <DaysChip title="수" isSelected={selectedDate.start.getDay() === 3 || selectedDays.includes(3)} onClick={() => handleDayChipClick(3)} underline={new Date().getDay() === 3} />
-        <DaysChip title="목" isSelected={selectedDate.start.getDay() === 4 || selectedDays.includes(4)} onClick={() => handleDayChipClick(4)} underline={new Date().getDay() === 4} />
-        <DaysChip title="금" isSelected={selectedDate.start.getDay() === 5 || selectedDays.includes(5)} onClick={() => handleDayChipClick(5)} underline={new Date().getDay() === 5} />
-        <DaysChip title="토" isSelected={selectedDate.start.getDay() === 6 || selectedDays.includes(6)} onClick={() => handleDayChipClick(6)} underline={new Date().getDay() === 6} />
+        <DaysChip title="일" isselected={selectedDate.start.getDay() === 0 || selectedDays.includes(0)} onClick={() => handleDayChipClick(0)} underline={new Date().getDay() === 0} />
+        <DaysChip title="월" isselected={selectedDate.start.getDay() === 1 || selectedDays.includes(1)} onClick={() => handleDayChipClick(1)} underline={new Date().getDay() === 1} />
+        <DaysChip title="화" isselected={selectedDate.start.getDay() === 2 || selectedDays.includes(2)} onClick={() => handleDayChipClick(2)} underline={new Date().getDay() === 2} />
+        <DaysChip title="수" isselected={selectedDate.start.getDay() === 3 || selectedDays.includes(3)} onClick={() => handleDayChipClick(3)} underline={new Date().getDay() === 3} />
+        <DaysChip title="목" isselected={selectedDate.start.getDay() === 4 || selectedDays.includes(4)} onClick={() => handleDayChipClick(4)} underline={new Date().getDay() === 4} />
+        <DaysChip title="금" isselected={selectedDate.start.getDay() === 5 || selectedDays.includes(5)} onClick={() => handleDayChipClick(5)} underline={new Date().getDay() === 5} />
+        <DaysChip title="토" isselected={selectedDate.start.getDay() === 6 || selectedDays.includes(6)} onClick={() => handleDayChipClick(6)} underline={new Date().getDay() === 6} />
 
         </Container>
         <Container
@@ -262,7 +276,7 @@ const handleDayChipClick = (dayIndex: number) => {
                   key={category.name}
                   label={category.name}
                   variant="filled"
-                  isSelected={true}
+                  isselected={true}
                   backgroundColor={category.color}
                   onClick={() => {
                     setSelectedCategoryIdx(idx);
@@ -274,7 +288,8 @@ const handleDayChipClick = (dayIndex: number) => {
                   key={category.name}
                   label={category.name}
                   variant="outlined"
-                  isSelected={false}
+                  isselected={false}
+                  backgroundColor='transparent'
                   onClick={() => {
                     setSelectedCategoryIdx(idx);
                     setSelectedSubCategoryIdx(0);

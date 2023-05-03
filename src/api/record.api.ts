@@ -1,4 +1,3 @@
-import { SubCategory } from '../pages/category/CategoryPage';
 import { callAPI } from './common/api';
 import CommonResponse from './http';
 
@@ -17,8 +16,8 @@ export const getRecord = async (memberId: number, fromStartedAt: string, toStart
 
 export const addRecord = async (record: {
     name: string;
-    fromStartedAt: string;
-    toStartedAt: string;
+    startedAt: string;
+    finishedAt: string;
 }) => {
     const response = await callAPI({
         url: "/api/v1/activity-records",

@@ -55,7 +55,6 @@ const RecordPage = () => {
 
   const handleEventClick = (e: any) => {
     console.log(e.event.id);
-    const url = `/record/update/${e.event.id}`;
   };
 
   const handleEvents = (e: any) => {
@@ -73,12 +72,14 @@ const RecordPage = () => {
   }
 
   const getAllRecords = async (info: any) => {
-    const fromStartedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
-    const toStartedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(3).format('YYYY-MM-DDT03:00:00');
-  
+    const startedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
+    const finishedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(2).minute(59).second(59).format('YYYY-MM-DDT02:59:59');
+    console.log(startedAt);
+    console.log(finishedAt);
     try {
-      const response = await getRecord(member, fromStartedAt, toStartedAt);
+      const response = await getRecord(member, startedAt, finishedAt);
   
+      console.log(response);
       console.log(response.result);
       if (response.result) {
         const activityRecords = response.result;
@@ -86,7 +87,7 @@ const RecordPage = () => {
         let events: Event[] = [];
         let currentEvent: Event | null = null;
         console.log(activityRecords);
-  
+
         // 각 activity record에 대해 처리
       activityRecords.forEach((item: any) => {
         const startedAt = dayjs(item.startedAt.replace(" KST", "")).toDate();;
@@ -134,6 +135,13 @@ const RecordPage = () => {
   }, []);
 
 
+  const transformedEvents = events.map((event) => ({
+    id: String(event.id),
+    title: event.title,
+    start: event.start.toISOString(),
+    end: event.end.toISOString(),
+    color: event.color,
+  }));
 
   return (
     <div>
@@ -185,7 +193,7 @@ const RecordPage = () => {
           // dayMaxEvents={true}
           // initialEvents={events} // alternatively, use the `events` setting to fetch from a feed
           selectLongPressDelay={100} //모바일 기준 100이상 길게 누르면 이벤트 발생
-          events = {events}
+          events = {transformedEvents}
           eventDidMount={(info) => {
             console.log('Event did mount:', info.event);
           }}
