@@ -7,6 +7,7 @@ export interface CircleProps {
   onClick?: any;
   label?: string;
   selected?: boolean;
+  variant?: 'filled' | 'outlined';
   children?: any;
 }
 

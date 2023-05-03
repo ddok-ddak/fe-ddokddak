@@ -1,0 +1,86 @@
+.fc-event-main {
+    position: absolute;
+    color: black !important;
+    display: flex;
+    align-items: center;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px 5px 0px 0px;
+    
+}
+:root {
+    --fc-event-bg-color: #FFC5CC ;
+    --fc-event-border-color: #FFC5CC;
+}
+
+.fc-event-main::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% - 8px);
+    background-color: #FFFF;
+    z-index: -1;
+}
+
+.fc-event-title {
+    z-index: 1;
+}
+.fc-event {
+    border-color: white !important;
+}
+
+.fc-daygrid-day.fc-day:first-of-type {
+    border-left: none !important;
+    border-top: none !important;
+  }
+
+.fc-toolbar-title {
+    font-size: 20px !important;
+    color: #4B4B4B !important;
+}
+
+@media (max-width: 767px) {
+    .fc-toolbar-title {
+        font-size: 14px !important;
+    }
+    .fc-event-main{
+        font-size: 11px;
+    }
+}
+
+.fc-button {
+    border-radius: 50% !important;
+    background-color: #FFC5CC !important;
+    border: none !important;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fc-icon {
+    font-size: 0.9em !important;
+    position: relative;
+    top: -8px;
+    left: -6px;
+}
+
+.fc-col-header-cell {
+    font-size: 14px;
+}
+.fc-widget-header {
+    background-color: transparent !important;
+  }
+  
+  .fc-day-sun,
+  .fc-day-tue,
+  .fc-day-thu,
+  .fc-day-sat {
+    background-color: #F5F5F5 !important;
+  }
+
+.fc-day-mon, .fc-day-wed, .fc-day-fri {
+    background-color: transparent !important;
+}

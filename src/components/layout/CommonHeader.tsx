@@ -1,3 +1,4 @@
+import CheckIcon from "@material-ui/icons/Check";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import {
   Box,
@@ -5,7 +6,6 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Button,
 } from '@mui/material';
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,13 +16,13 @@ export interface CommonHeaderProps {
   isShowBackButton?: boolean;
   rightButtonIcon?: ReactElement;
   isShowRightButton?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClickRightButton?: any;
-  onClickRightIconButton?: any;
+  // onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => {};
+  onClickRightButton?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent" elevation={0}>
@@ -38,7 +38,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
               <ArrowBackIosNewIcon />
             </IconButton>
           ) : (
-            <Spacer x={52} />
+            <Spacer />
           )}
           <Typography
             component="div"
@@ -53,26 +53,11 @@ const CommonHeader = (props: CommonHeaderProps) => {
           >
             {props.title}
           </Typography>
-          {props.rightButtonIcon && (
-            <IconButton
-              onClick={() => {
-                props.onClickRightIconButton();
-              }}
-            >
+          {props.isShowRightButton && (
+                <IconButton onClick={props.onClickRightButton}>
               {props.rightButtonIcon}
+              <CheckIcon />
             </IconButton>
-          )}
-          {props.isShowRightButton ? (
-            <Button
-              variant="text"
-              onClick={() => {
-                props.onClickRightButton();
-              }}
-            >
-              완료
-            </Button>
-          ) : (
-            <Spacer x={52} />
           )}
         </Toolbar>
       </AppBar>

@@ -6,13 +6,15 @@
     "@babel/core": "^7.16.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fullcalendar/common": "^5.11.4",
     "@fullcalendar/core": "^6.0.3",
     "@fullcalendar/daygrid": "^6.0.3",
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/react": "^6.0.4",
     "@fullcalendar/timegrid": "^6.0.3",
+    "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.3",
+    "@mui/material": "^5.10.17",
     "@mui/styled-engine-sc": "^5.10.16",
     "@mui/styles": "^5.11.2",
     "@mui/x-date-pickers": "^5.0.20",
@@ -37,6 +39,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
+    "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
@@ -52,6 +55,7 @@
     "jest-watch-typeahead": "^1.0.0",
     "mini-css-extract-plugin": "^2.4.5",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "mui": "^0.0.1",
     "node-sass": "^8.0.0",
     "postcss": "^8.4.4",
@@ -80,6 +84,7 @@
     "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
     "typescript": "^4.9.3",
+    "tz": "^0.1.1",
     "web-vitals": "^2.1.4",
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
@@ -94,8 +99,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -180,5 +184,9 @@
     "presets": [
       "react-app"
     ]
-  }
+  },
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }

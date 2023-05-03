@@ -1,0 +1,15 @@
+version: "3"
+services:
+  dd-f:
+    container_name: dd_front
+    image: ddokddak/front
+    volumes:
+      - ./conf/:/etc/nginx/conf.d
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+networks:
+  default:
+    external:
+      name: dd
