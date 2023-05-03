@@ -21,24 +21,9 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 const options = {
   responsive: true,
   showTooltips: true,
-
   plugins: {
     legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-    },
-    labels: {
-      render: 'label',
-      title: {
-        font: {
-          weight: 'bold',
-        },
-      },
-      value: {
-        color: 'green',
-      },
+      display: false,
     },
     datalabels: {
       formatter: (val: any, ctx: any) =>
@@ -72,8 +57,6 @@ const ChartContainer = () => {
     if (!chart) {
       return;
     }
-
-    console.log(chart.getDatasetMeta(0), event);
   };
 
   useEffect(() => {
@@ -82,46 +65,56 @@ const ChartContainer = () => {
       0,
     );
     setTotalSum(total);
-    console.log(total);
   }, [statisticsResult]);
 
   return (
     <>
-      <Carousel {...carouselOption}>
+      {/* <Carousel {...carouselOption}> */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '20px',
+          position: 'relative',
+        }}
+      >
         <Box
           sx={{
-            height: '400px',
-            display: 'flex',
-            justifyContent: 'center',
+            position: 'absolute',
+            top: '45%',
+            textAlign: 'center',
+            color: '#FF7184',
+            fontSize: '16px',
+            fontWeight: '700',
           }}
         >
-          <Chart
-            ref={pieChartRef}
-            type={'doughnut'}
-            data={{
-              // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-              labels: [...statisticsResult.map((data) => data.categoryName)],
-              datasets: [
-                {
-                  data: [...statisticsResult.map((data) => data.timeSum + 10)],
-                  backgroundColor: [
-                    ...statisticsResult.map(
-                      (data) => `${data.categoryColor}45`,
-                    ),
-                  ],
-                  borderColor: [
-                    ...statisticsResult.map((data) => `${data.categoryColor}`),
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            }}
-            options={options}
-            onClick={handleClickPieChart}
-            plugins={[ChartDataLabels]}
-          />
+          총 <br />
+          {totalSum}시간
         </Box>
-        {/* <Box
+        <Chart
+          ref={pieChartRef}
+          type={'doughnut'}
+          data={{
+            labels: [...statisticsResult.map((data) => data.categoryName)],
+            datasets: [
+              {
+                data: [...statisticsResult.map((data) => data.timeSum + 10)],
+                backgroundColor: [
+                  ...statisticsResult.map((data) => `${data.categoryColor}45`),
+                ],
+                borderColor: [
+                  ...statisticsResult.map((data) => `${data.categoryColor}`),
+                ],
+                borderWidth: 1,
+              },
+            ],
+          }}
+          options={options}
+          onClick={handleClickPieChart}
+          plugins={[ChartDataLabels]}
+        />
+      </Box>
+      {/* <Box
           sx={{ height: '400px', display: 'flex', justifyContent: 'center' }}
         >
           <Chart
@@ -132,7 +125,7 @@ const ChartContainer = () => {
             onClick={handleClickBarChart}
           />
         </Box> */}
-      </Carousel>
+      {/* </Carousel> */}
 
       {statisticsResult.map((data, idx) => (
         <Box
@@ -153,7 +146,16 @@ const ChartContainer = () => {
                 <LinearProgress
                   variant="determinate"
                   value={data.timeSum + 10}
-                  sx={{ height: 10, borderRadius: 5 }}
+                  sx={{
+                    height: 10,
+                    borderRadius: 5,
+                    '&.MuiLinearProgress-root': {
+                      backgroundColor: '#F5F5F5 !important',
+                    },
+                    '& > .MuiLinearProgress-bar': {
+                      backgroundColor: data.categoryColor,
+                    },
+                  }}
                 />
               </Box>
               <Box sx={{ minWidth: 35 }}>

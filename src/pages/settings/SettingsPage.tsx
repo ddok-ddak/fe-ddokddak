@@ -46,7 +46,12 @@ const SettingPage = () => {
           paddingTop: '32px',
         }}
       >
-        <Avatar sx={{ width: 72, height: 72, marginRight: '20px' }}>H</Avatar>
+        <Avatar
+          sx={{ width: 72, height: 72, marginRight: '20px' }}
+          color="primary"
+        >
+          H
+        </Avatar>
         <Typography variant="h5">{'00 회원님'}</Typography>
         <ChevronRightIcon sx={{ ml: '40px' }} />
       </Box>
@@ -54,7 +59,7 @@ const SettingPage = () => {
         <ListItemButton onClick={handleClick1}>
           <ListItemIcon>
             {/* <InboxIcon /> */}
-            <AutoAwesomeMosaicIcon />
+            <AutoAwesomeMosaicIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="커스텀화" />
           {open1 ? <ExpandLess /> : <ExpandMore />}
@@ -63,7 +68,7 @@ const SettingPage = () => {
           <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <ColorLensOutlinedIcon />
+                <ColorLensOutlinedIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="테마 설정" />
             </ListItemButton>
@@ -72,13 +77,13 @@ const SettingPage = () => {
               onClick={() => navigation('/category')}
             >
               <ListItemIcon>
-                <ColorLensOutlinedIcon />
+                <ColorLensOutlinedIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="카테고리 설정" />
             </ListItemButton>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <TuneIcon />
+                <TuneIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="시작 요일 설정" />
             </ListItemButton>
@@ -87,7 +92,7 @@ const SettingPage = () => {
         <ListItemButton onClick={handleClick2}>
           <ListItemIcon>
             {/* <InboxIcon /> */}
-            <AutoAwesomeMosaicIcon />
+            <AutoAwesomeMosaicIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="고객센터" />
           {open2 ? <ExpandLess /> : <ExpandMore />}
@@ -96,13 +101,13 @@ const SettingPage = () => {
           <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <HelpOutlineIcon />
+                <HelpOutlineIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="도움말" />
             </ListItemButton>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <SupportAgentIcon />
+                <SupportAgentIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="문의하기" />
             </ListItemButton>
@@ -110,7 +115,7 @@ const SettingPage = () => {
         </Collapse>
         <ListItemButton>
           <ListItemIcon>
-            <LogoutIcon />
+            <LogoutIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="로그아웃" />
         </ListItemButton>

@@ -4,9 +4,7 @@ import type {} from '@mui/x-date-pickers/themeAugmentation';
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#FF8999',
-      light: '#e3f2fd',
-      dark: '#1e88e5',
+      main: '#FF7184',
     },
     secondary: {
       main: '#673ab7',

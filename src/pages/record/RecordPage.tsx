@@ -7,6 +7,7 @@ import { Container } from '@mui/system';
 import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
+
 import { SelectedRangeData } from './CreateRecordPage';
 
 import { getRecord } from '../../api/record.api';
@@ -144,14 +145,14 @@ const RecordPage = () => {
   }));
 
   return (
-    <div>
+    <div >
       <CommonHeader title={'일주일 기록하기'} />
       <Container
         sx={{
           height: 'calc(100vh - 112px)',
         }}
       >
-        <Spacer y={16} />
+        <Spacer y={10} />
         <FullCalendar
           height={'calc(100% - 16px)'}
           allDaySlot={false}
@@ -161,13 +162,12 @@ const RecordPage = () => {
             center: "title",
             right: "next",
           }}
-          dayHeaderFormat={{ day: 'numeric' }} // 요일을 숫자로 표시
           dayHeaderContent={(args) => {
             const underlineStyle = {
               borderBottom: '4px solid #FF8999',
               paddingBottom: '4px',
-              width: '40px',
-              height: '3px',
+              width: '38px',
+              height: '2px',
             };
             const isToday = dayjs(args.date).tz('Asia/Seoul').isSame(new Date(), 'day');
             const dayNumber = args.date.getDate();
@@ -191,6 +191,10 @@ const RecordPage = () => {
           selectable={true}
           selectMirror={true}
           // dayMaxEvents={true}
+          dayHeaderFormat={{
+            weekday: 'short',
+            day: '2-digit',
+          }}
           // initialEvents={events} // alternatively, use the `events` setting to fetch from a feed
           selectLongPressDelay={100} //모바일 기준 100이상 길게 누르면 이벤트 발생
           events = {transformedEvents}

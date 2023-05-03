@@ -28,6 +28,11 @@
 }
 .fc-event {
     border-color: white !important;
+}
+
+.fc-daygrid-day.fc-day:first-of-type {
+    border-left: none !important;
+    border-top: none !important;
   }
 
 .fc-toolbar-title {
@@ -37,32 +42,44 @@
 
 @media (max-width: 767px) {
     .fc-toolbar-title {
-        font-size: 16px !important;
+        font-size: 14px !important;
     }
     .fc-event-main{
         font-size: 11px;
     }
 }
 
-.fc-button{
+.fc-button {
     border-radius: 50% !important;
     background-color: #FFC5CC !important;
     border: none !important;
-    width: 40px; 
-    height: 40px;
-    padding: 10px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.fc-icon{
-    font-size: 1em !important;
+.fc-icon {
+    font-size: 0.9em !important;
+    position: relative;
+    top: -8px;
+    left: -6px;
 }
 
 .fc-col-header-cell {
     font-size: 14px;
 }
-.fc-day-sun, .fc-day-tue, .fc-day-thu, .fc-day-sat {
+.fc-widget-header {
+    background-color: transparent !important;
+  }
+  
+  .fc-day-sun,
+  .fc-day-tue,
+  .fc-day-thu,
+  .fc-day-sat {
     background-color: #F5F5F5 !important;
-}
+  }
 
 .fc-day-mon, .fc-day-wed, .fc-day-fri {
     background-color: transparent !important;

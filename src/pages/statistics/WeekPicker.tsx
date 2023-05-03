@@ -100,8 +100,15 @@ const WeekPicker = ({ value, setValue, onChange }: any) => {
         onChange(dayjs(newValue).startOf('week'));
       }}
       renderDay={renderWeekPickerDay}
-      renderInput={(params) => <TextField {...params} />}
       inputFormat="YYYY년 MM월 DD일 ~"
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          sx={{
+            '& fieldset': { border: 'none' },
+          }}
+        />
+      )}
     />
   );
 };

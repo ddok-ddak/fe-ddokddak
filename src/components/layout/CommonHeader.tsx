@@ -1,16 +1,15 @@
 import CheckIcon from "@material-ui/icons/Check";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box,
   AppBar,
   Toolbar,
   IconButton,
   Typography,
-  Button,
 } from '@mui/material';
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Spacer from '../common/Spacer';
 
 export interface CommonHeaderProps {
   title: string;
@@ -26,22 +25,32 @@ const CommonHeader = (props: CommonHeaderProps) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ background: 'transparent', boxShadow: 'none', fontWeight: 'bold',
-      color: 'grey.600' }}>
+      <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
-          {props.isShowBackButton && (
+          {props.isShowBackButton ? (
             <IconButton
               size="large"
               edge="start"
-              color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
               onClick={() => navigation(-1)}
             >
               <ArrowBackIosNewIcon />
             </IconButton>
+          ) : (
+            <Spacer />
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Typography
+            component="div"
+            sx={{
+              flexGrow: 1,
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '700',
+              lineHeight: '16px',
+              color: '#949494',
+            }}
+          >
             {props.title}
           </Typography>
           {props.isShowRightButton && (

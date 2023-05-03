@@ -321,11 +321,12 @@ const handleDayChipClick = (dayIndex: number) => {
         </Container>
         <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
 
-        <Container sx={{ padding: '16px' }}>
+        <Container sx={{ padding: '24px' }}>
           <TextField
             hiddenLabel
             id="filled-hidden-label-normal"
             placeholder="메모하기"
+            variant="standard"
             fullWidth
           />
         </Container>

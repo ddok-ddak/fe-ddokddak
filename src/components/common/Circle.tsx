@@ -28,7 +28,7 @@ const Circle = (props: CircleProps) => {
             height: props.size + 'px',
             backgroundColor: props.color,
             borderRadius: '50%',
-            border: '2px solid red',
+            border: '3px solid #FF7184',
           }}
         >
           {props.children}
@@ -51,7 +51,7 @@ const Circle = (props: CircleProps) => {
         <Typography
           variant="subtitle2"
           sx={{
-            padding: '8px',
+            padding: '8px 0',
           }}
         >
           {props.label}
