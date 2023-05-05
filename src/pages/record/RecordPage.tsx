@@ -74,7 +74,7 @@ const RecordPage = () => {
 
   const getAllRecords = async (info: any) => {
     const startedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
-    const finishedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(2).minute(59).second(59).format('YYYY-MM-DDT02:59:59');
+    const finishedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(3).minute(59).second(59).format('YYYY-MM-DDT03:59:59');
     console.log(startedAt);
     console.log(finishedAt);
     try {
