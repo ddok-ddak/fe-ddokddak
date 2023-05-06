@@ -2,7 +2,8 @@ FROM node:alpine as build
 
 WORKDIR /app
 # package.json을 복사해서 디펜던시를 재설정 및 설치하는 레이어를 분리하여 최적화
-COPY package.json . 
+COPY package.json .
+RUN apk add --no-cache python3 make g++
 RUN yarn install
 
 # 전체 파일 복사
