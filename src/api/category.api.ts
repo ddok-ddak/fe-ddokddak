@@ -19,7 +19,7 @@ export const getCategories = async () => {
     url: `/api/v1/categories`,
     method: 'GET',
     params: {
-      memberId: 1,
+      // memberId: 1,
     },
   });
 
@@ -35,7 +35,7 @@ export const addSubCategory = async (request: SubCategory) => {
       color: request.color,
       level: 1,
       mainCategoryId: request.mainCategoryId,
-      memberId: 1,
+      // memberId: 1,
     },
   });
 
@@ -51,9 +51,9 @@ export const updateSubCategory = async (request: SubCategory) => {
       name: request.name,
       color: request.color,
     },
-    params: {
-      memberId: 1,
-    },
+    // params: {
+    //   memberId: 1,
+    // },
   });
 
   return response as CommonResponse;
@@ -63,9 +63,9 @@ export const deleteCategory = async (categoryId: number) => {
   const response = await callAPI({
     url: `/api/v1/categories/${categoryId}`,
     method: 'DELETE',
-    body: {
-      memberId: 1,
-    },
+    // body: {
+    //   memberId: 1,
+    // },
   });
 
   return response as CommonResponse;

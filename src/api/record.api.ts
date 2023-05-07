@@ -6,7 +6,7 @@ export const getRecord = async (memberId: number, fromStartedAt: string, toStart
         url: `/api/v1/activity-records`,
         method: 'GET',
         params: {
-            memberId,
+            // memberId,
             fromStartedAt,
             toStartedAt,
         },
