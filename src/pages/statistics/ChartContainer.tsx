@@ -26,8 +26,18 @@ const options = {
       display: false,
     },
     datalabels: {
-      formatter: (val: any, ctx: any) =>
-        ctx.chart.data.labels[ctx.dataIndex] + '\n' + val + '시간',
+      formatter: (val: any, ctx: any) => {
+        if (val === 0) {
+          return '';
+        }
+    
+        const hours = Math.floor(val / 60);
+        const minutes = val % 60;
+
+        return minutes === 0 ?
+          `${ctx.chart.data.labels[ctx.dataIndex]}\n${hours}시간` :
+          `${ctx.chart.data.labels[ctx.dataIndex]}\n${hours}시간 ${minutes}분`;
+      },
     },
   },
   showToolTip: true,
@@ -61,7 +71,7 @@ const ChartContainer = () => {
 
   useEffect(() => {
     const total = statisticsResult.reduce(
-      (accumulator, currentValue) => accumulator + currentValue.timeSum + 10,
+      (accumulator, currentValue) => accumulator + currentValue.timeSum,
       0,
     );
     setTotalSum(total);
@@ -89,7 +99,10 @@ const ChartContainer = () => {
           }}
         >
           총 <br />
-          {totalSum}시간
+          {totalSum % 60 === 0 ? 
+            `${Math.floor(totalSum / 60)}시간` :
+            `${Math.floor(totalSum / 60)}시간 ${totalSum % 60}분`
+          }
         </Box>
         <Chart
           ref={pieChartRef}
@@ -98,7 +111,7 @@ const ChartContainer = () => {
             labels: [...statisticsResult.map((data) => data.categoryName)],
             datasets: [
               {
-                data: [...statisticsResult.map((data) => data.timeSum + 10)],
+                data: [...statisticsResult.map((data) => data.timeSum )],
                 backgroundColor: [
                   ...statisticsResult.map((data) => `${data.categoryColor}45`),
                 ],
@@ -145,7 +158,7 @@ const ChartContainer = () => {
               <Box sx={{ width: '100%', mr: 1 }}>
                 <LinearProgress
                   variant="determinate"
-                  value={data.timeSum + 10}
+                  value={data.timeSum }
                   sx={{
                     height: 10,
                     borderRadius: 5,
@@ -159,16 +172,21 @@ const ChartContainer = () => {
                 />
               </Box>
               <Box sx={{ minWidth: 35 }}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >{`${Math.round(
-                  ((data.timeSum + 10) / totalSum) * 100,
-                )}%`}</Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                {`${totalSum > 0 ? Math.round(((data.timeSum) / totalSum) * 100) : 0}%`}
+              </Typography>
               </Box>
             </Box>
           </Box>
-          <Typography>{data.timeSum + 10}시간</Typography>
+          <Typography>
+            {data.timeSum % 60 === 0 ? 
+            `${Math.floor(data.timeSum / 60)}시간` :
+            `${Math.floor(data.timeSum / 60)}시간 ${data.timeSum % 60}분`
+            }
+          </Typography>
         </Box>
       ))}
     </>
