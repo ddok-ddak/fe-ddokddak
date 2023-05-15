@@ -146,13 +146,14 @@ const ChartContainer = () => {
           sx={{
             padding: '8px',
             display: 'flex',
-            justifyContent: 'space-evenly',
+            justifyContent: 'flex-start',
             marginTop: '8px',
+            marginLeft: '12px',
             alignItems: 'flex-end',
           }}
         >
           <Circle color={data.categoryColor} size={40} />
-          <Box sx={{ width: '60%' }}>
+          <Box sx={{ width: '60%', margin: '0px 10px 0px 10px' }}>
             <Typography>{data.categoryName}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box sx={{ width: '100%', mr: 1 }}>
