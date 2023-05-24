@@ -8,7 +8,7 @@ import {
   registerables,
 } from 'chart.js';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
-import { Chart } from 'react-chartjs-2';
+import { Chart, getElementsAtEvent } from 'react-chartjs-2';
 import Carousel from 'react-material-ui-carousel';
 
 import Circle from '@/components/common/Circle';
@@ -377,7 +377,7 @@ const ChartContainer = () => {
                 <Box sx={{ width: '100%', mr: 1 }}>
                   <LinearProgress
                     variant="determinate"
-                    value={data.timeSum}
+                    value={(data.timeSum * 100) / totalSum}
                     sx={{
                       height: 10,
                       //borderRadius: 5,
