@@ -159,6 +159,16 @@ const ChartContainer = () => {
           },
         },
       },
+      tooltip: {
+        callbacks: {
+          label: (ctx: any) => {
+            const rawData = ctx.raw;
+            return (
+              hourFormatter(rawData) + '시간 ' + minuteFormatter(rawData) + '분'
+            );
+          },
+        },
+      },
       customBackgroundColor: {
         color: '#FFF4F6',
       },
@@ -185,7 +195,8 @@ const ChartContainer = () => {
       datalabels: {
         anchor: 'end',
         color: (context: any) => {
-          return context.clicked ? 'blue' : '#B7B7B7';
+          // TODO: change clicked bar's data label color
+          return context.clicked ? '#222222' : '#B7B7B7';
         },
         labels: {
           value: {
@@ -218,7 +229,6 @@ const ChartContainer = () => {
       x: {
         ticks: {
           color: '#222222',
-          backdropColor: 'black',
           font: {
             size: 14,
             weight: 'bold',
@@ -268,21 +278,26 @@ const ChartContainer = () => {
           >
             <Box
               sx={{
-                display: showTotalSum ? '' : 'none',
+                display: showTotalSum ? 'flex' : 'none',
+                flexDirection: 'column',
                 position: 'absolute',
                 height: '274px',
-                top: '45%',
+                top: '42%',
                 textAlign: 'center',
                 color: '#FF7184',
                 fontSize: '16px',
                 fontWeight: '700',
               }}
             >
-              <span>총 </span>
-              <span>{hourFormatter(totalSum)}</span>
-              <span> 시간 </span>
-              <span>{minuteFormatter(totalSum)}</span>
-              <span> 분</span>
+              <span style={{ color: '#222222' }}>총 </span>
+              <Box>
+                <span>{hourFormatter(totalSum)}</span>
+                <span style={{ color: '#222222' }}> 시간</span>
+              </Box>
+              <Box>
+                <span>{minuteFormatter(totalSum)} </span>
+                <span style={{ color: '#222222' }}>분</span>
+              </Box>
             </Box>
             <Chart
               ref={pieChartRef}
@@ -322,7 +337,7 @@ const ChartContainer = () => {
               >
                 {hourFormatter(totalSum)}
               </span>
-              <span> 시간 </span>
+              <span>시간 </span>
               <span
                 style={{
                   fontSize: '16px',
@@ -331,7 +346,7 @@ const ChartContainer = () => {
               >
                 {minuteFormatter(totalSum)}
               </span>
-              <span> 분</span>
+              <span>분</span>
             </Box>
             <Box
               sx={{
@@ -371,8 +386,10 @@ const ChartContainer = () => {
             }}
           >
             <Circle color={data.categoryColor} size={40} />
-            <Box sx={{ width: '60%', margin: '0px 10px 0px 10px' }}>
-              <Typography>{data.categoryName}</Typography>
+            <Box sx={{ width: '60%', margin: '0px 10px 3px 10px' }}>
+              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                {data.categoryName}
+              </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ width: '100%', mr: 1 }}>
                   <LinearProgress
@@ -380,12 +397,13 @@ const ChartContainer = () => {
                     value={(data.timeSum * 100) / totalSum}
                     sx={{
                       height: 10,
-                      //borderRadius: 5,
                       '&.MuiLinearProgress-root': {
                         backgroundColor: '#F5F5F5 !important',
+                        borderRadius: 5,
                       },
                       '& > .MuiLinearProgress-bar': {
                         backgroundColor: data.categoryColor,
+                        borderRadius: 5,
                       },
                     }}
                   />
@@ -406,8 +424,9 @@ const ChartContainer = () => {
                 display: 'flex',
                 alignItems: 'end',
                 justifyContent: 'center',
-                flex: '10% 1 1',
-                fontSize: '0.8rem',
+                flex: '8% 1 1',
+                fontSize: '16px',
+                fontWeight: 'bold',
               }}
             >
               {data.timeSum % 60 === 0
