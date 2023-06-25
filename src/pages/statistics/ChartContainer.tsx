@@ -95,6 +95,7 @@ const ChartContainer = () => {
     }
     const target = getElementsAtEvent(chart, event);
     setShowTotalSum(!target.length);
+
     // TODO: show done list of the selected category below
   };
 
@@ -103,10 +104,11 @@ const ChartContainer = () => {
     if (!chart) {
       return;
     }
+
     // TODO: show done list of the selected category below
   };
 
-  const resultData = statisticsResult.length ? [...statisticsResult.filter((data) => data.timeSum > 0)] : [];
+  const resultData = [...statisticsResult.filter((data) => data.timeSum > 0)];
   const chartData = {
     labels: resultData.map((data) => data.categoryName),
     datasets: [
@@ -253,16 +255,16 @@ const ChartContainer = () => {
   };
 
   useEffect(() => {
-    const total = statisticsResult.length ? statisticsResult.reduce(
+    const total = statisticsResult.reduce(
       (accumulator, currentValue) => accumulator + currentValue.timeSum,
       0,
-    ) : 0;
+    );
     setTotalSum(total);
   }, [statisticsResult]);
 
   return (
     <>
-      {statisticsResult.length && 
+      {
         <Carousel {...carouselOption}>
           <Box
             sx={{
@@ -368,7 +370,8 @@ const ChartContainer = () => {
           </Box>
         </Carousel>
       }
-      {statisticsResult.length && statisticsResult
+
+      {statisticsResult
         .filter((data) => data.timeSum > 0)
         .map((data, idx) => (
           <Box
