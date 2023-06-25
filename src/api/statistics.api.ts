@@ -21,7 +21,6 @@ export const getStatisticsData = async (request: StatisticsRequest) => {
     url: `/api/v1/activity-records/stats`,
     method: 'GET',
     params: {
-      memberId: 1,
       ...request,
     },
   });
