@@ -4,7 +4,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import BottomNav from './components/layout/BottomNav';
 import FindID from './pages/auth/FindID';
-import ResetPW from './pages/auth/ResetPW';
+import ResetPW from './pages/auth/SetPW';
+
 import SignUp from './pages/auth/SignUp';
 import Login from './pages/auth/login/Login';
 import CategoryPage from './pages/category/CategoryPage';
@@ -28,7 +29,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/findID" element={<FindID />} />
-            <Route path="/resetPW" element={<ResetPW />} />
+            <Route path="/ResetPW" element={<ResetPW />} />
             <Route path="/record" element={<RecordPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
