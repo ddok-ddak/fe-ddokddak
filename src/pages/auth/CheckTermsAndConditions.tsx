@@ -107,14 +107,7 @@ const CheckTermsAndConditions = (props: any) => {
     setSignUpNextButtonProps({
       ...signUpNextButtonProps,
       isDisabled: true,
-      clickHandler: () => {
-        // handleNextButton
-        // TODO: hook 으로 처리
-        // 다음 버튼 잘 안눌림
-        // 회원 가입 처리
-        //setCurrentStepIndex(currentStepIndex + 1);
-        props.handleNextButton();
-      }
+      clickHandler: props.handleNextButton
     })
   }, []);
 

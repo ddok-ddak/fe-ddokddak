@@ -29,7 +29,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/findID" element={<FindID />} />
-            <Route path="/ResetPW" element={<ResetPW />} />
+            <Route path="/resetPW" element={<ResetPW />} />
             <Route path="/record" element={<RecordPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
