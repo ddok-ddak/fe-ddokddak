@@ -25,28 +25,30 @@ const SetNickname = (props: any) => {
         const value = event.target.value;
         setNickname(value);
 
-        const reg = /^[a-zA-Z0-9]{2,15}$/;
-        if (!reg.test(nickname)) {
+        const reg = /^[a-zA-Z0-9_-]{2,15}$/g;
+        if (!reg.test(value)) {
           setHelper('영어, 숫자, _, - 를 사용한 2 ~ 15자리 이내로 입력해주세요.');
           setIsHelperError(true);
           setIsNextButtonDisabled(true);
           return true;
-        }
-
-        const response = await checkDuplicatedNickname(nickname);
-        if (response.status === 'SUCCESS') {
-          setHelper('사용 가능한 닉네임입니다.');
-          setIsHelperError(false);
-          setIsNextButtonDisabled(false);
-          setSignUpData({...signUpData, nickname});
         } else {
-          setHelper('이미 사용하고 있는 닉네임입니다.');
-          setIsHelperError(true);
+          await checkDuplicatedNickname(value).then((response) => {
+            let isAvail = false;
+            if (response.status === 'SUCCESS') {
+              setHelper('사용 가능한 닉네임입니다.');
+              setIsNextButtonDisabled(isAvail);
+              setSignUpData({...signUpData, nickname: value});
+            } else {
+              isAvail = true;
+              setHelper('이미 사용하고 있는 닉네임입니다.');
+            }
+            setIsHelperError(isAvail);
+            setSignUpNextButtonProps({
+              ...signUpNextButtonProps,
+              isDisabled: isAvail,
+            });    
+          });
         }
-        setSignUpNextButtonProps({
-          ...signUpNextButtonProps,
-          isDisabled: isNextButtonDisabled,
-        });
       }
     },
   ];
@@ -57,14 +59,13 @@ const SetNickname = (props: any) => {
       text: '회원가입 완료',
       isDisabled: true,
       clickHandler: async () => {
-        console.log(signUpData)
-        const response = await addUser(signUpData);
-        console.log('response', response);
-        if (response.status === 'SUCCESS') {
-          alert('회원 가입 성공')
-        } else {
-          alert('회원 가입 실패')
-        }
+        await addUser(signUpData).then((response) => {
+          if (response.status === 'SUCCESS') {
+            alert('회원 가입 성공')
+          } else {
+            alert('회원 가입 실패')
+          }
+        });
       },
     });
   }, []);

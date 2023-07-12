@@ -18,25 +18,29 @@ const SetPW = (props: any) => {
   const [isHelperError1, setIsHelperError1] = useState(true);
   const [isHelperError2, setIsHelperError2] = useState(true);
 
+
   /**
-   * check if two passwords are equal
-   * @param password password
-   * @param compare password to compare
+   * compare two passwords
+   * @param value 
+   * @param compareValue 
    */
-  const checkPasswordEquality = (password: string, compare: string) => {
-    if (password === compare) {
-      setHelper2('동일한 비밀번호입니다.');
-      setIsHelperError2(false);
-      setIsNextButtonDisabled(false);
+  const checkPasswordMatch = (value: string, compareValue: string) => {
+    let isMatch = true;
+    if (value === compareValue) {
+      setHelper2(() => '동일한 비밀번호입니다.');
+      isMatch = false;
+      setIsHelperError2(() => isMatch);
+      setIsNextButtonDisabled(() => isMatch);
       setSignUpData({...signUpData, password});
     } else {
       setHelper2('동일한 비밀번호를 입력해주세요.');
-      setIsHelperError2(true);
+      setIsHelperError2(() => isMatch);
     }
     setSignUpNextButtonProps({
       ...signUpNextButtonProps,
-      isDisabled: isNextButtonDisabled,
+      isDisabled: isMatch,
     });
+
   };
 
   // password items
@@ -52,11 +56,11 @@ const SetPW = (props: any) => {
         const reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
         if (reg.test(value)) {
           setHelper1('사용 가능한 비밀번호입니다.');
-          setIsHelperError1(false);
-          checkPasswordEquality(value, confirmPassword);
+          setIsHelperError1(() => false);
+          checkPasswordMatch(value, confirmPassword);
         } else {
           setHelper1('영어, 숫자, 특수문자를 모두 포함한 8 ~ 15자리 이내로 입력해주세요.');
-          setIsHelperError1(true);
+          setIsHelperError1(() => true);
         }
       }
     },
@@ -71,7 +75,7 @@ const SetPW = (props: any) => {
       onChangeHandler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const value = event.target.value;
         setConfirmPassword(value);
-        checkPasswordEquality(value, password);
+        checkPasswordMatch(value, password);
       }
     },
   ];

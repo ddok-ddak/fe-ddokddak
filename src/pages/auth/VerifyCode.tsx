@@ -128,7 +128,7 @@ const VerifyCode = (props: any) => {
           let newAttemptCount = verificationAttemptCount + 1;
           setVerificationAttemptCount(newAttemptCount);
           setHelper(`인증코드가 일치하지 않습니다. 다시 한번 확인 후 입력해주세요. (${newAttemptCount} / 5 회)`);
-          setIsHelperError(true);
+          setIsHelperError(() => (true));
         }
       },
       isDisabled: true,

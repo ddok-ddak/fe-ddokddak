@@ -21,42 +21,43 @@ const SetEmail = (props: any) => {
   const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = event.target.value;
     setEmail(value);
-    setIsNextButtonDisabled(true);
+    setIsNextButtonDisabled(() => (true));
     if (email === '') {
-      setDisableDuplicateChkBtn(true);
+      setDisableDuplicateChkBtn(() => (true));
       setHelper('');
       return true;
     }
 
-    const isMailValidPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+    const isMailValidPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
     if (isMailValidPattern) {
       setDisableDuplicateChkBtn(false);
       setHelper('');
     } else {
-      setDisableDuplicateChkBtn(true);
+      setDisableDuplicateChkBtn(() => (true));
       setHelper('올바른 이메일 형태가 아닙니다.');
-      setIsHelperError(true);
+      setIsHelperError(() => (true));
     }
   };
   
   const duplicateCheckerHandler = async (event: any) => {
-    const response = await checkDuplicatedEmail(email);
-    if (response.status === 'SUCCESS') {
-      setHelper('사용 가능한 이메일입니다.');
-      setIsHelperError(false);
-      setIsNextButtonDisabled(false);
-      setDisableDuplicateChkBtn(true);
-      setSignUpNextButtonProps({
-        ...signUpNextButtonProps,
-        isDisabled: false,
-      });
-      setSignUpData({...signUpData, email});
-
-    } else {
-      setHelper('이미 가입된 이메일입니다.');
-      setIsHelperError(true);
-    }
+    await checkDuplicatedEmail(email).then((response) => {
+      if (response.status === 'SUCCESS') {
+        setHelper('사용 가능한 이메일입니다.');
+        setIsHelperError(false);
+        setIsNextButtonDisabled(false);
+        setDisableDuplicateChkBtn(false);
+        setSignUpNextButtonProps({
+          ...signUpNextButtonProps,
+          isDisabled: false,
+        });
+        setSignUpData({...signUpData, email});
+      } else {
+        setHelper('이미 가입된 이메일입니다.');
+        setIsHelperError(() => (true));
+      }
+    });
   };
+  
   const itemArray: InputItemType[] = [
     {
       name: '이메일',
