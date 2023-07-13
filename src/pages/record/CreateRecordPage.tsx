@@ -101,8 +101,8 @@ useEffect(() => {
     const response = await getCategories();
     if (response.result) {
       setCategories(response.result);
-      console.log(response.result.color);
-      console.log(response.result.categoryId);
+      //console.log(response.result.color);
+      //console.log(response.result.categoryId);
     } else {
       alert('Error');
     }
@@ -270,7 +270,7 @@ const handleDayChipClick = (dayIndex: number) => {
               padding: '15px',
             }}
           >
-            {categories.map((category, idx) =>
+            {categories.length && categories.map((category, idx) =>
               idx === selectedCategoryIdx ? (
                 <StyledChip
                   key={category.name}
