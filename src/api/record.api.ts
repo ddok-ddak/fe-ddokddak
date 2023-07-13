@@ -24,6 +24,6 @@ export const addRecord = async (record: {
         method: "POST",
         body: record,
     });
-    console.log(response);
+    //console.log(response);
     return response as CommonResponse;
 };
