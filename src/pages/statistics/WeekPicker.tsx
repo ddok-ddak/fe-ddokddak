@@ -6,7 +6,6 @@ import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import weekdayPlugin from 'dayjs/plugin/weekday';
-import { useState } from 'react';
 
 dayjs.extend(isBetweenPlugin);
 dayjs.extend(weekdayPlugin);
@@ -39,33 +38,16 @@ const CustomPickersDay = styled(PickersDay, {
   }),
 })) as React.ComponentType<CustomPickerDayProps>;
 
-function Day(props: PickersDayProps<Dayjs> & { selectedDay?: Dayjs | null }) {
-  const { day, selectedDay, ...other } = props;
 
-  if (selectedDay == null) {
-    return <PickersDay day={day} {...other} />;
-  }
+const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
 
-  const start = selectedDay.startOf('week');
-  const end = selectedDay.endOf('week');
-
-  const dayIsBetween = day.isBetween(start, end, null, '[]');
-  const isFirstDay = day.isSame(start, 'day');
-  const isLastDay = day.isSame(end, 'day');
-
-  return (
-    <CustomPickersDay
-      {...other}
-      day={day}
-      disableMargin
-      dayIsBetween={dayIsBetween}
-      isFirstDay={isFirstDay}
-      isLastDay={isLastDay}
-    />
-  );
-}
-
-const WeekPicker = ({ value, setValue, onChange }: any) => {
+  /**
+   * render the weekpicker date
+   * @param date 
+   * @param selectedDates 
+   * @param pickersDayProps 
+   * @returns <CustomPickersDay/>
+  */
   const renderWeekPickerDay = (
     date: Dayjs,
     selectedDates: Array<Dayjs | null>,
@@ -74,24 +56,33 @@ const WeekPicker = ({ value, setValue, onChange }: any) => {
     if (!value) {
       return <PickersDay {...pickersDayProps} />;
     }
-
+    
     const start = value.startOf('week');
     const end = value.endOf('week');
-
+    
     const dayIsBetween = date.isBetween(start, end, null, '[]');
     const isFirstDay = date.isSame(start, 'day');
     const isLastDay = date.isSame(end, 'day');
-
-    return (
-      <CustomPickersDay
-        {...pickersDayProps}
-        disableMargin
-        dayIsBetween={dayIsBetween}
-        isFirstDay={isFirstDay}
-        isLastDay={isLastDay}
-      />
+    
+  return (
+    <CustomPickersDay
+      {...pickersDayProps}
+      disableMargin
+      dayIsBetween={dayIsBetween}
+      isFirstDay={isFirstDay}
+      isLastDay={isLastDay}
+    />
     );
   };
+  
+  /**
+   * render the date range format
+   * @param value date
+   * @returns date format
+   */
+  const renderDayInputFormat = (value: any) => 
+    `${value.startOf('week').format('MM월 DD일 dddd')} ~ ${value.endOf('week').format('MM월 DD일 dddd')}`;
+  
 
   return (
     <DatePicker
@@ -100,7 +91,7 @@ const WeekPicker = ({ value, setValue, onChange }: any) => {
         onChange(dayjs(newValue).startOf('week'));
       }}
       renderDay={renderWeekPickerDay}
-      inputFormat="YYYY년 MM월 DD일 ~"
+      inputFormat={renderDayInputFormat(value)}
       renderInput={(params) => (
         <TextField
           {...params}

@@ -8,14 +8,21 @@ import { AppBar, Tabs, Tab, Box, Grid, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { ManipulateType } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import 'dayjs/locale/ko';
 import { useState, SyntheticEvent, useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import WeekPicker from './WeekPicker';
 
+import { selectedStartDate } from '@/store/statistics';
+
 dayjs.extend(utc);
+dayjs.extend(localizedFormat);
+dayjs.locale('ko');
+
 
 function a11yProps(index: number) {
   return {
@@ -24,7 +31,7 @@ function a11yProps(index: number) {
   };
 }
 
-type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
+export type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
 
 export interface IPeriodType {
   title: string;
@@ -42,16 +49,31 @@ const Period = () => {
   const [periodType, setPeriodType] = useState<PeriodType>(
     periodTypeList[0].id,
   );
-  const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodType) => {
-    setPeriodType(selectedDate);
-  };
-
   const currDate = new Date().toISOString().slice(0, 10);
-  const [selectedDate, setSelectedDate] = useState(dayjs(currDate));
+  const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
+
   const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
     statisticsResultState,
   );
 
+  const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodType) => {
+    setPeriodType(selectedDate);
+  };
+
+  /**
+   * set data search range with newly selected date
+   * @param newValue newly selected date
+   */
+  const setNewDateRange = (newValue: any) => {
+    if (newValue) {
+      setSelectedDate({...selectedDate, [periodType]: newValue});
+    }
+  };
+
+  /**
+   * get data with selected date
+   * @param request 
+   */
   const getStatistics = async (request: StatisticsRequest) => {
     const response = await getStatisticsData({
       ...request,
@@ -59,31 +81,50 @@ const Period = () => {
     setStatisticsResult(response.result);
   };
 
+  /**
+   * returns rendered input
+   * @param params 
+   * @returns rendered input
+   */
+  const setRenderedInput = (params: any) => {
+    return (
+      <TextField
+        {...params}
+        helperText={null}
+        sx={{
+          '& fieldset': { 
+            border: 'none'
+            
+            //border: '1px solid red'
+          },
+          width: '250px',
+          border: '1px solid pink'
+        }}
+      />
+  )};
+
   useEffect(() => {
-    let finishedAt = '';
-    if (periodType === 'BY_DAY') {
-      finishedAt = `${selectedDate
-        .add(1, 'day')
-        .format('YYYY-MM-DD')}T00:00:00`;
-    } else if (periodType === 'BY_MONTH') {
-      finishedAt = `${selectedDate
-        .add(1, 'month')
-        .format('YYYY-MM-DD')}T00:00:00`;
-    } else if (periodType === 'BY_WEEK') {
-      finishedAt = `${selectedDate
-        .add(1, 'week')
-        .format('YYYY-MM-DD')}T00:00:00`;
-    } else if (periodType === 'BY_YEAR') {
-      finishedAt = `${selectedDate
-        .add(1, 'year')
-        .format('YYYY-MM-DD')}T00:00:00`;
+    let date = selectedDate[periodType];
+    let type: ManipulateType = 'day';
+    switch (periodType) {
+      case 'BY_MONTH': 
+        type = 'month';
+        break;
+      case 'BY_WEEK': 
+        type = 'week';
+        break;
+      case 'BY_YEAR': 
+        type = 'year';
+        break;
+      default:
+        break;
     }
 
     getStatistics({
-      fromStartedAt: `${selectedDate.format('YYYY-MM-DD')}T00:00:00`,
-      toFinishedAt: finishedAt,
+      fromStartedAt: `${date.format('YYYY-MM-DD')}T00:00:00`,
+      toFinishedAt: `${date.add(1, type).format('YYYY-MM-DD')}T00:00:00`,
     });
-  }, [selectedDate]);
+  }, [selectedDate, periodType]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -130,82 +171,38 @@ const Period = () => {
       >
         {periodType === 'BY_DAY' && (
           <DatePicker
-            value={selectedDate}
-            onChange={(newValue) => {
-              if (newValue) {
-                setSelectedDate(newValue);
-              }
-            }}
-            inputFormat="YYYY년 MM월 DD일"
-            renderInput={(params: any) => (
-              <TextField
-                {...params}
-                helperText={null}
-                sx={{
-                  '& fieldset': { border: 'none' },
-                }}
-              />
-            )}
+            value={selectedDate[periodType].locale('ko')}
+            inputFormat='MM월 DD일 dddd'
+            renderInput={setRenderedInput}
+            onChange={setNewDateRange}
           />
         )}
         {periodType === 'BY_WEEK' && (
           <WeekPicker
-            value={selectedDate}
+            value={selectedDate[periodType].locale('ko')}
+            onChange={setNewDateRange}
             setSelectedDate={setSelectedDate}
-            onChange={(newValue: any) => {
-              console.log(newValue);
-              if (!newValue) {
-                return;
-              }
-              setSelectedDate(newValue);
-            }}
           />
         )}
         {periodType === 'BY_MONTH' && (
           <DatePicker
+            value={selectedDate[periodType].locale('ko')}
+            inputFormat='YYYY년 MM월'
+            renderInput={setRenderedInput}
+            onChange={setNewDateRange}
             views={['year', 'month']}
-            openTo="month"
-            inputFormat="YYYY년 MM월"
-            value={selectedDate}
-            onChange={(newValue: any) => {
-              if (!newValue) {
-                return;
-              }
-              setSelectedDate(newValue);
-            }}
-            renderInput={(params: any) => (
-              <TextField
-                {...params}
-                helperText={null}
-                sx={{
-                  '& fieldset': { border: 'none' },
-                }}
-              />
-            )}
+            openTo='month'
           />
         )}
         {periodType === 'BY_YEAR' && (
           <DatePicker
+            value={selectedDate[periodType].locale('ko')}
+            inputFormat='YYYY년'
+            renderInput={setRenderedInput}
+            onChange={setNewDateRange}
             views={['year']}
-            value={selectedDate}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}
-            inputFormat="YYYY년"
-            onChange={(newValue: any) => {
-              if (!newValue) {
-                return;
-              }
-              setSelectedDate(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                helperText={null}
-                sx={{
-                  '& fieldset': { border: 'none' },
-                }}
-              />
-            )}
           />
         )}
       </Grid>

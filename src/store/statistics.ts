@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { StatisticsDetail } from '@/api/statistics.api';
+import dayjs from 'dayjs';
 
 export interface IModalState {
   open: boolean;
@@ -19,4 +20,16 @@ export const dateTypeState = atom({
 export const statisticsResultState = atom({
   key: 'statisticsResult',
   default: [] as StatisticsDetail[],
+});
+
+
+const currDate = dayjs(new Date().toISOString().slice(0, 10));
+export const selectedStartDate = atom({
+  key: 'selectedStartDate',
+  default: {
+    BY_DAY: currDate,
+    BY_WEEK: currDate,
+    BY_MONTH: currDate,
+    BY_YEAR: currDate,
+  },
 });
