@@ -181,7 +181,7 @@ const RecordPage = () => {
             );
           }}
           // dayCellContent={renderDayCellContent}
-        titleFormat={renderTitle}
+          titleFormat={renderTitle}
           datesSet={(info) => {
             getAllRecords(info);
           }} 
