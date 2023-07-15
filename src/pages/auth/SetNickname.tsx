@@ -23,29 +23,28 @@ const SetNickname = (props: any) => {
       placeholder: '영어, 숫자, _, -를 사용한 2 ~ 15자리 이내',
       onChangeHandler: async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const value = event.target.value;
-        setNickname(value);
-
+        setNickname(() => value);
+        
         const reg = /^[a-zA-Z0-9_-]{2,15}$/g;
+        let isNotAvail = true;
         if (!reg.test(value)) {
           setHelper('영어, 숫자, _, - 를 사용한 2 ~ 15자리 이내로 입력해주세요.');
-          setIsHelperError(true);
-          setIsNextButtonDisabled(true);
-          return true;
+          setIsHelperError(isNotAvail);
+          setIsNextButtonDisabled(isNotAvail);
         } else {
           await checkDuplicatedNickname(value).then((response) => {
-            let isAvail = false;
             if (response.status === 'SUCCESS') {
+              isNotAvail = false;
               setHelper('사용 가능한 닉네임입니다.');
-              setIsNextButtonDisabled(isAvail);
               setSignUpData({...signUpData, nickname: value});
             } else {
-              isAvail = true;
               setHelper('이미 사용하고 있는 닉네임입니다.');
             }
-            setIsHelperError(isAvail);
+            setIsNextButtonDisabled(isNotAvail);
+            setIsHelperError(isNotAvail);
             setSignUpNextButtonProps({
               ...signUpNextButtonProps,
-              isDisabled: isAvail,
+              isDisabled: isNotAvail,
             });    
           });
         }
@@ -59,7 +58,8 @@ const SetNickname = (props: any) => {
       text: '회원가입 완료',
       isDisabled: true,
       clickHandler: async () => {
-        await addUser(signUpData).then((response) => {
+        const userData = signUpData;
+        await addUser(userData).then((response) => {
           if (response.status === 'SUCCESS') {
             alert('회원 가입 성공')
           } else {
@@ -68,9 +68,8 @@ const SetNickname = (props: any) => {
         });
       },
     });
-  }, []);
+  }, [nickname]);
 
-  
   return (
     <FormWrapper>
       <InputForm 

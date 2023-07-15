@@ -4,7 +4,6 @@ import { atom } from 'recoil';
 export const SignUpStepState = atom({
   key: 'signUpState',
   default: 0,
-  dangerouslyAllowMutability: false
 });
 
 // sign up user data

@@ -19,7 +19,7 @@ export type InputItemType = {
   duplicateCheckerHandler?: () => {},
   verifyCodeRequestButton?: ReactJSXElement,
   verifyCodeRequestHandler?: () => void,
-  onChangeHandler?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => Promise<true | undefined> | void | boolean,
+  onChangeHandler?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => Promise<true | undefined | void> | void,
   type?: string,
   value?: string
 }
@@ -43,6 +43,7 @@ const InputForm = ({itemArray, disableDuplicateChkBtn, helper, isHelperError, va
               onChange={item.onChangeHandler}
               type={item.type}
               value={value}
+              autoComplete='off'
             />
             <FormHelperText 
               sx={{color: 'green'}}

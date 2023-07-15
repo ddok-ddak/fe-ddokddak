@@ -10,23 +10,16 @@ export function useSignUpStepForm(steps: ReactElement[]) {
    * handle next button
    */
   function handleNextButton() {
-    setCurrentStepIndex(i => {     
-      if (i < steps.length - 1) {
-        return i + 1;
-      } else {
-        return i;
-      }
-    });
-
+    const currIdx = currentStepIndex;
+    setCurrentStepIndex(() => (currIdx < steps.length - 1) ? (currIdx + 1) : currIdx);
   }
 
   /**
    * handle prev button
    */
   function handlePrevButton() {
-    setCurrentStepIndex(i => {
-      return (i <= 0) ? i : i - 1;
-    });
+    const currIdx = currentStepIndex;
+    setCurrentStepIndex(() => (currIdx <= 0) ? currIdx : currIdx - 1);
   }
 
   return {

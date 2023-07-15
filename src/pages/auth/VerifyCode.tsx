@@ -36,41 +36,41 @@ const VerifyCode = (props: any) => {
         </InputAdornment>),
       verifyCodeRequestButton: 
         (<Button 
-          onClick={() => {
-            const requestCount = requestCodeCount;
-            if (requestCount < 5) {
-              setRequestCodeCount(requestCount + 1);
-              // TODO: check verification code
-            } else {
-              setModalInfo({ 
-                open: true, 
-                title: '인증 요청 제한 횟수(5회)를 초과했습니다. 다른 이메일로 시도하시겠습니까? ', 
-                msg: '그렇지 않은 경우 해당 이메일로는 24시간 후에 시도할 수 있습니다.',
-                btn1Text: '아니오',
-                btn1ClickHandler: () => {
-                  setModalInfo({ ...modalInfo, open: false });
-                },
-                btn2Text: '네',
-                btn2ClickHandler: () => {
-                  setModalInfo({ ...modalInfo, open: false });
-                  setCurrentStepIndex(currentStepIndex - 1);
-                }
-              })
-            }
-          }}
-          sx={{
-            height: '29px',
-            width: '110px',
-            margin: '16px 0 8px 10px',
-            justifyContent: 'center',
-            radius: '5px', 
-            backgroundColor: '#E8E8E8', 
-          }}
+            onClick={() => {
+              const requestCount = requestCodeCount;
+              if (requestCount < 5) {
+                setRequestCodeCount(requestCount + 1);
+                // TODO: check verification code
+              } else {
+                setModalInfo({ 
+                  open: true, 
+                  title: '인증 요청 제한 횟수(5회)를 초과했습니다. 다른 이메일로 시도하시겠습니까? ', 
+                  msg: '그렇지 않은 경우 해당 이메일로는 24시간 후에 시도할 수 있습니다.',
+                  btn1Text: '아니오',
+                  btn1ClickHandler: () => {
+                    setModalInfo({ ...modalInfo, open: false });
+                  },
+                  btn2Text: '네',
+                  btn2ClickHandler: () => {
+                    setModalInfo({ ...modalInfo, open: false });
+                    setCurrentStepIndex(currentStepIndex - 1);
+                  }
+                })
+              }
+            }}
+            sx={{
+              height: '29px',
+              width: '120px',
+              margin: '16px 0 8px 10px',
+              justifyContent: 'center',
+              radius: '5px', 
+              backgroundColor: '#E8E8E8', 
+            }}
           >
            <Typography
             sx={{
               fontSize: '11px',
-              color: '#949494'
+              color: '#949494',
             }}
            >
             인증코드 재요청

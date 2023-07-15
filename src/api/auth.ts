@@ -38,16 +38,14 @@ export const checkDuplicatedNickname = async (nickname: string) => {
 
 /**
  * user sign up
- * @param nickname 
+ * @param request: UserData 
  * @returns response
  */
-export const addUser = async (userData: UserData) => {
+export const addUser = async (request: UserData) => {
   const response = await callAPI({
     url: '/api/v1/auth/signup',
     method: 'POST',
-    params: {
-      userData
-    }
+    body: request,
   });
 
   return response as CommonResponse;

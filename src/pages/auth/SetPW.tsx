@@ -40,7 +40,6 @@ const SetPW = (props: any) => {
       ...signUpNextButtonProps,
       isDisabled: isMatch,
     });
-
   };
 
   // password items
@@ -91,19 +90,21 @@ const SetPW = (props: any) => {
 
   return (
     <FormWrapper>
-      <InputForm
-        key="password1"
-        itemArray={itemArray1}
-        helper={helper1}
-        isHelperError={isHelperError1}
-        value={password}
-      />
-      <InputForm 
-        key="password2"
-        itemArray={itemArray2}
-        helper={helper2}
-        isHelperError={isHelperError2}     
-      />
+      <form>
+        <InputForm
+          key="password1"
+          itemArray={itemArray1}
+          helper={helper1}
+          isHelperError={isHelperError1}
+          value={password}
+        />
+        <InputForm 
+          key="password2"
+          itemArray={itemArray2}
+          helper={helper2}
+          isHelperError={isHelperError2}     
+        />
+      </form>
     </FormWrapper>
   );
 };

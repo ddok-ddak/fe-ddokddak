@@ -62,28 +62,28 @@ const SetEmail = (props: any) => {
     {
       name: '이메일',
       placeholder: '이메일 주소를 입력해주세요.',
-      duplicateCheckerButton:
-      (<InputAdornment 
-        position="end" 
-        onClick={duplicateCheckerHandler}
-        > 
-          <Button
-            sx={{
-              color: '#FF8999',
-              fontSize: '13px',
-              fontWeight: '400'
-            }}
-            disabled={disableDuplicateChkBtn}
-            >
-            {'중복확인'}
-          </Button>
-        </InputAdornment>),
+      duplicateCheckerButton:(
+      <InputAdornment position="end"> 
+        <Button
+          onClick={duplicateCheckerHandler}
+          disabled={disableDuplicateChkBtn}
+          sx={{
+            color: '#FF8999',
+            fontSize: '13px',
+            fontWeight: '400'
+          }}
+        >
+          {'중복확인'}
+        </Button>
+      </InputAdornment>
+      ),
       onChangeHandler,
       type: 'email'
     },
   ];
   
   useEffect(() => {
+    setDisableDuplicateChkBtn(true);
     setSignUpStepInstruction('이메일을 입력해주세요.');
     setSignUpNextButtonProps({
       ...signUpNextButtonProps,
