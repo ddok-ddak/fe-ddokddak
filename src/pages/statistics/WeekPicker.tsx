@@ -1,11 +1,11 @@
 import { isPropsEqual } from '@fullcalendar/core/internal';
-import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import weekdayPlugin from 'dayjs/plugin/weekday';
+import { renderDateInput } from './Period';
 
 dayjs.extend(isBetweenPlugin);
 dayjs.extend(weekdayPlugin);
@@ -40,7 +40,7 @@ const CustomPickersDay = styled(PickersDay, {
 
 
 const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
-
+  
   /**
    * render the weekpicker date
    * @param date 
@@ -83,7 +83,6 @@ const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
   const renderDayInputFormat = (value: any) => 
     `${value.startOf('week').format('MM월 DD일 dddd')} ~ ${value.endOf('week').format('MM월 DD일 dddd')}`;
   
-
   return (
     <DatePicker
       value={value}
@@ -92,14 +91,7 @@ const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
       }}
       renderDay={renderWeekPickerDay}
       inputFormat={renderDayInputFormat(value)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          sx={{
-            '& fieldset': { border: 'none' },
-          }}
-        />
-      )}
+      renderInput={(params: any) => renderDateInput({params, width: 250})}
     />
   );
 };
