@@ -91,7 +91,7 @@ const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
       }}
       renderDay={renderWeekPickerDay}
       inputFormat={renderDayInputFormat(value)}
-      renderInput={(params: any) => renderDateInput({params, width: 250})}
+      renderInput={(params: any) => renderDateInput({params, width: 220})}
     />
   );
 };
