@@ -6,7 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Container } from '@mui/system';
 import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectedRangeData } from './CreateRecordPage';
 
@@ -14,6 +14,7 @@ import { getRecord } from '../../api/record.api';
 import Spacer from '@/components/common/Spacer';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { selectedTimeRangeState } from '@/store/record';
+import { statisticsStartHour } from '@/store/statistics';
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -44,6 +45,9 @@ const RecordPage = () => {
   const setSelectedDate = useSetRecoilState<SelectedRangeData>(
     selectedTimeRangeState,
   );
+  const startHour = useRecoilValue(statisticsStartHour);
+  const endHour = `${Number(startHour.substring(0, 2)) + 24}:${startHour.substring(3, 5)}:00`;
+  const interval = '00:30:00';
 
   const handleDateSelect = (e: any) => {
     const selectedDate: SelectedRangeData = {
@@ -69,14 +73,12 @@ const RecordPage = () => {
   function renderTitle(info: any) {
     const startDate = dayjs(info.start.marker).day(0).format('M월 D일 일요일');
     const endDate = dayjs(info.start.marker).day(6).format('M월 D일 토요일');
-  return `${startDate} ~ ${endDate}`;
+    return `${startDate} ~ ${endDate}`;
   }
 
   const getAllRecords = async (info: any) => {
-    const startedAt = dayjs(info.start).day(0).hour(4).format('YYYY-MM-DDT04:00:00');
-    const finishedAt = dayjs(info.start).day(6).hour(23).add(1, 'week').day(0).hour(3).minute(59).second(59).format('YYYY-MM-DDT03:59:59');
-    //console.log(startedAt);
-    //console.log(finishedAt);
+    const startedAt = dayjs(info.start).day(0).format(`YYYY-MM-DDT${startHour}`);
+    const finishedAt = dayjs(info.start).add(1, 'week').day(0).format(`YYYY-MM-DDT${startHour}`);
     try {
       const response = await getRecord(member, startedAt, finishedAt);
   
@@ -211,9 +213,9 @@ const RecordPage = () => {
           eventChange={function(){}}
           eventRemove={function(){}}
           */
-          slotMinTime={'04:00:00'} // 시작시간
-          slotMaxTime={'28:00:00'} // 끝시간
-          slotDuration={'00:30:00'} // 시간 간격
+          slotMinTime={startHour} // 시작시간
+          slotMaxTime={endHour} // 끝시간
+          slotDuration={interval} // 시간 간격
         />
 
       </Container>

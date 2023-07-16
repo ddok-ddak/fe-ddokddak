@@ -13,9 +13,9 @@ import utc from 'dayjs/plugin/utc';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import 'dayjs/locale/ko';
 import { useState, SyntheticEvent, useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import WeekPicker from './WeekPicker';
-import { selectedStartDate } from '@/store/statistics';
+import { selectedStartDate, statisticsStartHour } from '@/store/statistics';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -50,7 +50,6 @@ interface StyledTabProps {
   value: string;
 }
 
-
 /**
  * render date input
  */
@@ -76,18 +75,26 @@ export const renderDateInput = ({params, width}: any) => {
       }}
       sx={{
         display: 'flex',
-        color: '#4B4B4B',
-        fontWeight: '600',
-        fontSize: '14px',
         ' .MuiInputBase-root': { justifyContent: 'center', p: 0 },
-        ' .MuiInputBase-input': { p: '16px 0', flex: '1 1 auto', overflow: 'auto', width: width + 'px' },
-        ' .MuiInputAdornment-root' : {flex: '0 0 auto'},
+        ' .MuiInputBase-input': { 
+          p: '16px 0',
+          flex: '1 1 auto',
+          overflow: 'auto',
+          color: '#4B4B4B',
+          fontWeight: '600',
+          fontSize: '14px',
+          width: width + 'px',
+        },
+        ' .MuiInputAdornment-root' : {flex: '0 0 auto', pb: '1px'},
         '& input': { pl: 0 },
         '& fieldset': { border: 'none' }
       }}
     />
 )};
 
+/**
+ * custom styled tab group
+ */
 const StyledTabs = styled((props: StyledTabsProps) => (
   <Tabs
     {...props}
@@ -113,12 +120,15 @@ const StyledTabs = styled((props: StyledTabsProps) => (
   },
 });
 
+/**
+ * custom styled tab
+ */
 const StyledTab = styled((props: StyledTabProps) => (
   <Tab disableRipple {...props} />
-))(({ theme }) => ({
+))(() => ({
   textTransform: 'none',
   fontSize: 14,
-  marginRight: theme.spacing(1),
+  lineHeight: 3,
   color: '#949494',
   fontWeight: 600,
   '&.Mui-selected': {
@@ -129,13 +139,13 @@ const StyledTab = styled((props: StyledTabProps) => (
   },
 }));
 
-
 const Period = () => {
   const [periodType, setPeriodType] = useState<PeriodType>(
     periodTypeList[0].id,
   );
   const currDate = new Date().toISOString().slice(0, 10);
   const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
+  const startHour = useRecoilValue(statisticsStartHour);
 
   const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
     statisticsResultState,
@@ -143,6 +153,26 @@ const Period = () => {
 
   const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodType) => {
     setPeriodType(selectedDate);
+  };
+
+
+  /**
+   * get period string
+   * @returns period string
+   */
+  const getPeriodString = (): ManipulateType | undefined => {
+    switch (periodType) {
+      case 'BY_DAY': 
+        return 'day';
+      case 'BY_WEEK': 
+        return 'week';
+      case 'BY_MONTH': 
+        return 'month';
+      case 'BY_YEAR': 
+        return 'year';
+      default:
+        break;
+    }
   };
 
   /**
@@ -166,30 +196,31 @@ const Period = () => {
     setStatisticsResult(response.result);
   };
 
-  /**
-   * get period string
-   * @returns period string
-   */
-  const getPeriodString = (): ManipulateType | undefined => {
+
+  useEffect(() => {
+    let startDate = selectedDate[periodType];
+    let endDate = startDate.add(1, getPeriodString());
+
     switch (periodType) {
-      case 'BY_DAY': 
-        return 'day';
-      case 'BY_WEEK': 
-        return 'week';
+      case 'BY_WEEK':
+        startDate = startDate.day(0);
+        endDate = endDate.day(0); 
+        break;
       case 'BY_MONTH': 
-        return 'month';
+        startDate = startDate.date(1);
+        endDate = endDate.date(1);
+        break;
       case 'BY_YEAR': 
-        return 'year';
+        startDate = startDate.month(0).date(1);
+        endDate = endDate.month(0).date(1);
+        break;
       default:
         break;
     }
-  };
-
-  useEffect(() => {
-    let date = selectedDate[periodType];
-    getStatistics({
-      fromStartedAt: `${date.format('YYYY-MM-DD')}T00:00:00`,
-      toFinishedAt: `${date.add(1, getPeriodString()).format('YYYY-MM-DD')}T00:00:00`,
+    
+    getStatistics({ 
+      fromStartedAt: `${startDate.format('YYYY-MM-DD')}T${startHour}`, 
+      toFinishedAt: `${endDate.format('YYYY-MM-DD')}T${startHour}`
     });
   }, [selectedDate, periodType]);
 
@@ -241,7 +272,7 @@ const Period = () => {
         <Box
           sx={{
             width: '100%',
-            height: '70%',
+            height: '79%',
             position: 'absolute',
             boxShadow: '0px 4px 15px 0px rgba(0,0,0,0.04)',
           }}
@@ -274,7 +305,7 @@ const Period = () => {
           <DatePicker
             value={selectedDate[periodType].locale('ko')}
             inputFormat='MM월 DD일 dddd'
-            renderInput={(params: any) => renderDateInput({params, width: 120})}
+            renderInput={(params: any) => renderDateInput({params, width: 100})}
             disableMaskedInput
             onChange={setNewDateRange}
           />
@@ -290,7 +321,7 @@ const Period = () => {
           <DatePicker
             value={selectedDate[periodType].locale('ko')}
             inputFormat='YYYY년 MM월'
-            renderInput={(params: any) => renderDateInput({params, width: 95})}
+            renderInput={(params: any) => renderDateInput({params, width: 80})}
             onChange={setNewDateRange}
             views={['year', 'month']}
             openTo='month'
@@ -300,11 +331,12 @@ const Period = () => {
           <DatePicker
             value={selectedDate[periodType].locale('ko')}
             inputFormat='YYYY년'
-            renderInput={(params: any) => renderDateInput({params, width: 55})}
+            renderInput={(params: any) => renderDateInput({params, width: 45})}
             onChange={setNewDateRange}
             views={['year']}
             minDate={dayjs('2023-01-01')}
             maxDate={dayjs(currDate)}
+          
           />
         )}
 
