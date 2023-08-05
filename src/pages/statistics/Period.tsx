@@ -3,7 +3,7 @@ import {
   StatisticsDetail,
   StatisticsRequest,
 } from '@/api/statistics.api';
-import { statisticsResultState } from '@/store/statistics';
+import { periodTypeList, statisticsResultState } from '@/store/statistics';
 import { AppBar, Tabs, Tab, Box, Grid, TextField, InputAdornment, IconButton, styled } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -15,7 +15,7 @@ import 'dayjs/locale/ko';
 import { useState, SyntheticEvent, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import WeekPicker from './WeekPicker';
-import { selectedStartDate, statisticsStartHour } from '@/store/statistics';
+import { selectedStartDate, statisticsStartHour, selectedPeriodType } from '@/store/statistics';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -28,21 +28,6 @@ function a11yProps(index: number) {
     'aria-controls': `full-width-tabpanel-${index}`,
   };
 }
-
-export type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
-
-export interface IPeriodType {
-  title: string;
-  id: PeriodType;
-}
-
-const periodTypeList: IPeriodType[] = [
-  { title: '하루', id: 'BY_DAY' },
-  { title: '일주일', id: 'BY_WEEK' },
-  { title: '한 달', id: 'BY_MONTH' },
-  { title: '일 년', id: 'BY_YEAR' },
-];
-
 
 interface StyledTabProps {
   key: string;
@@ -140,9 +125,12 @@ const StyledTab = styled((props: StyledTabProps) => (
 }));
 
 const Period = () => {
-  const [periodType, setPeriodType] = useState<PeriodType>(
+  const [periodType1, setPeriodType1] = useState<PeriodType>(
     periodTypeList[0].id,
   );
+
+  const [periodType, setPeriodType] = useRecoilState<PeriodType>(selectedPeriodType);
+
   const currDate = new Date().toISOString().slice(0, 10);
   const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
   const startHour = useRecoilValue(statisticsStartHour);
@@ -162,13 +150,13 @@ const Period = () => {
    */
   const getPeriodString = (): ManipulateType | undefined => {
     switch (periodType) {
-      case 'BY_DAY': 
+      case 'BY_DAY':
         return 'day';
       case 'BY_WEEK': 
         return 'week';
-      case 'BY_MONTH': 
+      case 'BY_MONTH':
         return 'month';
-      case 'BY_YEAR': 
+      case 'BY_YEAR':
         return 'year';
       default:
         break;
@@ -193,7 +181,9 @@ const Period = () => {
     const response = await getStatisticsData({
       ...request,
     });
-    setStatisticsResult(response.result);
+    const temp = [{"categoryId":1,"categoryName":"직장","categoryColor":"#FFC5CC","parentId":null,"level":0,"timeSum":360,"children":[{"categoryId":8,"categoryName":"업무","categoryColor":"#FFC5CC","parentId":1,"level":1,"timeSum":0,"children":null},{"categoryId":9,"categoryName":"야근","categoryColor":"#FFC5CC","parentId":1,"level":1,"timeSum":0,"children":null},{"categoryId":10,"categoryName":"출장","categoryColor":"#FFC5CC","parentId":1,"level":1,"timeSum":180,"children":null},{"categoryId":11,"categoryName":"회식","categoryColor":"#FFC5CC","parentId":1,"level":1,"timeSum":180,"children":null}]},{"categoryId":2,"categoryName":"성장","categoryColor":"#FFCDA0","parentId":null,"level":0,"timeSum":240,"children":[{"categoryId":12,"categoryName":"독서","categoryColor":"#FFCDA0","parentId":2,"level":1,"timeSum":0,"children":null},{"categoryId":13,"categoryName":"강의","categoryColor":"#FFCDA0","parentId":2,"level":1,"timeSum":30,"children":null},{"categoryId":14,"categoryName":"자격증","categoryColor":"#FFCDA0","parentId":2,"level":1,"timeSum":210,"children":null}]},{"categoryId":3,"categoryName":"관계","categoryColor":"#FFE49F","parentId":null,"level":0,"timeSum":360,"children":[{"categoryId":15,"categoryName":"친구","categoryColor":"#FFE49F","parentId":3,"level":1,"timeSum":0,"children":null},{"categoryId":16,"categoryName":"가족","categoryColor":"#FFE49F","parentId":3,"level":1,"timeSum":360,"children":null},{"categoryId":17,"categoryName":"연인","categoryColor":"#FFE49F","parentId":3,"level":1,"timeSum":0,"children":null}]},{"categoryId":4,"categoryName":"건강","categoryColor":"#B5F9AA","parentId":null,"level":0,"timeSum":0,"children":[{"categoryId":18,"categoryName":"잠","categoryColor":"#B5F9AA","parentId":4,"level":1,"timeSum":0,"children":null},{"categoryId":19,"categoryName":"식사","categoryColor":"#B5F9AA","parentId":4,"level":1,"timeSum":0,"children":null},{"categoryId":20,"categoryName":"운동","categoryColor":"#B5F9AA","parentId":4,"level":1,"timeSum":0,"children":null}]},{"categoryId":5,"categoryName":"낭비","categoryColor":"#B9E1FF","parentId":null,"level":0,"timeSum":0,"children":[{"categoryId":21,"categoryName":"sns","categoryColor":"#B9E1FF","parentId":5,"level":1,"timeSum":0,"children":null},{"categoryId":22,"categoryName":"웹서핑","categoryColor":"#B9E1FF","parentId":5,"level":1,"timeSum":0,"children":null},{"categoryId":23,"categoryName":"미디어","categoryColor":"#B9E1FF","parentId":5,"level":1,"timeSum":0,"children":null},{"categoryId":24,"categoryName":"멍","categoryColor":"#B9E1FF","parentId":5,"level":1,"timeSum":0,"children":null}]},{"categoryId":6,"categoryName":"취미","categoryColor":"#D1C7FF","parentId":null,"level":0,"timeSum":210,"children":[{"categoryId":25,"categoryName":"게임","categoryColor":"#D1C7FF","parentId":6,"level":1,"timeSum":0,"children":null},{"categoryId":26,"categoryName":"영화","categoryColor":"#D1C7FF","parentId":6,"level":1,"timeSum":0,"children":null},{"categoryId":27,"categoryName":"음악","categoryColor":"#D1C7FF","parentId":6,"level":1,"timeSum":210,"children":null},{"categoryId":28,"categoryName":"악기","categoryColor":"#D1C7FF","parentId":6,"level":1,"timeSum":0,"children":null}]},{"categoryId":7,"categoryName":"기타","categoryColor":"#ECB8FF","parentId":null,"level":0,"timeSum":0,"children":[{"categoryId":29,"categoryName":"집안일","categoryColor":"#ECB8FF","parentId":7,"level":1,"timeSum":0,"children":null},{"categoryId":30,"categoryName":"이동시간","categoryColor":"#ECB8FF","parentId":7,"level":1,"timeSum":0,"children":null}]}];
+    setStatisticsResult(temp);
+    //setStatisticsResult(response.result);
   };
 
 
