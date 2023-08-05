@@ -76,6 +76,9 @@ const customBackground = {
   },
 };
 
+let INITIAL_DATA: any[] = [];
+let categoryData: any[] = [];
+
 const ChartContainer = () => {
   const statisticsResult = useRecoilValue(statisticsResultState);
   const [categoryDetailData, setCategoryDetailData] = useState(statisticsResult);
