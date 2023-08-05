@@ -1,4 +1,4 @@
-import { Container, Box, Typography, LinearProgress } from '@mui/material';
+import { Box, Typography, LinearProgress } from '@mui/material';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -12,12 +12,15 @@ import { Chart, getElementsAtEvent } from 'react-chartjs-2';
 import Carousel from 'react-material-ui-carousel';
 
 import Circle from '@/components/common/Circle';
-import { useRecoilState } from 'recoil';
-import { statisticsResultState } from '@/store/statistics';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { periodTypeList, statisticsResultState } from '@/store/statistics';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { isContext } from 'vm';
 
+import { selectedPeriodType } from '@/store/statistics';
+
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
+
 
 const hourFormatter = (time: number) => {
   if (!time) {
@@ -35,6 +38,15 @@ const minuteFormatter = (time: number) => {
   return m > 0 ? m : 0;
 };
 
+const timeFormatter = (time: number) => {
+  if (!time) {
+    return '';
+  }
+  const h = Math.floor(time / 60);
+  const m = Math.floor(time % 60);
+  return ' ' +  (h > 0 ? (h + '시간') : '') + ' ' +  (m > 0 ? (m + '분') : '');
+};
+
 const customBackground = {
   id: 'customBackgroundColor',
   beforeDraw: (chart: any, args: any, options: any) => {
@@ -50,12 +62,23 @@ const customBackground = {
   },
 };
 
+let INITIAL_DATA: any[] = [];
+let categoryData: any[] = [];
+
 const ChartContainer = () => {
+
   const [statisticsResult, setStatisticsResult] = useRecoilState(
     statisticsResultState,
   );
+  const [categoryResult, setCategoryResult] = useState([]);
+
+  const [periodType, setPeriodType] = useRecoilState(selectedPeriodType);
+  const statisticInitResult = useRecoilValue(statisticsResultState);
+
   const [totalSum, setTotalSum] = useState(0);
   const [showTotalSum, setShowTotalSum] = useState(true);
+  const [showTotalStat, setShowTotalStat] = useState(true);
+  const [totalSumTitle, setTotalSumTitle] = useState('');
 
   const carouselOption = {
     autoPlay: false,
@@ -125,6 +148,7 @@ const ChartContainer = () => {
         bottom: 25,
       },
     },
+    cutout: '35%',
     responsive: true,
     showTooltips: true,
     hoverOffset: 25,
@@ -174,6 +198,10 @@ const ChartContainer = () => {
   };
 
   const barChartOptions = {
+    onClick: (e:any, b: any) => {
+      //let index = b[0].index;
+      console.log(e)
+    },
     layout: {
       padding: {
         top: 80,
@@ -192,6 +220,8 @@ const ChartContainer = () => {
       },
       datalabels: {
         anchor: 'end',
+        align: 'top',
+        offset: 0,
         color: (context: any) => {
           // TODO: change clicked bar's data label color
           return context.clicked ? '#222222' : '#B7B7B7';
@@ -201,6 +231,9 @@ const ChartContainer = () => {
             formatter: (val: any) => {
               const hours = Math.floor(val / 60);
               const minutes = val % 60;
+              if (!minutes) {
+                return `${hours}시간`;
+              }
               return `${hours}시간\n ${minutes}분`;
             },
             font: {
@@ -252,124 +285,163 @@ const ChartContainer = () => {
     },
   };
 
+  const checkKorean = (name: string) => {
+    const isThereLastChar = (name.charCodeAt(name.length - 1) - 0xac00) % 28;
+    return name + (isThereLastChar ? '은' : '는');
+  }
+
+  const getCategoryStat = (data: any) => {
+    let subTitle = periodTypeList.filter((type)=> type.id === periodType)[0].subTitle;
+    let statResult = INITIAL_DATA;
+    if (showTotalStat) {
+      statResult = statResult.filter((resultData) => data.categoryId === resultData.categoryId);
+      subTitle += ' ' + checkKorean(data.categoryName);
+    } else {
+      
+    }
+    console.log(statResult)
+    //setStatisticsResult(statResult);
+    categoryData = statResult;
+    setTotalSumTitle(subTitle);
+    setShowTotalStat(!showTotalStat);
+    console.log(statResult)
+    //setCategoryResult();
+  }
+  
+  useEffect(() => {
+    INITIAL_DATA = statisticInitResult;
+  }, []);
+
   useEffect(() => {
     const total = statisticsResult.length ? statisticsResult.reduce(
       (accumulator, currentValue) => accumulator + currentValue.timeSum,
       0,
     ) : 0;
     setTotalSum(total);
-  }, [statisticsResult]);
+    setTotalSumTitle(checkKorean(periodTypeList.filter((type)=> type.id === periodType)[0].subTitle));
+  }, [statisticsResult, periodType]);
+
+  const barChart = () => {
+    return (
+      <Chart
+        ref={barChartRef}
+        type={'bar'}
+        data={chartData}
+        options={barChartOptions}
+        onClick={handleClickBarChart}
+        plugins={[ChartDataLabels, customBackground]}
+      />
+    );
+  };
 
   return (
     <>
-      {statisticsResult.length && 
-        <Carousel {...carouselOption}>
+      <Box 
+        sx={{ 
+          backgroundColor: '#FFF4F6',
+          //display: 'flex',
+          //flexDirection: 'row'
+        }} 
+      >
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gridTemplateRows: '1fr 1fr 1fr'
+
+          }}
+        >
           <Box
             sx={{
-              display: 'flex',
-              height: '274px',
-              justifyContent: 'center',
-              position: 'relative',
               width: '100%',
-              backgroundColor: '#FFF4F6',
+              height: '57px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderBottom: '3px solid white',
+              color: '#222222',
+              fontWeight: 'bold',
+              fontSize: '14px',
             }}
           >
-            <Box
-              sx={{
-                display: showTotalSum ? 'flex' : 'none',
-                flexDirection: 'column',
-                position: 'absolute',
-                height: '274px',
-                top: '42%',
-                textAlign: 'center',
-                color: '#FF7184',
+            <span>{totalSumTitle} {'‎'}</span>
+            <span
+              style={{
                 fontSize: '16px',
-                fontWeight: '700',
+                color: '#FF7184',
               }}
             >
-              <span style={{ color: '#222222' }}>총 </span>
-              <Box>
-                <span>{hourFormatter(totalSum)}</span>
-                <span style={{ color: '#222222' }}> 시간</span>
-              </Box>
-              <Box>
-                <span>{minuteFormatter(totalSum)} </span>
-                <span style={{ color: '#222222' }}>분</span>
-              </Box>
-            </Box>
-            <Chart
-              ref={pieChartRef}
-              type={'doughnut'}
-              data={chartData}
-              options={pieChartOptions}
-              onClick={handleClickPieChart}
-              plugins={[ChartDataLabels, customBackground]}
-            />
+              {timeFormatter(totalSum)}
+            </span>
           </Box>
           <Box
             sx={{
-              backgroundColor: '#FFF4F6',
+              // display: 'absolute',
+              // right: '10%',
+              marginRight: '10%',
+              border: '1px solid red',
+              width: '25px'
             }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                width: '100%',
-                height: '57px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderBottom: '3px solid white',
-                color: '#222222',
-                fontWeight: 'bold',
-                fontSize: '14px',
-              }}
-            >
-              <span>총 </span>
-              <span
-                style={{
-                  fontSize: '16px',
-                  color: '#FF7184',
-                }}
-              >
-                {hourFormatter(totalSum)}
-              </span>
-              <span>시간 </span>
-              <span
-                style={{
-                  fontSize: '16px',
-                  color: '#FF7184',
-                }}
-              >
-                {minuteFormatter(totalSum)}
-              </span>
-              <span>분</span>
-            </Box>
+          </Box>
+        </Box>
+        {statisticsResult.length && 
+          <Carousel {...carouselOption}>
             <Box
               sx={{
                 display: 'flex',
                 height: '274px',
                 justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
+                position: 'relative',
                 width: '100%',
+                //backgroundColor: '#FFF4F6',
               }}
             >
               <Chart
-                ref={barChartRef}
-                type={'bar'}
+                ref={pieChartRef}
+                type={'doughnut'}
                 data={chartData}
-                options={barChartOptions}
-                onClick={handleClickBarChart}
+                options={pieChartOptions}
+                onClick={handleClickPieChart}
                 plugins={[ChartDataLabels, customBackground]}
               />
             </Box>
-          </Box>
-        </Carousel>
-      }
+            <Box
+              sx={{
+                backgroundColor: '#FFF4F6',
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  height: '274px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  width: '100%',
+                }}
+              >
+                <Chart
+                  ref={barChartRef}
+                  type={'bar'}
+                  data={chartData}
+                  options={barChartOptions}
+                  onClick={handleClickBarChart}
+                  plugins={[ChartDataLabels, customBackground]}
+                />
+              </Box>
+            </Box>
+          </Carousel>
+        }
+      </Box>
       {statisticsResult.length && statisticsResult
-        .filter((data) => data.timeSum > 0)
+        .filter((data) => {
+          //if (data.categoryId === 1) {
+            //console.log(data)
+
+            return data.timeSum > 0;
+          //}
+        })        
         .map((data, idx) => (
           <Box
             key={idx}
@@ -382,56 +454,58 @@ const ChartContainer = () => {
               alignItems: 'flex-end',
             }}
           >
-            <Circle color={data.categoryColor} size={40} />
-            <Box sx={{ width: '60%', margin: '0px 10px 3px 10px' }}>
-              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                {data.categoryName}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ width: '100%', mr: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(data.timeSum * 100) / totalSum}
-                    sx={{
-                      height: 10,
-                      '&.MuiLinearProgress-root': {
-                        backgroundColor: '#F5F5F5 !important',
-                        borderRadius: 5,
-                      },
-                      '& > .MuiLinearProgress-bar': {
-                        backgroundColor: data.categoryColor,
-                        borderRadius: 5,
-                      },
-                    }}
-                  />
-                </Box>
-                {/* <Box sx={{ minWidth: 35 }}>
-                <Typography variant="body2" color="text.secondary">
-                  {`${
-                    totalSum > 0
-                      ? Math.round((data.timeSum / totalSum) * 100)
-                      : 0
-                  }%`}
+            <>
+              <Circle color={data.categoryColor} size={40} onClick={() => {getCategoryStat(data)}}/>
+              <Box sx={{ width: '60%', margin: '0px 10px 3px 10px' }}>
+                <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                  {data.categoryName}
                 </Typography>
-              </Box> */}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ width: '100%', mr: 1 }}>
+                    <LinearProgress
+                      variant="determinate"
+                      value={(data.timeSum * 100) / totalSum}
+                      sx={{
+                        height: 10,
+                        '&.MuiLinearProgress-root': {
+                          backgroundColor: '#F5F5F5 !important',
+                          borderRadius: 5,
+                        },
+                        '& > .MuiLinearProgress-bar': {
+                          backgroundColor: data.categoryColor,
+                          borderRadius: 5,
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* <Box sx={{ minWidth: 35 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {`${
+                      totalSum > 0
+                        ? Math.round((data.timeSum / totalSum) * 100)
+                        : 0
+                    }%`}
+                  </Typography>
+                </Box> */}
+                </Box>
               </Box>
-            </Box>
-            <Typography
-              sx={{
-                display: 'flex',
-                alignItems: 'end',
-                justifyContent: 'center',
-                flex: '8% 1 1',
-                fontSize: '16px',
-                fontWeight: 'bold',
-              }}
-            >
-              {data.timeSum % 60 === 0
-                ? `${Math.floor(data.timeSum / 60)}시간`
-                : `${Math.floor(data.timeSum / 60)}시간 ${data.timeSum % 60}분`}
-            </Typography>
+              <Typography
+                sx={{
+                  display: 'flex',
+                  alignItems: 'end',
+                  justifyContent: 'center',
+                  flex: '8% 1 1',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                }}
+              >
+                {data.timeSum % 60 === 0
+                  ? `${Math.floor(data.timeSum / 60)}시간`
+                  : `${Math.floor(data.timeSum / 60)}시간 ${data.timeSum % 60}분`}
+              </Typography>
+            </>
           </Box>
-        ))}
+      ))}
     </>
   );
 };
