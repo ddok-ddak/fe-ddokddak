@@ -133,7 +133,7 @@ const Period = () => {
     setStatisticsResult(response.result);
   };
 
-  const getPeriodString = (period: StatPeriodType): ManipulateType | undefined => {
+  const getPeriodString = (period: PeriodType): ManipulateType | undefined => {
     switch (period) {
       case 'BY_DAY':
         return 'day';
