@@ -6,7 +6,7 @@ import { Box, Container } from '@mui/system';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectedRangeData } from './EditRecordPage';
 
@@ -32,8 +32,18 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import '../../styles/custom-calendar-styles.css';
 import '../../styles/custom-record-styles.css';
-import { customCalendarType, currentCalendarType } from '@/store/common';
+import {
+  customCalendarType,
+  currentCalendarType,
+  stepButtonProps,
+  currentFormType,
+  FormType,
+} from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
+import { modalState } from '@/store/modal';
+import { currentUserInfo } from '@/store/info';
+import { UserData } from '@/store/userData';
+import { UserModeList } from '../category/CategoryPage';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -66,8 +76,12 @@ const RecordPage = () => {
     currentPeriodForRecord,
   );
 
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+
   const setCalendarType =
     useSetRecoilState<customCalendarType>(currentCalendarType);
+
+  const setCurrentFormType = useSetRecoilState<FormType>(currentFormType);
 
   const setRecordType = useSetRecoilState(currentRecordPageType);
 
@@ -83,6 +97,9 @@ const RecordPage = () => {
   const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
 
   const interval = '00:30:00';
+
+  const userInfo = useRecoilValue<UserData>(currentUserInfo);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
   /**
    * route to record create page of dragged time
@@ -202,6 +219,30 @@ const RecordPage = () => {
 
     // set type for custom calendar
     setCalendarType('RECORD');
+
+    // set type for next button (for template mode setting modal)
+    setCurrentFormType('SETTEMPLATE');
+    
+    setNextButtonProps({
+      ...nextButtonProps,
+      text: '시작하기!',
+      clickHandler: () => {
+        setModalInfo({
+          ...modalInfo,
+          open: false,
+        });
+      },
+    });
+
+    setModalInfo({
+      open: true,
+      title: `${userInfo.nickname}님 환영합니다!`,
+      msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
+      optionList: UserModeList.map((userMode) => {
+        return { id: userMode.id, type: userMode.type, name: userMode.name };
+      }),
+      isShowConfirmBtn: true,
+    });
   }, []);
 
   return (

@@ -1,7 +1,14 @@
 import { atom } from 'recoil';
-import { SubCategoryProps } from '../pages/category/CategoryPage';
+import { MainCategoryProps, SubCategoryProps } from '../pages/category/CategoryPage';
 
+// selected Main Category
+export const selectedMainCategoryState = atom({
+  key: 'SelectedCategoryState',
+  default: {} as MainCategoryProps,
+});
+
+// selected Sub Category
 export const selectedSubCategoryState = atom({
-  key: 'selectedSubCategoryState',
+  key: 'SelectedSubCategoryState',
   default: {} as SubCategoryProps,
 });

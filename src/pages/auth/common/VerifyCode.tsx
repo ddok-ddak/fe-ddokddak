@@ -11,8 +11,7 @@ import InputForm, { InputItemType } from './InputForm';
 const VerifyCode = (props: any) => {
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
-  const [currentStepIndex, setCurrentStepIndex] =
-    useRecoilState(stepIndex);
+  const [currentStepIndex, setCurrentStepIndex] = useRecoilState(stepIndex);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
 
@@ -146,7 +145,6 @@ const VerifyCode = (props: any) => {
       },
       isDisabled: true,
     });
-
   }, []);
 
   return (

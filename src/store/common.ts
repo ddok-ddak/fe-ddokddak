@@ -19,6 +19,7 @@ import {
   currentPeriodForView,
   currentSelectedDateForStat,
 } from './statistics';
+import { setModeNextButtonState } from './auth';
 
 /* ============ BOTTOM NAV ============ */
 
@@ -34,7 +35,14 @@ export interface INextButtonState {
   text: string;
 }
 
-export type FormType = 'SIGNUP' | 'LOGIN' | 'RECORD' | 'RESETPW';
+/**
+ * SIGNUP 회원 가입
+ * LOGIN 로그인
+ * RECORD 기록
+ * RESETPW 비밀번호 재설정
+ * SETTEMPLATE 템플릿 모드 (유저 모드) 설정
+ */
+export type FormType = 'SIGNUP' | 'LOGIN' | 'RECORD' | 'RESETPW' | 'SETTEMPLATE';
 
 export const currentFormType = atom<FormType>({
   key: 'CurrentFormType',
@@ -49,6 +57,10 @@ export const stepButtonProps = selector({
       return get(signInUpNextButtonState);
     } else if (type === 'LOGIN') {
       return get(resetPWNextButtonState);
+    } else if (type === 'RECORD') {
+      return get(recordEditNextButtonState);
+    } else if (type === 'SETTEMPLATE') {
+      return get(setModeNextButtonState);
     } else {
       return get(recordEditNextButtonState);
     }
@@ -59,6 +71,10 @@ export const stepButtonProps = selector({
       set(signInUpNextButtonState, newValue);
     } else if (type === 'LOGIN') {
       set (resetPWNextButtonState, newValue);
+    } else if (type === 'RECORD') {
+      set (recordEditNextButtonState, newValue);
+    } else if (type === 'SETTEMPLATE') {
+      set (setModeNextButtonState, newValue);
     } else {
       set(recordEditNextButtonState, newValue);
     }

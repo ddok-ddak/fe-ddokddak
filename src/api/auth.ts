@@ -2,6 +2,8 @@ import { UserData } from '@/store/userData';
 import { callAPI } from './common/api';
 import CommonResponse from './http';
 
+/************************ SIGN UP ************************/
+
 /**
  * check duplicated email
  * @param email email
@@ -46,6 +48,20 @@ export const addUser = async (request: UserData) => {
     url: '/api/v1/auth/signup',
     method: 'POST',
     body: request,
+  });
+
+  return response as CommonResponse;
+};
+
+/************************  SIGN IN  ************************/
+
+
+/************************ USER INFO ************************/
+
+export const getInfo = async () => {
+  const response = await callAPI({
+    url: '/api/v1/members/me',
+    method: 'GET',
   });
 
   return response as CommonResponse;

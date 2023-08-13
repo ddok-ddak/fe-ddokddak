@@ -5,10 +5,12 @@ export interface IModalState {
   open: boolean;
   title: string;
   msg: string;
-  btn1Text: string;
-  btn1ClickHandler: () => void;
-  btn2Text: string;
-  btn2ClickHandler: () => void;
+  btn1Text?: string;
+  btn1ClickHandler?: () => void;
+  btn2Text?: string;
+  btn2ClickHandler?: () => void;
+  optionList?: any;
+  isShowConfirmBtn?: boolean;
 }
 
 
@@ -21,7 +23,8 @@ export const modalState = atom({
     btn1Text: '',
     btn1ClickHandler: () => {},
     btn2Text: '',
-    btn2ClickHandler: () => {}
+    btn2ClickHandler: () => {},
+    confirmBtnText: false,
   } as IModalState,
 });
 

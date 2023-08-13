@@ -21,7 +21,6 @@ export function useSignUpStepForm(steps: ReactElement[]) {
    */
   function handlePrevButton() {
     const currIdx = currentStepIndex;
-    console.log(currIdx)
     if (currIdx <= 0) {
       navigate('/login', { replace: true });
     } else {
