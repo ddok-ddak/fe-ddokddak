@@ -144,7 +144,6 @@ const ChartContainer = () => {
     const periodTypeTitle = periodTypeList!.filter(
       (type) => type.id === periodType,
     )[0].subTitle;
-    console.log(periodTypeTitle);
     if (clickedElement && chartData) {
       const index = clickedElement.index;
       const label = chart.data.labels[index];
@@ -448,7 +447,6 @@ const ChartContainer = () => {
 
   useEffect(() => {
     setCalendarType('STAT');
-    console.log(periodTypeList);
   }, []);
 
   useEffect(() => {

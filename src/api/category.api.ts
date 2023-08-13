@@ -18,44 +18,37 @@ export const getCategories = async () => {
   const response = await callAPI({
     url: `/api/v1/categories`,
     method: 'GET',
-    params: {
-      // memberId: 1,
-    },
   });
-
   return response as CommonResponse;
 };
 
-export const addSubCategory = async (request: SubCategoryProps) => {
+export const addSubCategory = async (request: any) => {
   const response = await callAPI({
     url: `/api/v1/categories`,
     method: 'POST',
     body: {
       name: request.name,
       color: request.color,
-      level: 1,
+      highlightColor: request.highlightColor,
+      iconId: request.iconId,
       mainCategoryId: request.mainCategoryId,
-      // memberId: 1,
+      level: 1, // Main Category : 0, Sub Category: 1
     },
   });
 
   return response as CommonResponse;
 };
 
-export const updateSubCategory = async (request: SubCategoryProps) => {
+export const updateSubCategory = async (request: any) => {
   const response = await callAPI({
     url: `/api/v1/categories/value`,
     method: 'PUT',
     body: {
       categoryId: request.categoryId,
       name: request.name,
-      color: request.color,
+      iconId: request.iconId,
     },
-    // params: {
-    //   memberId: 1,
-    // },
   });
-
   return response as CommonResponse;
 };
 
@@ -63,9 +56,6 @@ export const deleteCategory = async (categoryId: number) => {
   const response = await callAPI({
     url: `/api/v1/categories/${categoryId}`,
     method: 'DELETE',
-    // body: {
-    //   memberId: 1,
-    // },
   });
 
   return response as CommonResponse;

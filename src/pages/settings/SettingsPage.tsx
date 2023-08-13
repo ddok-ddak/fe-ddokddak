@@ -53,7 +53,7 @@ const SettingPage = () => {
     );
   };
 
-  const getListItem = (text: string, handler?: () => {} | void) => {
+  const getListItem = ({text, handler}: {text: string, handler?: () => {} | void}) => {
     return (
       <ListItemButton onClick={handler} sx={{ m: 0, pb: 0, pt: 0 }}>
         <ListIcon />
@@ -183,15 +183,15 @@ const SettingPage = () => {
           }}
         >
           {getListSubHeader('커스텀화')}
-          {getListItem('모드 및 카테고리 설정')}
+          {getListItem({text: '모드 및 카테고리 설정', handler: () => navigation('/category')})}
 
           {getListSubHeader('고객 센터')}
-          {getListItem('도움말')}
-          {getListItem('문의하기', () => navigation('/category'))}
+          {getListItem({text: '도움말'})}
+          {getListItem({text: '문의하기'})}
 
           {getListSubHeader('계정')}
-          {getListItem('비밀번호 변경', () => navigation('/resetPW'))}
-          {getListItem('로그아웃', () => navigation('/login'))}
+          {getListItem({text: '비밀번호 변경', handler:  () => navigation('/resetPW')})}
+          {getListItem({text: '로그아웃', handler:  () => navigation('/login')})}
         </List>
         <Button>
           <Typography

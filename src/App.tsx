@@ -8,7 +8,7 @@ import FindID from './pages/auth/findID/FindID';
 import Login from './pages/auth/login/Login';
 import SignUp from './pages/auth/signup/SignUp';
 import CategoryPage from './pages/category/CategoryPage';
-import CreateCategoryPage from './pages/category/CreateCategoryPage';
+import EditCategoryPage from './pages/category/EditCategoryPage';
 import RecordPage from './pages/record/RecordPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import StatisticsPage from './pages/statistics/StatisticsPage';
@@ -44,7 +44,7 @@ function App() {
 
               <Route path="/record/edit" element={<EditRecordPage />} />
               <Route path="/category" element={<CategoryPage />} />
-              <Route path="/category/add" element={<CreateCategoryPage />} />
+              <Route path="/category/edit" element={<EditCategoryPage />} />
             </Routes>
           </Box>
           <BottomNav />

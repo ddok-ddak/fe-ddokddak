@@ -22,7 +22,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
             color: '#222222',
             fontWeight: '700',
             fontSize: '18px',
-            margin: '30px 0 41px 0',
+            padding: '30px 0 41px 0',
           }}
         >
           {instruction}
@@ -31,7 +31,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
         {children}
         </form>
       </Box>
-      {BottomButton()}
+      <BottomButton btnStyleProps={{}} textStyleProps={{}}/>
     </Container>
   );
 };

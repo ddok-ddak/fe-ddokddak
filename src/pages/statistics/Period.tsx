@@ -191,7 +191,6 @@ const Period = () => {
       fromStartedAt: `${startDate.format('YYYY-MM-DD')}T${startHour}`,
       toFinishedAt: `${endDate.format('YYYY-MM-DD')}T${startHour}`,
     });
-    // console.log(selectedDate[periodType])
   }, [selectedDate, periodType]);
 
   return (
