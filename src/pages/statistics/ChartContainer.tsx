@@ -338,6 +338,7 @@ const ChartContainer = () => {
     <>
       <Box 
         sx={{ 
+
           backgroundColor: '#FFF4F6',
           //display: 'flex',
           //flexDirection: 'row'
@@ -345,14 +346,16 @@ const ChartContainer = () => {
       >
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr',
-            gridTemplateRows: '1fr 1fr 1fr'
-
+            // display: 'grid',
+            // gridTemplateColumns: '1fr',
+            // gridTemplateRows: '1fr 1fr 1fr'
+            position: 'relative',
           }}
         >
           <Box
             sx={{
+              // position: 'absolute',
+
               width: '100%',
               height: '57px',
               display: 'flex',
@@ -376,11 +379,14 @@ const ChartContainer = () => {
           </Box>
           <Box
             sx={{
+
               // display: 'absolute',
               // right: '10%',
-              marginRight: '10%',
-              border: '1px solid red',
-              width: '25px'
+              position: 'absolute',
+              right: '10%',
+              border: '1px solid blue',
+              width: '10px',
+              height: '90%'
             }}
           >
           </Box>
