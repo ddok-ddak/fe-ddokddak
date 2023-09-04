@@ -12,7 +12,7 @@ import { Chart } from 'react-chartjs-2';
 import Carousel from 'react-material-ui-carousel';
 
 import Circle from '@/components/common/Circle';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { periodTypeList, statisticsResultState } from '@/store/statistics';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -76,8 +76,6 @@ const customBackground = {
   },
 };
 
-let INITIAL_DATA: any[] = [];
-let categoryData: any[] = [];
 
 const ChartContainer = () => {
   const statisticsResult = useRecoilValue(statisticsResultState);
