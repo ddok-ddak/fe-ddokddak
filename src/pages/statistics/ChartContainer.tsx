@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import { Box, Typography, LinearProgress } from '@mui/material';
 import {
   Chart as ChartJS,
@@ -15,12 +16,12 @@ import Circle from '@/components/common/Circle';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { periodTypeList, statisticsResultState } from '@/store/statistics';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { isContext } from 'vm';
 
 import { selectedPeriodType } from '@/store/statistics';
+import DonutIcon from '@/icons/DonutIcon';
+import BarIcon from '@/icons/BarIcon';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
-
 
 const hourFormatter = (time: number) => {
   if (!time) {
@@ -63,7 +64,6 @@ const customBackground = {
 };
 
 let INITIAL_DATA: any[] = [];
-let categoryData: any[] = [];
 
 const ChartContainer = () => {
 
@@ -79,10 +79,15 @@ const ChartContainer = () => {
   const [showTotalSum, setShowTotalSum] = useState(true);
   const [showTotalStat, setShowTotalStat] = useState(true);
   const [totalSumTitle, setTotalSumTitle] = useState('');
+  const [isFirstPage, setIsFirstPage] = useState(false);
 
   const carouselOption = {
     autoPlay: false,
     duration: 0,
+    navButtonsAlwaysInvisible: true,
+    onChange: (firstPage: number) => {
+      setIsFirstPage(!!firstPage);
+    },
     fullHeightHoverWrapper: {
       height: '100%',
       top: '0',
@@ -96,14 +101,13 @@ const ChartContainer = () => {
     },
     indicatorIconButtonProps: {
       style: {
-        transform: 'scale(0.8)',
-        padding: '3px',
-        color: '#FFDCE1',
+        display: 'none',
       },
     },
     activeIndicatorIconButtonProps: {
       style: {
-        color: '#FF7184',
+        display: 'none',
+        // color: '#FF7184',
       },
     },
   };
@@ -196,7 +200,6 @@ const ChartContainer = () => {
       },
     },
   };
-
   const barChartOptions = {
     onClick: (e:any, b: any) => {
       //let index = b[0].index;
@@ -338,24 +341,16 @@ const ChartContainer = () => {
     <>
       <Box 
         sx={{ 
-
           backgroundColor: '#FFF4F6',
-          //display: 'flex',
-          //flexDirection: 'row'
         }} 
       >
         <Box
           sx={{
-            // display: 'grid',
-            // gridTemplateColumns: '1fr',
-            // gridTemplateRows: '1fr 1fr 1fr'
             position: 'relative',
           }}
         >
           <Box
             sx={{
-              // position: 'absolute',
-
               width: '100%',
               height: '57px',
               display: 'flex',
@@ -379,20 +374,61 @@ const ChartContainer = () => {
           </Box>
           <Box
             sx={{
-
-              // display: 'absolute',
-              // right: '10%',
               position: 'absolute',
-              right: '10%',
-              border: '1px solid blue',
-              width: '10px',
-              height: '90%'
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              top: 0,
+              right: '5%',
+              width: '72px',
+              height: 'calc(100% - 3px)'
             }}
-          >
+            >
+            <Box
+              onClick={() => {
+                
+              }}
+              sx={{
+                border: `1px solid ${isFirstPage ? '#949494' : '#FF7184'}`,
+                borderRight: `1px solid #FF7184`, 
+                borderRadius: '3px 0 0 3px',
+                flex: '1 1 50%',
+                height: '50%',
+                padding: 'auto',
+                display: 'flex',  
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <DonutIcon iconColor={isFirstPage ? '#949494' : '#FF7184'}/>
+            </Box>
+            <Box
+              onClick={() => {}}
+              sx={{
+                border: `1px solid ${isFirstPage ? '#FF7184' : '#949494'}`,
+                borderLeft: 'none',
+                borderRadius: '0 3px 3px 0',
+                flex: '1 1 50%',
+                height: '50%',
+                display: 'flex',  
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <BarIcon iconColor={isFirstPage ? '#FF7184' : '#949494'} />
+
+
+            </Box>
           </Box>
         </Box>
         {statisticsResult.length && 
-          <Carousel {...carouselOption}>
+          <Carousel 
+            {...carouselOption} 
+            
+            // NavButton = {({onClick, className, style, next, prev}) =>     
+            //     <div className={next ? 'NextButton' : 'prevButton'} />                      
+            // }
+          >
             <Box
               sx={{
                 display: 'flex',
