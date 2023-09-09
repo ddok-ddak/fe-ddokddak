@@ -1,17 +1,16 @@
 const BarIcon = (color: { iconColor: string }) => {
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
-        <g clip-path="url(#clip0_1328_464)">
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+      <g clipPath="url(#clip0_1328_464)">
         <path d="M4.74996 9.75H1.58329C1.10829 9.75 0.791626 10.05 0.791626 10.5V16.5C0.791626 16.95 1.10829 17.25 1.58329 17.25H4.74996C5.22496 17.25 5.54163 16.95 5.54163 16.5V10.5C5.54163 10.05 5.22496 9.75 4.74996 9.75ZM17.4166 6.75H14.25C13.775 6.75 13.4583 7.05 13.4583 7.5V16.5C13.4583 16.95 13.775 17.25 14.25 17.25H17.4166C17.8916 17.25 18.2083 16.95 18.2083 16.5V7.5C18.2083 7.05 17.8916 6.75 17.4166 6.75ZM11.0833 0.75H7.91663C7.44163 0.75 7.12496 1.05 7.12496 1.5V16.5C7.12496 16.95 7.44163 17.25 7.91663 17.25H11.0833C11.5583 17.25 11.875 16.95 11.875 16.5V1.5C11.875 1.05 11.5583 0.75 11.0833 0.75Z" fill={color.iconColor}/>
-        </g>
-        <defs>
+      </g>
+      <defs>
         <clipPath id="clip0_1328_464">
-        <rect width="19" height="18" fill={color.iconColor}/>
+          <rect width="19" height="18" fill={color.iconColor}/>
         </clipPath>
-        </defs>
-      </svg>
-    );
-  };
+      </defs>
+    </svg>
+  );
+};
   
-  export default BarIcon;
-  
+export default BarIcon;
