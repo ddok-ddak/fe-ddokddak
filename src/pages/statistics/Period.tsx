@@ -9,10 +9,10 @@ import { CustomCalendar } from '@/components/common/CustomCalendar';
 import {
   PeriodType,
   periodTypeList,
+  selectedPeriodType,
   selectedStartDate,
   statisticsResultState,
   statisticsStartHour,
-  StatPeriodType,
 } from '@/store/statistics';
 import {
   AppBar,
@@ -20,8 +20,7 @@ import {
   Grid,
   styled,
   Tab,
-  Tabs,
-  ThemeProvider,
+  Tabs
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -96,7 +95,6 @@ const StyledTab = styled((props: StyledTabProps) => (
   fontWeight: 600,
   '&.Mui-selected': {
     color: '#FF7184',
-    color: '#FF7184',
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
@@ -104,14 +102,12 @@ const StyledTab = styled((props: StyledTabProps) => (
 });
 
 const Period = () => {
-  const [periodType, setPeriodType] = useState<PeriodType>(
-    periodTypeList[0].id,
-  );
+
   const currDate = new Date().toISOString().slice(0, 10);
   const startHour = useRecoilValue(statisticsStartHour);
   const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
   const [periodType, setPeriodType] =
-    useRecoilState<PeriodType>(StatPeriodType);
+    useRecoilState<PeriodType>(selectedPeriodType);
 
   const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
     statisticsResultState,
@@ -148,27 +144,6 @@ const Period = () => {
     }
   };
 
-  /**
-   * set data search range with newly selected date
-   * @param newValue newly selected date
-   */
-  const setNewDateRange = (newValue: any) => {
-    if (newValue) {
-      setSelectedDate({ ...selectedDate, [periodType]: newValue });
-    }
-  };
-
-  /**
-   * get data with selected date
-   * @param request
-   * @param request
-   */
-  const getStatistics = async (request: StatisticsRequest) => {
-    const response = await getStatisticsData({
-      ...request,
-    });
-    setStatisticsResult(response.result);
-  };
 
   useEffect(() => {
     let startDate = selectedDate[periodType];
