@@ -17,7 +17,7 @@ const DaysChip = (props: DaysChipProps) => {
         height: '24px',
         textAlign: 'center',
         backgroundColor: `${props.isselected && '#FFDCE1'}`,
-        textDecoration: `${props.underline && 'underline primary.main 4px'}`,
+        textDecoration: `${props.underline && 'underline #FF7184 4px'}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

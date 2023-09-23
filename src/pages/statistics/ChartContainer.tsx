@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 import { Box, Typography, LinearProgress } from '@mui/material';
 import {
   Chart as ChartJS,
