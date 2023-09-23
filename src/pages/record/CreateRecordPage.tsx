@@ -85,8 +85,8 @@ const CreateRecordPage= (): ReactElement => {
   const [recoilSubCategoryValue, setRecoilSubCategoryValue] = useRecoilState(recoilSubCategory);
 
 
-// 초기 선택된 요일을 state에 저장
-useEffect(() => {
+  // 초기 선택된 요일을 state에 저장
+  useEffect(() => {
   const getInitialSelectedDays = (): number[] => {
     const dayIndex = selectedDate.start.getDay();
     return [dayIndex];
@@ -96,98 +96,96 @@ useEffect(() => {
   setSelectedDays(initialSelectedDays);
 }, [selectedDate.start, setSelectedDays]);
 
-  //카테고리 API 요청
-  const getAllCategories = async () => {
-    const response = await getCategories();
-    if (response.result) {
-      setCategories(response.result);
-      //console.log(response.result.color);
-      //console.log(response.result.categoryId);
-    } else {
-      alert('Error');
-    }
-  };
-
-  useEffect(() => {
-    getAllCategories();
-  }, []);
-
-  useEffect(() => {
-    setSelectedSubCategoryIdx(0);
-  }, [selectedCategoryIdx]);
-
-
-  // 선택한 메인카테고리, sub카테고리 recoil에 저장
-  useEffect(() => {
-    setSelectedSubCategoryIdx(0);
-    setRecoilCategoryValue(selectedCategoryIdx);
-  }, [selectedCategoryIdx, setRecoilCategoryValue, recoilCategoryValue]);
-
-  useEffect(() => {
-    setRecoilSubCategoryValue(selectedSubCategoryIdx);
-  }, [selectedSubCategoryIdx, setRecoilSubCategoryValue, recoilCategoryValue]);
-
-  // 날짜 형식 2023-01-01T13:00:00 KST으로 포맷
-  function formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
-  
-    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} KST`;
+//카테고리 API 요청
+const getAllCategories = async () => {
+  const response = await getCategories();
+  if (response.result) {
+    setCategories(response.result);
+  } else {
+    alert('Error');
   }
-  const navigate = useNavigate();
+};
 
+useEffect(() => {
+  getAllCategories();
+}, []);
+
+useEffect(() => {
+  setSelectedSubCategoryIdx(0);
+}, [selectedCategoryIdx]);
+
+
+// 선택한 메인카테고리, sub카테고리 recoil에 저장
+useEffect(() => {
+  setSelectedSubCategoryIdx(0);
+  setRecoilCategoryValue(selectedCategoryIdx);
+}, [selectedCategoryIdx, setRecoilCategoryValue, recoilCategoryValue]);
+
+useEffect(() => {
+  setRecoilSubCategoryValue(selectedSubCategoryIdx);
+}, [selectedSubCategoryIdx, setRecoilSubCategoryValue, recoilCategoryValue]);
+
+// 날짜 형식 2023-01-01T13:00:00 KST으로 포맷
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} KST`;
+}
+const navigate = useNavigate();
+
+
+//시간소비 활동 API - 등록
+async function postData(
+  name: string,
+  startedAt: string,
+  finishedAt: string
+): Promise<{
+  categoryId: number;
+  name: string;
+  startedAt: string;
+  finishedAt: string;
+  timeUnit: number;
+} | undefined> {
+  const newRecord = {
+    categoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
+    name,
+    startedAt,
+    finishedAt,
+    timeUnit: 30,
+  };
   
-  //시간소비 활동 API - 등록
-  async function postData(
-    name: string,
-    startedAt: string,
-    finishedAt: string
-  ): Promise<{
-    categoryId: number;
-    name: string;
-    startedAt: string;
-    finishedAt: string;
-    timeUnit: number;
-  } | undefined> {
-    const newRecord = {
-      categoryId: categories[selectedCategoryIdx].subCategories[selectedSubCategoryIdx].categoryId,
+  const response = await addRecord(newRecord);
+  console.log(response);
+  
+  if (response.result) {
+    const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
+    setSelectedDays([]);
+    navigate("/record");
+    return {
+      categoryId,
       name,
       startedAt,
       finishedAt,
-      timeUnit: 30,
+      timeUnit,
     };
-    
-    const response = await addRecord(newRecord);
-    console.log(response);
-    
-    if (response.result) {
-      const { categoryId, name, startedAt, finishedAt, timeUnit } = response.result;
-      setSelectedDays([]);
-      navigate("/record");
-      return {
-        categoryId,
-        name,
-        startedAt,
-        finishedAt,
-        timeUnit,
-      };
-    } else {
-      console.log("에러 발생");
-      return undefined;
-    }
+  } else {
+    console.log("에러 발생");
+    return undefined;
   }
-  
-  async function postAllDays(name: string, startedAt: string, finishedAt: string, selectedDays: number[]): Promise<void> {
-    for (const dayIndex of selectedDays) {
-      const startedAtOfDay = formatDate(new Date(addDays(selectedDate.start, dayIndex - selectedDays[0])));
-      const finishedAtOfDay = formatDate(new Date(addDays(selectedDate.end, dayIndex - selectedDays[0])));
-      await postData(name, startedAtOfDay, finishedAtOfDay);
-    }
+}
+
+async function postAllDays(name: string, startedAt: string, finishedAt: string, selectedDays: number[]): Promise<void> {
+  for (const dayIndex of selectedDays) {
+    const startedAtOfDay = formatDate(new Date(addDays(selectedDate.start, dayIndex - selectedDays[0])));
+    const finishedAtOfDay = formatDate(new Date(addDays(selectedDate.end, dayIndex - selectedDays[0])));
+    await postData(name, startedAtOfDay, finishedAtOfDay);
   }
+}
 
 function handleRightButtonClick() {
   const name = categories[selectedCategoryIdx]?.subCategories[selectedSubCategoryIdx]?.name;

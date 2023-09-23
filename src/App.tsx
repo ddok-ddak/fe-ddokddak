@@ -16,6 +16,8 @@ import StatisticsPage from './pages/statistics/StatisticsPage';
 import Modal from './components/common/Modal';
 
 import CreateRecoredPage from '@/pages/record/CreateRecordPage';
+import UpdateRecoredPage from '@/pages/record/UpdateRecordPage';
+
 import { theme } from '@/styles';
 import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
 import ResetPWStep from './pages/auth/resetPW/ResetPWSteps';
@@ -41,6 +43,7 @@ function App() {
             <Route path="/settings/account" element={<AccountSetting />} />
 
             <Route path="/record/create" element={<CreateRecoredPage />} />
+            <Route path="/record/update" element={<UpdateRecoredPage />} />
             <Route path="/category" element={<CategoryPage />} />
             <Route path="/category/add" element={<CreateCategoryPage />} />
           </Routes>

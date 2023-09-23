@@ -54,7 +54,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
             {props.title}
           </Typography>
           {props.isShowRightButton && (
-                <IconButton onClick={props.onClickRightButton}>
+            <IconButton onClick={props.onClickRightButton}>
               {props.rightButtonIcon}
               <CheckIcon />
             </IconButton>

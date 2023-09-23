@@ -3,9 +3,9 @@ import {
   StatisticsDetail,
   StatisticsRequest,
 } from '@/api/statistics.api';
+import Chevron from '@/components/common/Chevron';
+import DateInput from '@/components/date/DateInput';
 import {
-  periodTypeList,
-  selectedPeriodType,
   selectedStartDate,
   statisticsResultState,
   statisticsStartHour,
@@ -29,7 +29,7 @@ import dayjs, { ManipulateType } from 'dayjs';
 import 'dayjs/locale/ko';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { SyntheticEvent, useEffect } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import WeekPicker from './WeekPicker';
 
@@ -43,6 +43,20 @@ function a11yProps(index: number) {
     'aria-controls': `full-width-tabpanel-${index}`,
   };
 }
+
+export type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
+
+export interface IPeriodType {
+  title: string;
+  id: PeriodType;
+}
+
+const periodTypeList: IPeriodType[] = [
+  { title: '하루', id: 'BY_DAY' },
+  { title: '일주일', id: 'BY_WEEK' },
+  { title: '한 달', id: 'BY_MONTH' },
+  { title: '일 년', id: 'BY_YEAR' },
+];
 
 interface StyledTabProps {
   key: string;
@@ -140,12 +154,52 @@ const StyledTab = styled((props: StyledTabProps) => (
   color: '#949494',
   fontWeight: 600,
   '&.Mui-selected': {
-    color: 'primary.main',
+    color: '#FF7184',
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
   },
 });
+
+
+  export const setPeriodicalDatePicker = (props: any) => {
+    return (
+      <DatePicker
+        showToolbar={false}
+        disableMaskedInput
+        // components={{
+          
+        //   'DateCalender' : <Box></Box>
+        // }}
+        slots={{
+          ActionBar: <Box></Box>,
+          // SwitchViewButton: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+          SwitchViewIcon: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+          PaperContent	: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+        }}
+        slotsProps={{
+          // SwitchViewButton: {
+          //   sx: {
+          //     'div' : {
+          //       'border': '1px solid red'
+          //     }
+          //   }
+          // },
+          SwitchViewIcon: {
+            sx: {
+              'div' : {
+                'border': '1px solid red'
+              }
+            }
+          }
+        }}
+        reduceAnimations={true}
+        showDaysOutsideCurrentMonth={true}
+        {...props}
+      />
+    );
+  };
+  
 
 const Period = () => {
   const [periodType, setPeriodType] =
@@ -295,77 +349,70 @@ const Period = () => {
           p: '8px 17px',
         }}
       >
-        <button
-          className="fc-next-button fc-button"
-          style={{ width: '14px', height: '14px' }}
-          onClick={() =>
+        <Chevron
+          callback={() =>
             setNewDateRange(
               selectedDate[periodType].subtract(1, getPeriodString()),
             )
           }
-        >
-          <span
-            className="fc-icon fc-icon-chevron-left"
-            style={{ color: 'common.white', top: 0, left: 0 }}
-          />
-        </button>
-
+          direction="left"
+        />
         {periodType === 'BY_DAY' && (
-          <DatePicker
-            value={selectedDate[periodType].locale('ko')}
-            inputFormat="MM월 DD일 dddd"
-            renderInput={(params: any) =>
-              renderDateInput({ params, width: 100 })
-            }
-            disableMaskedInput
-            onChange={setNewDateRange}
-          />
+          <>
+            {setPeriodicalDatePicker({
+              value: selectedDate[periodType].locale('ko'),
+              inputFormat: 'MM월 DD일 dddd',
+              renderInput: (params: any) => (
+                <DateInput params={params} width={100} />
+              ),
+              onChange: setNewDateRange,
+            })}
+          </>
         )}
         {periodType === 'BY_WEEK' && (
           <WeekPicker
             value={selectedDate[periodType].locale('ko')}
             onChange={setNewDateRange}
+            showToolbar={false}
             setSelectedDate={setSelectedDate}
           />
         )}
         {periodType === 'BY_MONTH' && (
-          <DatePicker
-            value={selectedDate[periodType].locale('ko')}
-            inputFormat="YYYY년 MM월"
-            renderInput={(params: any) =>
-              renderDateInput({ params, width: 80 })
-            }
-            onChange={setNewDateRange}
-            views={['year', 'month']}
-            openTo="month"
-          />
+          <>
+            {setPeriodicalDatePicker({
+              value: selectedDate[periodType].locale('ko'),
+              inputFormat: 'YYYY년 MM월',
+              renderInput: (params: any) => (
+                <DateInput params={params} width={80} />
+              ),
+              onChange: setNewDateRange,
+              views: ['year', 'month'],
+              openTo: 'month',
+            })}
+          </>
         )}
         {periodType === 'BY_YEAR' && (
-          <DatePicker
-            value={selectedDate[periodType].locale('ko')}
-            inputFormat="YYYY년"
-            renderInput={(params: any) =>
-              renderDateInput({ params, width: 45 })
-            }
-            onChange={setNewDateRange}
-            views={['year']}
-            minDate={dayjs('2023-01-01')}
-            maxDate={dayjs(currDate)}
-          />
+          <>
+            {setPeriodicalDatePicker({
+              value: selectedDate[periodType].locale('ko'),
+              inputFormat: 'YYYY년',
+              renderInput: (params: any) => (
+                <DateInput params={params} width={45} />
+              ),
+              onChange: setNewDateRange,
+              views: ['year'],
+              openTo: 'year',
+              minDate: dayjs('2023-01-01'),
+              maxDate: dayjs(currDate),
+            })}
+          </>
         )}
-
-        <button
-          className="fc-next-button fc-button"
-          style={{ width: '14px', height: '14px' }}
-          onClick={() =>
+        <Chevron
+          callback={() =>
             setNewDateRange(selectedDate[periodType].add(1, getPeriodString()))
           }
-        >
-          <span
-            className="fc-icon fc-icon-chevron-right"
-            style={{ color: '#fff', top: 0, left: 0 }}
-          />
-        </button>
+          direction="right"
+        />
       </Grid>
       {/* 날짜 선택 끝 */}
     </LocalizationProvider>

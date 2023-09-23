@@ -1,11 +1,10 @@
-import { isPropsEqual } from '@fullcalendar/core/internal';
 import { styled } from '@mui/material/styles';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import weekdayPlugin from 'dayjs/plugin/weekday';
-import { renderDateInput } from './Period';
+import DateInput from '@/components/date/DateInput';
+import { setPeriodicalDatePicker } from './Period';
 
 dayjs.extend(isBetweenPlugin);
 dayjs.extend(weekdayPlugin);
@@ -38,16 +37,14 @@ const CustomPickersDay = styled(PickersDay, {
   }),
 })) as React.ComponentType<CustomPickerDayProps>;
 
-
 const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
-  
   /**
    * render the weekpicker date
-   * @param date 
-   * @param selectedDates 
-   * @param pickersDayProps 
+   * @param date
+   * @param selectedDates
+   * @param pickersDayProps
    * @returns <CustomPickersDay/>
-  */
+   */
   const renderWeekPickerDay = (
     date: Dayjs,
     selectedDates: Array<Dayjs | null>,
@@ -56,43 +53,45 @@ const WeekPicker = ({ value, setValue, onChange }: any): JSX.Element => {
     if (!value) {
       return <PickersDay {...pickersDayProps} />;
     }
-    
+
     const start = value.startOf('week');
     const end = value.endOf('week');
-    
+
     const dayIsBetween = date.isBetween(start, end, null, '[]');
     const isFirstDay = date.isSame(start, 'day');
     const isLastDay = date.isSame(end, 'day');
-    
-  return (
-    <CustomPickersDay
-      {...pickersDayProps}
-      disableMargin
-      dayIsBetween={dayIsBetween}
-      isFirstDay={isFirstDay}
-      isLastDay={isLastDay}
-    />
+
+    return (
+      <CustomPickersDay
+        {...pickersDayProps}
+        disableMargin
+        dayIsBetween={dayIsBetween}
+        isFirstDay={isFirstDay}
+        isLastDay={isLastDay}
+      />
     );
   };
-  
+
   /**
    * render the date range format
    * @param value date
    * @returns date format
    */
-  const renderDayInputFormat = (value: any) => 
-    `${value.startOf('week').format('MM월 DD일 dddd')} ~ ${value.endOf('week').format('MM월 DD일 dddd')}`;
-  
+  const renderDayInputFormat = (value: any) =>
+    `${value.startOf('week').format('MM월 DD일 dddd')} ~ ${value
+      .endOf('week')
+      .format('MM월 DD일 dddd')}`;
+
   return (
-    <DatePicker
-      value={value}
-      onChange={(newValue) => {
-        onChange(dayjs(newValue).startOf('week'));
-      }}
-      renderDay={renderWeekPickerDay}
-      inputFormat={renderDayInputFormat(value)}
-      renderInput={(params: any) => renderDateInput({params, width: 220})}
-    />
+    <>
+      {setPeriodicalDatePicker({
+        value: value,
+        onChange: (newValue: any) => onChange(dayjs(newValue).startOf('week')),
+        renderDay: renderWeekPickerDay,
+        inputFormat: renderDayInputFormat(value),
+        renderInput: (params: any) => <DateInput params={params} width={220} />,
+      })}
+    </>
   );
 };
 

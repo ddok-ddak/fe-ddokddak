@@ -1,28 +1,32 @@
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
-import dayjs from 'dayjs';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Container } from '@mui/system';
-import React, { useState,useEffect } from 'react';
+import { Box, Container } from '@mui/system';
+import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { SelectedRangeData } from './CreateRecordPage';
 
-import { getRecord } from '../../api/record.api';
 import Spacer from '@/components/common/Spacer';
 import CommonHeader from '@/components/layout/CommonHeader';
-import { selectedTimeRangeState } from '@/store/record';
 import { statisticsStartHour } from '@/store/statistics';
+import { getRecord } from '../../api/record.api';
 
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import Chevron from '@/components/common/Chevron';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import '../../styles/custom-record-styles.css';
 import '../../styles/custom-calendar-styles.css';
+
+import WeekPicker from '../statistics/WeekPicker';
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-interface Event {
+export interface Event {
   id: number;
   title: string;
   start: Date;
@@ -30,7 +34,6 @@ interface Event {
   categoryId: number;
   color: string;
 }
-
 
 const renderEventContent = (eventInfo: any) => {
   return (
@@ -42,101 +45,152 @@ const renderEventContent = (eventInfo: any) => {
 
 const RecordPage = () => {
   const navigation = useNavigate();
-  const setSelectedDate = useSetRecoilState<SelectedRangeData>(
-    selectedTimeRangeState,
-  );
+  // const setSelectedDate = useSetRecoilState<SelectedRangeData>(
+  //   selectedTimeRangeState,
+  // );
+  // const setSelectedDate = useSetRecoilState<SelectedRangeData>(
+  //   selectedTimeRangeState,
+  // );
   const startHour = useRecoilValue(statisticsStartHour);
-  const endHour = `${Number(startHour.substring(0, 2)) + 24}:${startHour.substring(3, 5)}:00`;
+
+  // const selectedDate = useRecoilValue(selectedStartDate);
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs(new Date().toISOString().slice(0, 10)),
+  );
+
+  const endHour = `${
+    Number(startHour.substring(0, 2)) + 24
+  }:${startHour.substring(3, 5)}:00`;
   const interval = '00:30:00';
 
+  const calendarRef = useRef<any>(null);
+
   const handleDateSelect = (e: any) => {
-    const selectedDate: SelectedRangeData = {
+    const newSelectedDate: SelectedRangeData = {
       start: e.start,
       end: e.end,
     };
-    setSelectedDate(selectedDate);
+    console.log(newSelectedDate)
+    // setSelectedDate(newSelectedDate);
+    // setSelectedDate(newSelectedDate);
     navigation('/record/create');
   };
 
   const handleEventClick = (e: any) => {
-    //console.log(e.event.id);
+    return true;
+    const instance = e.event._instance;
+    const selectedDate: SelectedRangeData = {
+      start: instance.range.start,
+      end: instance.range.end,
+    };
+    console.log(e.event._context.getCurrentdata());
+    // setSelectedDate(selectedDate);
+
+    navigation('/record/create');
   };
 
   const handleEvents = (e: any) => {
-    //console.log(e);
   };
 
   //시간소비 활동 API - 조회
-  const member= 1;
+
+
   const [events, setEvents] = useState<Event[]>([]);
-  
+
+
   function renderTitle(info: any) {
+    return selectedDate.locale('ko');
+    return selectedDate.locale('ko');
     const startDate = dayjs(info.start.marker).day(0).format('M월 D일 일요일');
     const endDate = dayjs(info.start.marker).day(6).format('M월 D일 토요일');
     return `${startDate} ~ ${endDate}`;
   }
 
   const getAllRecords = async (info: any) => {
-    const startedAt = dayjs(info.start).day(0).format(`YYYY-MM-DDT${startHour}`);
-    const finishedAt = dayjs(info.start).add(1, 'week').day(0).format(`YYYY-MM-DDT${startHour}`);
+    const startedAt = dayjs(info.start)
+      .day(0)
+      .format(`YYYY-MM-DDT${startHour}`);
+    const finishedAt = dayjs(info.start)
+      .add(1, 'week')
+      .day(0)
+      .format(`YYYY-MM-DDT${startHour}`);
     try {
-      const response = await getRecord(member, startedAt, finishedAt);
-  
+      // const response = await getRecord(member, startedAt, finishedAt);
+      const response = await getRecord(startedAt, finishedAt);
+
       //console.log(response);
       //console.log(response.result);
       if (response.result) {
         const activityRecords = response.result;
-  
+
         let events: Event[] = [];
         let currentEvent: Event | null = null;
         //console.log(activityRecords);
 
         // 각 activity record에 대해 처리
-      activityRecords.forEach((item: any) => {
-        const startedAt = dayjs(item.startedAt.replace(" KST", "")).toDate();;
-        const finishedAt = dayjs(item.finishedAt.replace(" KST", "")).toDate();;
+        activityRecords.forEach((item: any) => {
+          const startedAt = dayjs(item.startedAt.replace(' KST', '')).toDate();
+          const finishedAt = dayjs(
+            item.finishedAt.replace(' KST', ''),
+          ).toDate();
 
-        const event: Event = {
-          id: item.activityRecordId,
-          title: item.categoryName,
-          start: startedAt,
-          end: finishedAt,
-          categoryId: item.categoryId,
-          color: item.categoryColor,
-        };
+          const event: Event = {
+            id: item.activityRecordId,
+            title: item.categoryName,
+            start: startedAt,
+            end: finishedAt,
+            categoryId: item.categoryId,
+            color: item.categoryColor,
+          };
 
-        if (currentEvent) {
-          // 이전 이벤트가 존재하는 경우
-          if (dayjs(event.start).isSame(currentEvent.end) && event.title === currentEvent.title) {
-            // 연속된 이벤트인 경우 이어서 표시
-            currentEvent.end = event.end;
+          if (currentEvent) {
+            // 이전 이벤트가 존재하는 경우
+            if (
+              dayjs(event.start).isSame(currentEvent.end) &&
+              event.title === currentEvent.title
+            ) {
+              // 연속된 이벤트인 경우 이어서 표시
+              currentEvent.end = event.end;
+            } else {
+              // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
+              events.push(currentEvent);
+              currentEvent = event;
+            }
           } else {
-            // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
-            events.push(currentEvent);
+            // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
             currentEvent = event;
           }
-        } else {
-          // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
-          currentEvent = event;
+        });
+
+        // 마지막 이벤트가 남아 있는 경우 events에 추가
+        if (currentEvent !== null) {
+          events.push(currentEvent);
         }
-      });
 
-      // 마지막 이벤트가 남아 있는 경우 events에 추가
-      if (currentEvent !== null) {
-        events.push(currentEvent);
+        setEvents(events);
       }
-
-      setEvents(events);
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
+
   useEffect(() => {
     const initialInfo = { start: new Date() };
     getAllRecords(initialInfo);
-  }, []);
 
+    // apply custom style to the table
+    const calendarElem = calendarRef.current.elRef.current;
+    const timeSlotTdList = calendarElem.querySelectorAll(
+      'table tbody td tr td:first-of-type',
+    );
+    timeSlotTdList.forEach((td: HTMLElement, idx: number) => {
+      if (!!(idx % 2)) {
+        td.style.display = 'none';
+      } else {
+        td.setAttribute('rowspan', '2');
+      }
+    });
+  }, []);
 
   const transformedEvents = events.map((event) => ({
     id: String(event.id),
@@ -147,51 +201,160 @@ const RecordPage = () => {
   }));
 
   return (
-    <div >
+    <>
       <CommonHeader title={'일주일 기록하기'} />
-      <Container
+      <Box
         sx={{
           height: 'calc(100vh - 112px)',
         }}
       >
         <Spacer y={10} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Container
+            sx={{
+              display: 'flex !important',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              '& .fc': { justifyContent: 'center' },
+              '& .fc-toolbar-chunk': { padding: '0px' },
+            }}
+          >
+            <Chevron
+              callback={(e: any) => {
+                const prevIcon: HTMLElement = document.querySelector(
+                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-left',
+                )!;
+                prevIcon?.click();
+                setSelectedDate(selectedDate.subtract(1, 'w'));
+              }}
+              direction="left"
+            />
+            <WeekPicker
+              value={selectedDate}
+              onChange={(e: any) => {
+                const newDate = dayjs(e.toISOString().slice(0, 10));
+                setSelectedDate(newDate);
+                const calendar = calendarRef.current.calendar;
+                console.log(calendar)
+                // calendar.gotoDate(newDate);
+
+
+
+              }}
+            />
+            <Chevron
+              callback={() => {
+                const nextIcon: HTMLElement = document.querySelector(
+                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-right',
+                )!;
+                nextIcon?.click();
+                setSelectedDate(selectedDate.add(1, 'w'));
+              }}
+              direction="right"
+            />
+          </Container>
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Container
+            sx={{
+              display: 'flex !important',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              '& .fc': { justifyContent: 'center' },
+              '& .fc-toolbar-chunk': { padding: '0px' },
+            }}
+          >
+            <Chevron
+              callback={(e: any) => {
+                const prevIcon: HTMLElement = document.querySelector(
+                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-left',
+                )!;
+                prevIcon?.click();
+                setSelectedDate(selectedDate.subtract(1, 'w'));
+              }}
+              direction="left"
+            />
+            <WeekPicker
+              value={selectedDate}
+              onChange={(e: any) => {
+                const newDate = dayjs(e.toISOString().slice(0, 10));
+                setSelectedDate(newDate);
+                const calendar = calendarRef.current.calendar;
+                console.log(calendar)
+                // calendar.gotoDate(newDate);
+
+
+
+              }}
+            />
+            <Chevron
+              callback={() => {
+                const nextIcon: HTMLElement = document.querySelector(
+                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-right',
+                )!;
+                nextIcon?.click();
+                setSelectedDate(selectedDate.add(1, 'w'));
+              }}
+              direction="right"
+            />
+          </Container>
+        </LocalizationProvider>
         <FullCalendar
+          ref={calendarRef}
+          ref={calendarRef}
           height={'calc(100% - 16px)'}
           allDaySlot={false}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
-            left: "prev",
-            center: "title",
-            right: "next",
+            left: 'prev',
+            right: 'next',
+            left: 'prev',
+            right: 'next',
           }}
           dayHeaderContent={(args) => {
             const underlineStyle = {
-              borderBottom: '4px solid #FF8999',
-              paddingBottom: '4px',
-              width: '38px',
-              height: '2px',
+              padding: '0 0 0 0',
+              margin: '5px 0 -2px 0',
+              width: '100%',
+              backgroundColor: '#FF8999',
+              borderRadius: '3px',
+              height: '3px',
+              padding: '0 0 0 0',
+              margin: '5px 0 -2px 0',
+              width: '100%',
+              backgroundColor: '#FF8999',
+              borderRadius: '3px',
+              height: '3px',
             };
-            const isToday = dayjs(args.date).tz('Asia/Seoul').isSame(new Date(), 'day');
+            const isToday = dayjs(args.date)
+              .tz('Asia/Seoul')
+              .isSame(new Date(), 'day');
             const dayNumber = args.date.getDate();
-            const color = args.date.getDay() === 0 ? '#FF4444' : args.date.getDay() === 6 ? '#3B66FF' : '##4B4B4B';
-        
+            const color =
+              dayNumber === 0
+                ? '#FF4444'
+                : dayNumber === 6
+                ? '#3B66FF'
+                : '##4B4B4B';
             return (
-              <div>
+              <>
+              <>
                 <div style={{ color }}>{dayNumber}</div>
                 {isToday && <div style={underlineStyle}></div>}
-              </div>
+              </>
+              </>
             );
           }}
           // dayCellContent={renderDayCellContent}
-          titleFormat={renderTitle}
           datesSet={(info) => {
             getAllRecords(info);
-          }} 
-
+          }}
           initialView="timeGridWeek"
           editable={false}
           selectable={true}
           selectMirror={true}
+          // eventMaxStack={20}
+          // eventMaxStack={20}
           // dayMaxEvents={true}
           dayHeaderFormat={{
             weekday: 'short',
@@ -199,28 +362,25 @@ const RecordPage = () => {
           }}
           // initialEvents={events} // alternatively, use the `events` setting to fetch from a feed
           selectLongPressDelay={100} //모바일 기준 100이상 길게 누르면 이벤트 발생
-          events = {transformedEvents}
-          eventDidMount={(info) => {
-            console.log('Event did mount:', info.event);
-          }}
+          events={transformedEvents}
           select={handleDateSelect}
           eventContent={renderEventContent} // custom render function
           eventClick={handleEventClick}
           eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-          // eventAdd={handleRecordCreate}
-          /* you can update a remote database when these fire:
-          eventAdd={function(){}}
-          eventChange={function(){}}
-          eventRemove={function(){}}
-          */
           slotMinTime={startHour} // 시작시간
           slotMaxTime={endHour} // 끝시간
           slotDuration={interval} // 시간 간격
+          slotLabelFormat={{
+            hour: 'numeric',
+            minute: '2-digit',
+            omitZeroMinute: true,
+          }}
+          dateClick={() => {console.log('here')}}
         />
-
-      </Container>
-    </div>
+      </Box>
+    </>
   );
 };
 
 export default RecordPage;
+

@@ -21,7 +21,7 @@ import {
   import { MainCategory } from '@/pages/category/CategoryPage';
   import { recoilCategory, recoilSubCategory, selectedTimeRangeState } from '@/store/record';
   import { getCategories } from '../../api/category.api';
-import { addRecord } from '@/api/record.api';
+  import { addRecord } from '@/api/record.api';
 
   // import styles from './CreateRecordPage.module.css';
   
@@ -42,7 +42,7 @@ import { addRecord } from '@/api/record.api';
   }
   
   
-  const UpdateRecoredPage  = (): ReactElement => {
+  const UpdateRecoredPage = (): ReactElement => {
     const selectedDate = useRecoilValue(selectedTimeRangeState);
     const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
     const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
@@ -53,12 +53,13 @@ import { addRecord } from '@/api/record.api';
     const [categories, setCategories] = useState<MainCategory[]>([]);
 
     const getAllCategories = async () => {
-        const response = await getCategories();
-        if (response.result) {
-            setCategories(response.result);
-        } else {
-            alert('Error');
-        }
+      const response = await getCategories();
+      if (response.result) {
+        // console.table(response.result)
+        setCategories(response.result);
+      } else {
+          alert('Error');
+      }
     };
     
     useEffect(() => {
@@ -77,7 +78,7 @@ import { addRecord } from '@/api/record.api';
   
   
     //날짜 형식 2023-01-01T13:00:00 KST으로 포멧
-  const formatDate = (date: Date): string => {
+    const formatDate = (date: Date): string => {
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
       const day = date.getDate();
@@ -226,7 +227,11 @@ import { addRecord } from '@/api/record.api';
               padding: '16px',
             }}
           >
-            {categories &&
+            {() => {
+              console.log(categories[selectedCategoryIdx])
+              return (<div></div>);
+            }}
+            {/* {categories &&
               categories[selectedCategoryIdx].subCategories.map((sub, idx) => (
                 <Circle
                   key={sub.title}
@@ -238,7 +243,7 @@ import { addRecord } from '@/api/record.api';
                   }}
                   selected={idx === selectedSubCategoryIdx}
                 />
-              ))}
+              ))} */}
           </Container>
           <Divider />
           <Container sx={{ padding: '16px' }}>

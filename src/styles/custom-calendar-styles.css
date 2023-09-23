@@ -1,86 +1,59 @@
-.fc-event-main {
-    position: absolute;
-    color: black !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 5px 5px 0px 0px;
-    
-}
-:root {
-    --fc-event-bg-color: #FFC5CC ;
-    --fc-event-border-color: #FFC5CC;
+.MuiPickersCalendarHeader-root {
+  display: block;
+  position: relative;
+  width: inherit;
+  margin: 0;
+  padding: 0 !important;
+  /* border: 1px solid blue; */
 }
 
-.fc-event-main::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: calc(100% - 8px);
-    background-color: #FFFF;
-    z-index: -1;
+.MuiPickersCalendarHeader-labelContainer {
+  top: 2px;
+  margin: 0 10% 0 14%;
+  position: absolute;
+  width: 76%;
+  display: flex;
+  justify-content: center;
+  /* border: 1px solid green; */
+  /* flex-direction: row; */
+  /* z-index: 10; */
+
 }
 
-.fc-event-title {
-    z-index: 1;
-}
-.fc-event {
-    border-color: white !important;
+.MuiPickersCalendarHeader-labelContainer .MuiButtonBase-root{
+  margin: 0;
 }
 
-.fc-daygrid-day.fc-day:first-of-type {
-    border-left: none !important;
-    border-top: none !important;
-  }
-
-.fc-toolbar-title {
-    font-size: 20px !important;
-    color: #4B4B4B !important;
+.MuiPickersArrowSwitcher-root {
+  top: 0px;
+  position: absolute;
+  width: 100%;
+  justify-content: space-between;
+  /* border: 1px solid red; */
 }
 
-@media (max-width: 767px) {
-    .fc-toolbar-title {
-        font-size: 14px !important;
-    }
-    .fc-event-main{
-        font-size: 11px;
-    }
+.fc table tbody td tr td:first-of-type {
+  color: #4b4b4b;
+  font-size: 13px;
+  font-weight: 400;
+  border: none;
 }
 
-.fc-button {
-    border-radius: 50% !important;
-    background-color: #FFC5CC !important;
-    border: none !important;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.fc table tbody td tr td:not(:first-of-type) {
+  border-bottom: 1px solid #e8e8e8 !important;
+  height: 19px; /* table cell height*/
 }
 
-.fc-icon {
-    font-size: 0.9em !important;
-    position: relative;
-    top: -8px;
-    left: -6px;
+.fc table thead tr th {
+  font-size: 11px;
+  font-weight: 400;
 }
 
-.fc-col-header-cell {
-    font-size: 14px;
+.fc table a.fc-col-header-cell-cushion {
+  width: 100%;
+  padding: 2px 0;
 }
-.fc-widget-header {
-    background-color: transparent !important;
-  }
-  
-  .fc-day-sun,
-  .fc-day-tue,
-  .fc-day-thu,
-  .fc-day-sat {
-    background-color: #F5F5F5 !important;
-  }
 
-.fc-day-mon, .fc-day-wed, .fc-day-fri {
-    background-color: transparent !important;
+.fc-header-toolbar .fc-toolbar-chunk {
+  display: none;
 }

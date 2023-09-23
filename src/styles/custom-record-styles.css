@@ -1,0 +1,132 @@
+.fc-event-main {
+  position: absolute;
+  color: black !important;
+  display: flex;
+  align-items: center;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 0px 0px;
+}
+:root {
+  --fc-event-bg-color: #ffc5cc;
+  --fc-event-border-color: #ffc5cc;
+}
+
+.fc-event-main::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% - 8px);
+  background-color: #ffff;
+  z-index: -1;
+}
+
+.fc-event-title {
+  z-index: 1;
+}
+.fc-event {
+  border-color: white !important;
+}
+
+.fc-daygrid-day.fc-day:first-of-type {
+  border-left: none !important;
+  border-top: none !important;
+}
+
+.fc-toolbar-title {
+  font-size: 20px !important;
+  color: #4b4b4b !important;
+}
+
+@media (max-width: 767px) {
+  .fc-toolbar-title {
+    font-size: 14px !important;
+  }
+  .fc-event-main {
+    font-size: 11px;
+  }
+}
+
+.fc-header-toolbar {
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.fc-button {
+  border-radius: 50% !important;
+  background-color: #ffc5cc !important;
+  border: none !important;
+  width: 14px;
+  height: 14px;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fc-icon {
+  font-size: 0.9em !important;
+  position: relative;
+  top: -6px;
+}
+
+.fc-col-header-cell {
+  font-size: 14px;
+}
+
+.fc-widget-header {
+  background-color: transparent !important;
+}
+
+.fc-day-sun,
+.fc-day-tue,
+.fc-day-thu,
+.fc-day-sat {
+  background-color: #f5f5f5 !important;
+}
+
+.fc-day-mon,
+.fc-day-wed,
+.fc-day-fri {
+  background-color: transparent !important;
+}
+
+.fc table {
+  border: none !important;
+}
+
+.fc table th,
+.fc table td {
+  border: none !important;
+}
+
+.fc table.fc-col-header th {
+  background-color: transparent !important;
+}
+
+.fc table tbody td tr td:first-of-type {
+  color: #4b4b4b;
+  font-size: 13px;
+  font-weight: 400;
+  border: none;
+}
+
+.fc table tbody td tr td:not(:first-of-type) {
+  border-bottom: 1px solid #e8e8e8 !important;
+  height: 19px; /* table cell height*/
+}
+
+.fc table thead tr th {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.fc table a.fc-col-header-cell-cushion {
+  width: 100%;
+  padding: 2px 0;
+}
+
+.fc-header-toolbar .fc-toolbar-chunk {
+  display: none;
+}
