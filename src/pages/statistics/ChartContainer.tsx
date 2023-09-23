@@ -16,11 +16,6 @@ import { useRecoilValue } from 'recoil';
 import { periodTypeList, statisticsResultState } from '@/store/statistics';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import { selectedPeriodType } from '@/store/statistics';
-import DonutIcon from '@/icons/DonutIcon';
-import BarIcon from '@/icons/BarIcon';
-import { StatisticsDetail } from '@/api/statistics.api';
-
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
 interface formattedTimeObject {

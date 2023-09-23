@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
 
 const DateInput = ({ params, width }: any) => {
   return (
@@ -28,20 +28,19 @@ const DateInput = ({ params, width }: any) => {
         ),
       }}
       sx={{
-        dispaly: 'none',
+        display: 'flex',
         ' .MuiInputBase-root': { justifyContent: 'center', p: 0 },
         ' .MuiInputBase-input': {
           p: '16px 0',
+          flex: '1 1 auto',
           overflow: 'auto',
           color: '#4B4B4B',
           fontWeight: '600',
           fontSize: '14px',
+          width: width + 'px',
         },
         ' .MuiInputAdornment-root': { flex: '0 0 auto', pb: '1px' },
-        '& input': {
-          width,
-          pl: 0,
-        },
+        '& input': { pl: 0 },
         '& fieldset': { border: 'none' },
       }}
     />

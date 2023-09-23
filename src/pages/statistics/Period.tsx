@@ -23,15 +23,16 @@ import {
   styled,
   Tab,
   Tabs,
-  TextField
+  TextField,
 } from '@mui/material';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { ManipulateType } from 'dayjs';
 import 'dayjs/locale/ko';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { SyntheticEvent, useEffect } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 dayjs.extend(utc);
@@ -46,6 +47,13 @@ function a11yProps(index: number) {
     id: `full-width-tab-${index}`,
     'aria-controls': `full-width-tabpanel-${index}`,
   };
+}
+
+export type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
+
+export interface IPeriodType {
+  title: string;
+  id: PeriodType;
 }
 
 interface StyledTabProps {
@@ -143,6 +151,46 @@ const StyledTab = styled((props: StyledTabProps) => (
   },
 });
 
+
+  export const setPeriodicalDatePicker = (props: any) => {
+    return (
+      <DatePicker
+        showToolbar={false}
+        disableMaskedInput
+        // components={{
+          
+        //   'DateCalender' : <Box></Box>
+        // }}
+        slots={{
+          ActionBar: <Box></Box>,
+          // SwitchViewButton: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+          SwitchViewIcon: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+          PaperContent	: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
+        }}
+        slotsProps={{
+          // SwitchViewButton: {
+          //   sx: {
+          //     'div' : {
+          //       'border': '1px solid red'
+          //     }
+          //   }
+          // },
+          SwitchViewIcon: {
+            sx: {
+              'div' : {
+                'border': '1px solid red'
+              }
+            }
+          }
+        }}
+        reduceAnimations={true}
+        showDaysOutsideCurrentMonth={true}
+        {...props}
+      />
+    );
+  };
+  
+
 const Period = () => {
 
   const currDate = new Date().toISOString().slice(0, 10);
@@ -223,6 +271,7 @@ const Period = () => {
       fromStartedAt: `${startDate.format('YYYY-MM-DD')}T${startHour}`,
       toFinishedAt: `${endDate.format('YYYY-MM-DD')}T${startHour}`,
     });
+    // console.log(selectedDate[periodType])
   }, [selectedDate, periodType]);
 
   return (
@@ -379,3 +428,4 @@ const Period = () => {
 };
 
 export default Period;
+
