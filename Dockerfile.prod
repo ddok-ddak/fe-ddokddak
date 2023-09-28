@@ -9,6 +9,7 @@ RUN yarn install
 # 전체 파일 복사
 COPY . .
 RUN yarn build
+CMD ["rm", "build/static/**/*.map"]
 
 FROM nginx as produce
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
