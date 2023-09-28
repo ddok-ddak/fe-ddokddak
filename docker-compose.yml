@@ -1,10 +1,13 @@
-version: "3"
 services:
   dd-f:
     container_name: dd_front
     image: ddokddak/front
     volumes:
-      - ./conf/:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /var/log/nginx:/var/log/nginx
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
     ports:
       - 80:80
       - 443:443
