@@ -1,5 +1,4 @@
-import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
 
 export interface CircleProps {
   size: number;
@@ -13,29 +12,29 @@ export interface CircleProps {
 
 const Circle = (props: CircleProps) => {
   return (
-    <div
+    <Box
       onClick={props.onClick}
-      style={{
+      sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}
     >
       {props.selected ? (
-        <div
-          style={{
+        <Box
+          sx={{
             width: props.size + 'px',
             height: props.size + 'px',
             backgroundColor: props.color,
             borderRadius: '50%',
-            border: '3px solid #FF7184',
+            border: '3px solid primary.main',
           }}
         >
           {props.children}
-        </div>
+        </Box>
       ) : (
-        <div
-          style={{
+        <Box
+          sx={{
             width: props.size + 'px',
             height: props.size + 'px',
             backgroundColor: props.color,
@@ -44,9 +43,8 @@ const Circle = (props: CircleProps) => {
           }}
         >
           {props.children}
-        </div>
+        </Box>
       )}
-
       {props.label && (
         <Typography
           variant="subtitle2"
@@ -57,7 +55,7 @@ const Circle = (props: CircleProps) => {
           {props.label}
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 

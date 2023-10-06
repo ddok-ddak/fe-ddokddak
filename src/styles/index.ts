@@ -5,6 +5,8 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: '#FF7184',
+      light: '#FFC5CC',
+      dark: '#DDDDDD',
     },
     secondary: {
       main: '#673ab7',
@@ -38,6 +40,10 @@ export const theme = createTheme({
       800: '#424242',
       900: '#212121',
     },
+    common: {
+      white: '#ffffff',
+      black: '#000000',
+    }
   },
   components: {
     MuiDatePicker: {

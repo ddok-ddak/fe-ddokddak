@@ -39,9 +39,9 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
         sx={{
             borderRadius: '5px',
             boxShadow: 'none',
-            color: '#ffffff',
+            color: 'common.white',
             '&:Mui-disabled': {
-            backgroundColor: '#DDDDDD',
+            backgroundColor: 'primary.dark',
             },
         }}
       >

@@ -1,25 +1,24 @@
-import React from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
 import {
-  LinearProgress,
-  LinearProgressProps,
   Box,
   Button,
   Container,
+  LinearProgress,
+  LinearProgressProps,
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { useSignUpStepForm } from '@/hooks/signUpSteps';
+import { SignUpStepState } from '@/store/signUp';
 import CheckTermsAndConditions from './CheckTermsAndConditions';
 import SetEmail from './SetEmail';
-import VerifyCode from './VerifyCode';
-import SetPW from './SetPW';
 import SetNickname from './SetNickname';
-import { SignUpStepState, SignUpDataState } from '@/store/signUp';
+import SetPW from './SetPW';
+import VerifyCode from './VerifyCode';
 
 const SignUp = () => {
-  const currentStepIndex = useRecoilValue(SignUpStepState);
-  const [signUpData, setSignUpData] = useRecoilState(SignUpDataState);
+  const currentStepIndex: number = useRecoilValue(SignUpStepState);
 
   /**
    * custom hook for sign up form
@@ -49,8 +48,8 @@ const SignUp = () => {
         <Box sx={{ m: 0.5 }}>
           <LinearProgress
             variant="determinate"
+            sx={{ width: '100%', backgroundColor: 'primary.dark' }}
             {...props}
-            sx={{ width: '100%', backgroundColor: '#DDDDDD !important' }}
           />
         </Box>
       </Box>

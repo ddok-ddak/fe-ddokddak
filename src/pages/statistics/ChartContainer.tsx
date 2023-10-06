@@ -241,7 +241,7 @@ const ChartContainer = () => {
           const rawTime = data.dataset.data[data.dataIndex];
           return rawTime % 60 ? -40 : -25;
         },
-        color: (context: any) => context.dataIndex === clickedIndex ? '#FF7184' : '#B7B7B7',
+        color: (context: any) => context.dataIndex === clickedIndex ? 'primary.main' : '#B7B7B7',
         labels: {
           value: {
             formatter: (val: number) => {
@@ -276,7 +276,7 @@ const ChartContainer = () => {
     scales: {
       x: {
         ticks: {
-          color: (context: any) => context.index === clickedIndex ? '#FF7184' : '#222222',
+          color: (context: any) => context.index === clickedIndex ? 'primary.main' : '#222222',
           font: {
             weight: 'bold',
             size: 14,
@@ -440,7 +440,7 @@ const ChartContainer = () => {
             <span
               style={{
                 fontSize: '16px',
-                color: '#FF7184',
+                color: 'primary.main',
               }}
             >
               {timeFormatter(categorySum).time}
@@ -474,8 +474,8 @@ const ChartContainer = () => {
                 }
               }}
               sx={{
-                border: `1px solid ${isFirstPage ? '#FF7184' : '#949494'}`,
-                borderRight: `1px solid #FF7184`, 
+                border: `1px solid ${isFirstPage ? 'primary.main' : '#949494'}`,
+                borderRight: `1px solid primary.main`, 
                 borderRadius: '3px 0 0 3px',
                 flex: '1 1 50%',
                 height: '50%',
@@ -485,7 +485,7 @@ const ChartContainer = () => {
                 alignItems: 'center',
               }}
             >
-              <DonutIcon iconColor={isFirstPage ? '#FF7184' : '#949494'}/>
+              <DonutIcon iconColor={isFirstPage ? 'primary.main' : '#949494'}/>
             </Box>
             <Box
               onClick={() => {
@@ -498,7 +498,7 @@ const ChartContainer = () => {
                 }
               }}
               sx={{
-                border: `1px solid ${isFirstPage ? '#949494' : '#FF7184'}`,
+                border: `1px solid ${isFirstPage ? '#949494' : 'primary.main'}`,
                 borderLeft: 'none',
                 borderRadius: '0 3px 3px 0',
                 flex: '1 1 50%',
@@ -508,7 +508,7 @@ const ChartContainer = () => {
                 alignItems: 'center',
               }}
             >
-              <BarIcon iconColor={isFirstPage ? '#949494' : '#FF7184'} />
+              <BarIcon iconColor={isFirstPage ? '#949494' : 'primary.main'} />
             </Box>
             </Box>
           }
