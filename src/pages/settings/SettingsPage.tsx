@@ -1,27 +1,22 @@
 /* eslint-disable import/order */
-import React from 'react';
 import {
-  Avatar,
   Box,
-  Collapse,
+  Button,
+  Container,
   List,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
+  ListSubheader,
   Typography,
 } from '@mui/material';
+import React from 'react';
 
-import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import LogoutIcon from '@mui/icons-material/Logout';
 
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import TuneIcon from '@mui/icons-material/Tune';
+import ListIcon from '@/components/settings/ListIcon';
+import UserAvatar from '@/components/settings/UserAvatar';
 import { useNavigate } from 'react-router-dom';
+import SettingWrapper from './SettingWrapper';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -36,91 +31,83 @@ const SettingPage = () => {
     setOpen2(!open2);
   };
 
+  const getListSubHeader = (text: string) => {
+    return (
+      <ListSubheader
+        sx={{ fontSize: '14px', fontWeight: '600', color: 'common.black' }}
+      >
+        {text}
+      </ListSubheader>
+    );
+  };
+
+  const getListItem = (text: string, handler?: () => {} | void) => {
+    return (
+      <ListItemButton onClick={handler} sx={{m: 0, pb: 0, pt: 0}}>
+        <ListIcon />
+        <ListItemText sx={{ ml: 1 }} primary={text} />
+      </ListItemButton>
+    );
+  };
+
   return (
-    <>
-      <Box
+    <SettingWrapper showPrevBtn={false}>
+      <Button
+        onClick={() => navigation('/settings/account')}
         sx={{
           display: 'flex',
           alignItems: 'center',
-          paddingLeft: '32px',
-          paddingTop: '32px',
+          justifyContent: 'space-between',
+          height: '15vh',
+          borderRadius: '10px',
+          color: 'common.black',
+          backgroundColor: '#FFF8F8',
+          padding: '0',
         }}
       >
-        <Avatar
-          sx={{ width: 72, height: 72, marginRight: '20px' }}
-          color="primary"
-        >
-          H
-        </Avatar>
-        <Typography variant="h5">{'00 회원님'}</Typography>
-        <ChevronRightIcon sx={{ ml: '40px' }} />
-      </Box>
-      <List sx={{ padding: '32px', width: '100% - 64px' }}>
-        <ListItemButton onClick={handleClick1}>
-          <ListItemIcon>
-            {/* <InboxIcon /> */}
-            <AutoAwesomeMosaicIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="커스텀화" />
-          {open1 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <ColorLensOutlinedIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="테마 설정" />
-            </ListItemButton>
-            <ListItemButton
-              sx={{ pl: 4 }}
-              onClick={() => navigation('/category')}
-            >
-              <ListItemIcon>
-                <ColorLensOutlinedIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="카테고리 설정" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <TuneIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="시작 요일 설정" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton onClick={handleClick2}>
-          <ListItemIcon>
-            {/* <InboxIcon /> */}
-            <AutoAwesomeMosaicIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="고객센터" />
-          {open2 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open2} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <HelpOutlineIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="도움말" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <SupportAgentIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText primary="문의하기" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton>
-          <ListItemIcon>
-            <LogoutIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="로그아웃" />
-        </ListItemButton>
+        <Box sx={{ margin: '0 10px', width: 72, height: 72 }}>
+          <UserAvatar />
+        </Box>
+        <Box sx={{ flex: 1, margin: '0 10px' }}>
+          <Typography align='left' sx={{ fontSize: '16px', fontWeight: '600' }}>
+            {'#직장인 수달님'}
+          </Typography>
+          <Typography align='left' sx={{ fontSize: '14px', fontWeight: '400' }}>
+            {'dodone@gmail.com'}
+          </Typography>
+        </Box>
+        <Button>
+          <ChevronRightIcon sx={{ margin: '0 10px', color: 'common.black' }} />
+        </Button>
+      </Button>
+      <List
+        sx={{
+          flex: 1,
+        }}
+      >
+        {getListSubHeader('커스텀화')}
+        {getListItem('모드 및 카테고리 설정')}
+
+        {getListSubHeader('고객 센터')}
+        {getListItem('도움말')}
+        {getListItem('문의하기', () => navigation('/category'))}
+
+        {getListSubHeader('계정')}
+        {getListItem('비밀번호 변경')}
+        {getListItem('로그아웃', () => navigation('/category'))}
       </List>
-    </>
+      <Button>
+        <Typography
+          sx={{
+            fontSize: '12px',
+            color: '#949494',
+            textDecoration: 'underline',
+          }}
+        >
+          {'회원 탈퇴'}
+        </Typography>
+      </Button>
+    </SettingWrapper>
   );
 };
 

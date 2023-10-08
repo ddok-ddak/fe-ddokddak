@@ -18,6 +18,7 @@ import Modal from './components/common/Modal';
 
 import CreateRecoredPage from '@/pages/record/CreateRecordPage';
 import { theme } from '@/styles';
+import AccountSetting from './pages/settings/AccountSetting';
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
             <Route path="/record" element={<RecordPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings/account" element={<AccountSetting />} />
+
             <Route path="/record/create" element={<CreateRecoredPage />} />
             <Route path="/category" element={<CategoryPage />} />
             <Route path="/category/add" element={<CreateCategoryPage />} />
