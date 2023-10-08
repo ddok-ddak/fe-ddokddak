@@ -25,7 +25,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Box sx={{ paddingBottom: '56px' }}>
           <Routes>
-            <Route path="/" element={<Navigate to="/record" />} />
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/findID" element={<FindID />} />

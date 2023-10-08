@@ -2,13 +2,13 @@ import React, { useState, useEffect} from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InputAdornment, Button } from '@mui/material';
 import { checkDuplicatedEmail } from '@/api/auth';
-import { SignUpDataState, SignUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { SignUpDataState, SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
 
 import FormWrapper from './FormWrapper';
 import InputForm, { InputItemType } from './InputForm';
 
 const SetEmail = (props: any) => {
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignUpNextButtonState);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
   const [signUpData, setSignUpData] = useRecoilState(SignUpDataState);
   const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
 

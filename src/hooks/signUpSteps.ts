@@ -1,10 +1,12 @@
-import { ReactElement } from 'react';
-import { useRecoilState } from 'recoil';
 import { SignUpStepState } from '@/store/signUp';
+import { ReactElement } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 export function useSignUpStepForm(steps: ReactElement[]) {
 
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(SignUpStepState);
+  const navigate = useNavigate();
 
   /**
    * handle next button
@@ -19,7 +21,11 @@ export function useSignUpStepForm(steps: ReactElement[]) {
    */
   function handlePrevButton() {
     const currIdx = currentStepIndex;
-    setCurrentStepIndex(() => (currIdx <= 0) ? currIdx : currIdx - 1);
+    if (currIdx <= 0) {
+      navigate('/login', { replace: true });
+    } else {
+      setCurrentStepIndex(() => currIdx - 1);
+    }
   }
 
   return {

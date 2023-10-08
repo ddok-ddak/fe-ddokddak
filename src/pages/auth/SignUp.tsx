@@ -23,8 +23,13 @@ const SignUp = () => {
   /**
    * custom hook for sign up form
    */
-  const { steps, handleNextButton, handlePrevButton } 
-    = useSignUpStepForm([ <CheckTermsAndConditions/>, <SetEmail/>, <VerifyCode/>, <SetPW/>, <SetNickname/> ]);
+  const { steps, handleNextButton, handlePrevButton } = useSignUpStepForm([
+    <CheckTermsAndConditions />,
+    <SetEmail />,
+    <VerifyCode />,
+    <SetPW />,
+    <SetNickname />,
+  ]);
 
   /**
    * linear progress component
@@ -35,12 +40,17 @@ const SignUp = () => {
     props: LinearProgressProps & { value: number },
   ) => {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ minWidth: 35, mb: '5px', mr: 1 }}>
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ display: 'flex', justifyContent: 'flex-end', color: '#B7B7B7', fontSize: '13px' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              color: '#B7B7B7',
+              fontSize: '13px',
+            }}
           >
             {`${currentStepIndex + 1} / ${steps.length}`}
           </Typography>
@@ -57,16 +67,17 @@ const SignUp = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Container
+    <Container
+      sx={{
+        height: '65vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          mt: 2,
-          fontWeight: '700',
-          fontSize: '18px',
-          color: '#222222',
+          flex: '1 1 15vh',
+          height: 'inherit',
         }}
       >
         <Button
@@ -88,16 +99,22 @@ const SignUp = () => {
               fontWeight: '700',
               fontSize: '18px',
             }}
-          > 
-            약관동의 
+          >
+            약관동의
           </Typography>
         </Box>
-        <LinearProgressWithLabel value={Math.round(((currentStepIndex + 1) / steps.length) * 100)}/>
-      </Container>
-      <Container>
-        {React.cloneElement(steps[currentStepIndex], {handleNextButton})}
-      </Container>
-    </Box>
+        <LinearProgressWithLabel
+          value={Math.round(((currentStepIndex + 1) / steps.length) * 100)}
+        />
+      </Box>
+      <Box
+        sx={{
+          height: 'inherit',
+        }}
+      >
+        {React.cloneElement(steps[currentStepIndex], { handleNextButton })}
+      </Box>
+    </Container>
   );
 };
 

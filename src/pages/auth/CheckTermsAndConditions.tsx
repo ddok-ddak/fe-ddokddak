@@ -10,7 +10,7 @@ import {
   Checkbox,
   Divider,
 } from '@mui/material';
-import { SignUpNextButtonState, SignUpStepInstruction, SignUpStepNextButton } from '@/store/signUp';
+import { SignInUpNextButtonState, SignUpStepInstruction, SignUpStepNextButton } from '@/store/signUp';
 
 import FormWrapper from './FormWrapper';
 
@@ -49,7 +49,7 @@ const termsAndConditionsArray: ItemType[] = [
 ];
 
 const CheckTermsAndConditions = (props: any) => {
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignUpNextButtonState);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
   const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
   const signUpStepNextButton = useRecoilValue(SignUpStepNextButton);
 

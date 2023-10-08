@@ -7,12 +7,12 @@ import InputForm, { InputItemType } from './InputForm';
 import FormWrapper from './FormWrapper';
 import Modal from '@/components/common/Modal';
 import { modalState } from '@/store/common';
-import { SignUpStepState, SignUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { SignUpStepState, SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
 
 const VerifyCode = (props: any) => {
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(SignUpStepState);
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignUpNextButtonState);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
   const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
 
   const [helper, setHelper] = useState('');
