@@ -24,17 +24,17 @@ export const SignUpDataState = atom({
 });
 
 // sign up next button props
-export interface ISignUpNextButtonState {
+export interface ISignInUpNextButtonState {
   isDisabled: boolean,
   clickHandler: () => void,
   text: string
 }
 
-export const SignUpNextButtonState = atom({
+export const SignInUpNextButtonState = atom({
   key: 'signUpNextButton',
   default: {
     isDisabled: true,
-    clickHandler: () => {console.log('ddd')},
+    clickHandler: () => {},
     text: '다음'
   }
 });

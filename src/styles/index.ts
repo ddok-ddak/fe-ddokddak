@@ -43,6 +43,11 @@ export const theme = createTheme({
     common: {
       white: '#ffffff',
       black: '#000000',
+    },
+    text: {
+      primary: '#222222',
+      secondary: '#b7b7b7',
+      disabled: ''
     }
   },
   components: {

@@ -1,5 +1,14 @@
-import { Avatar, Box, Button, Container, Input } from '@mui/material';
+import Google from '@/components/auth/Google';
+import Kakao from '@/components/auth/Kakao';
+import Logo from '@/components/auth/Logo';
+import Naver from '@/components/auth/Naver';
+import { SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { Box, Button, Container, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import FormWrapper from '../FormWrapper';
+import InputForm from '../InputForm';
 // import { ReactElement, useEffect, useCallback, useState } from 'react';
 // import { Typography } from '@mui/material';
 // import React from 'react';
@@ -12,126 +21,223 @@ import { Link } from 'react-router-dom';
 
 // const [currentUserInfo, setCurrentUserInfo] = useRecoilState(currentUserInfo);
 
-// type LoginFormType = Record<'email' | 'password', string>;
+// type 88FormType = Record<'email' | 'password', string>;
 // const initialFormState = { email: '', password: '' };
 
 export default function Login() {
-//     const [{ email, password }, setForm] =
-//       useState<LoginFormType>(initialFormState);
-//     const changed = useCallback(
-//       (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
-//         setForm((obj) => ({ ...obj, [key]: e.target.value }));
-//       },
-//       [],
-//     );
+  const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
 
-//       const navigate = useNavigate();
-//       const { login } = useAuth();
+  //     const [{ email, password }, setForm] =
+  //       useState<LoginFormType>(initialFormState);
+  //     const changed = useCallback(
+  //       (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
+  //         setForm((obj) => ({ ...obj, [key]: e.target.value }));
+  //       },
+  //       [],
+  //     );
 
-//       const loginAccount = useCallback(() => {
-//         login(email, password, () => navigate('/record'));
-//       }, [email, password, navigate, login]);
+  //       const navigate = useNavigate();
+  //       const { login } = useAuth();
 
-//     useEffect(() => {
-//       U.readObjectP<LoginFormType>('user')
-//         .then((user) => {
-//           if (user) setForm(user);
-//         })
-//         .catch((e) => {});
-//     }, []);
-//     //   const Login = (props) => {
-//     //   const [portalClicked, setPortalClicked] = useState(false);
-//     //   const [loginClicked, setLoginClicked] = useState(true);
-//     //   const handlePortal = () => {
-//     //     setPortalClicked(!portalClicked);
-//     //   };
-//     //   const handleLoginClicked = () => {
-//     //     setLoginClicked(!loginClicked);
-//     //   };
+  //       const loginAccount = useCallback(() => {
+  //         login(email, password, () => navigate('/record'));
+  //       }, [email, password, navigate, login]);
+
+  //     useEffect(() => {
+  //       U.readObjectP<LoginFormType>('user')
+  //         .then((user) => {
+  //           if (user) setForm(user);
+  //         })
+  //         .catch((e) => {});
+  //     }, []);
+  //     //   const Login = (props) => {
+  //     //   const [portalClicked, setPortalClicked] = useState(false);
+  //     //   const [loginClicked, setLoginClicked] = useState(true);
+  //     //   const handlePortal = () => {
+  //     //     setPortalClicked(!portalClicked);
+  //     //   };
+  //     //   const handleLoginClicked = () => {
+  //     //     setLoginClicked(!loginClicked);
+  //     //   };
+
+
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
+
+
+  const itemArray1: InputItemType[] = [
+    {
+      name: '이메일',
+      placeholder: '이메일 주소를 입력해주세요.',
+      // type: 'id',
+      onChangeHandler: (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      ) => {
+        const value = event.target.value;
+        // setPassword(value);
+
+        const reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
+        // if (reg.test(value)) {
+        //   setHelper1('사용 가능한 비밀번호입니다.');
+        //   setIsHelperError1(() => false);
+        //   checkPasswordMatch(value, confirmPassword);
+        // } else {
+        //   setHelper1('영어, 숫자, 특수문자를 모두 포함한 8 ~ 15자리 이내로 입력해주세요.');
+        //   setIsHelperError1(() => true);
+        // }
+      },
+    },
+  ];
+
+  const itemArray2: InputItemType[] = [
+    {
+      name: '비밀번호',
+      placeholder: '비밀번호를 입력해주세요.',
+      type: 'password',
+      onChangeHandler: (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      ) => {
+        const value = event.target.value;
+        // setConfirmPassword(value);
+        // checkPasswordMatch(value, password);
+      },
+    },
+  ];
+
+  useEffect(() => {
+    setSignUpStepInstruction('');
+    setSignUpNextButtonProps({text: '로그인', clickHandler: signUpNextButtonProps.clickHandler, isDisabled: signUpNextButtonProps.isDisabled});
+  }, []);
+
   return (
-    <Container>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
-          paddingLeft: '32px',
-          paddingTop: '32px',
-        }}
-      >
-        <Avatar sx={{ width: 142, height: 142 }}></Avatar>
-      </Box>
+    <>
       <Container
         sx={{
-          marginTop: '30px',
-          padding: '10px',
+          height: '65vh',
+          display: 'flex',
+          flexDirection: 'column',
+          pb: 0,
         }}
       >
-        <h3>이메일</h3>
-        <Input
-          name="email"
-          placeholder="이메일 주소를 입력해주세요"
-          fullWidth
-            // value={email}
-            // onChange={changed('email')}
-        />
-
-        <h3>비밀번호</h3>
-        <Input
-          name="password"
-          placeholder="비밀번호를 입력해주세요"
-          fullWidth
-            // value={password}
-            // onChange={changed('password')}
-        />
-        <Container sx={{ padding: '16px' }}></Container>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          fullWidth
-            // onClick={loginAccount}
-        >
-          로그인
-        </Button>
-
-        <Container
+        <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-evenly',
-            padding: '15px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pt: '93px',
           }}
         >
-          <Button variant="text" component={Link} to="/signUp">
+          <Logo/>
+        </Box>
+        <FormWrapper>
+          <form style={{ flex: 1 }}>
+            <InputForm
+              key="id"
+              itemArray={itemArray1}
+              // isHelperError={'isHelperError1'}
+              // value={'password'}
+            />
+            <InputForm key="password" itemArray={itemArray2} />
+          </form>
+        </FormWrapper>
+      </Container>
+      <Container
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '15px 8px',
+            fontSize: '12px',
+          }}
+        >
+          <Button
+            sx={{ color: 'text.primary' }}
+            variant="text"
+            component={Link}
+            to="/signUp"
+          >
             회원가입
           </Button>
-          <Button variant="text" component={Link} to="/findID">
+          <Box
+            sx={{
+              width: '1px',
+              height: '13px',
+              backgroundColor: 'text.secondary',
+            }}
+          ></Box>
+          <Button
+            sx={{ color: 'text.primary' }}
+            variant="text"
+            component={Link}
+            to="/findID"
+          >
             아이디 찾기
           </Button>
-          <Button variant="text" component={Link} to="/resetPW">
+          <Box
+            sx={{
+              width: '1px',
+              height: '13px',
+              backgroundColor: 'text.secondary',
+            }}
+          ></Box>
+          <Button
+            sx={{ color: 'text.primary' }}
+            variant="text"
+            component={Link}
+            to="/resetPW"
+          >
             비밀번호 재설정
           </Button>
-        </Container>
-
-        <Container
+        </Box>
+        <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-evenly',
-            padding: '15px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '15px 8px',
+            color: 'text.primary',
+            fontSize: '12px',
           }}
         >
-          <Button variant="outlined" color="primary" sx={{ borderRadius: 28 }}>
-            K
+          <Button>
+            <Kakao />
           </Button>
-          <Button variant="outlined" color="primary" sx={{ borderRadius: 28 }}>
-            N
+          <Button>
+            <Naver />
           </Button>
-          <Button variant="outlined" color="primary" sx={{ borderRadius: 28 }}>
-            G
+          <Button>
+            <Google />
           </Button>
-        </Container>
+        </Box>
+        <Button>
+          <Typography
+            align="center"
+            sx={{
+              fontSize: '11px',
+              color: 'common.black',
+              textDecoration: 'underline',
+            }}
+          >
+            {'둘러보기 >'}
+          </Typography>
+        </Button>
+        <Typography
+          align="center"
+          sx={{
+            fontSize: '12px',
+          }}
+        >
+          Copyright 2023 ddok-ddak All Right Reserved.
+        </Typography>
       </Container>
-    </Container>
+    </>
   );
 }
 

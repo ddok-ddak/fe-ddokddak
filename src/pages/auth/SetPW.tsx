@@ -2,11 +2,12 @@ import { useState, useEffect} from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import InputForm, { InputItemType } from './InputForm';
 import FormWrapper from './FormWrapper';
-import { SignUpDataState, SignUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { SignUpDataState, SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { Container } from '@mui/material';
 
 const SetPW = (props: any) => {
   const [signUpData, setSignUpData] = useRecoilState(SignUpDataState);
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignUpNextButtonState);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
   const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
 
   const [password, setPassword] = useState(signUpData.password);
@@ -105,6 +106,7 @@ const SetPW = (props: any) => {
           isHelperError={isHelperError2}     
         />
       </form>
+
     </FormWrapper>
   );
 };
