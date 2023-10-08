@@ -126,9 +126,6 @@ const SettingPage = () => {
 
   useEffect(() => {
     setStepIndex(0);
-    // setTimeout(() => {
-    //   setCompletePopupShow(false);
-    // }, 100000);
   });
 
   return (
