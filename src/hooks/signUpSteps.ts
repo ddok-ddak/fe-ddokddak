@@ -1,11 +1,11 @@
-import { SignUpStepState } from '@/store/signUp';
+import { signUpStep } from '@/store/signUp';
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 export function useSignUpStepForm(steps: ReactElement[]) {
 
-  const [currentStepIndex, setCurrentStepIndex] = useRecoilState(SignUpStepState);
+  const [currentStepIndex, setCurrentStepIndex] = useRecoilState(signUpStep);
   const navigate = useNavigate();
 
   /**

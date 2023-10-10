@@ -1,7 +1,7 @@
-import { Box, Button, Container, Divider, Modal as MuiModal } from '@mui/material';
+import { Box, Button, Divider, Modal as MuiModal } from '@mui/material';
 import { useRecoilState } from 'recoil';
 
-import { modalState } from '@/store/common';
+import { modalState } from '@/store/modal';
 
 const Modal = () => {
   const [modalInfo, setModalInfo] = useRecoilState(modalState);

@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { stepButtonProps, stepInstruction } from '@/store/common';
 import {
   Box,
+  Checkbox,
+  Divider,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Checkbox,
-  Divider,
 } from '@mui/material';
-import { SignInUpNextButtonState, SignUpStepInstruction, SignUpStepNextButton } from '@/store/signUp';
-
-import FormWrapper from './FormWrapper';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 type ItemType = {
-  required: boolean,
-  desc: string,
-  checked: boolean,
-}
+  required: boolean;
+  desc: string;
+  checked: boolean;
+};
 
 const termsAndConditionsArray: ItemType[] = [
   {
@@ -45,13 +43,12 @@ const termsAndConditionsArray: ItemType[] = [
     required: false,
     desc: '[선택] 광고, 마케팅 활용 정보수신 동의',
     checked: false,
-  }
+  },
 ];
 
 const CheckTermsAndConditions = (props: any) => {
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
-  const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
-  const signUpStepNextButton = useRecoilValue(SignUpStepNextButton);
+  const setInstruction = useSetRecoilState(stepInstruction);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
   const [checked, setChecked] = useState([false, false, false, false, false]);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -61,8 +58,8 @@ const CheckTermsAndConditions = (props: any) => {
     const newChecked: boolean[] = [...checked];
     let newValue = !newChecked[idx];
     let isRequiredCheck = false;
-    
-    if (currentIndex === 0) { 
+
+    if (currentIndex === 0) {
       // 모두 동의
       newChecked.fill(newValue);
     } else {
@@ -71,11 +68,12 @@ const CheckTermsAndConditions = (props: any) => {
     setChecked(newChecked);
     isRequiredCheck = !(newChecked[1] && newChecked[2] && newChecked[3]);
     setIsNextButtonDisabled(isRequiredCheck);
-    setSignUpNextButtonProps({
-      ...signUpNextButtonProps,
+    setNextButtonProps({
+      ...nextButtonProps,
       isDisabled: isRequiredCheck,
     });
   };
+
   const CheckboxItem = (item: ItemType, idx: number) => {
     const labelId = `checkbox-list-label-${idx}`;
     return (
@@ -103,29 +101,30 @@ const CheckTermsAndConditions = (props: any) => {
   };
 
   useEffect(() => {
-    setSignUpStepInstruction('서비스를 이용하기 위해 약관에 동의 해주세요.');
-    setSignUpNextButtonProps({
-      ...signUpNextButtonProps,
+    setInstruction('서비스를 이용하기 위해 약관에 동의 해주세요.');
+    setNextButtonProps({
+      ...nextButtonProps,
+      text: '다음',
       isDisabled: true,
-      clickHandler: props.handleNextButton
-    })
+      clickHandler: props.handleNextButton,
+    });
   }, []);
 
   return (
-    <FormWrapper>
-      <List
-        sx={{
-          width: '100%',
-          maxWidth: 360,
-          bgcolor: 'background.paper',
-        }}
-      >
-        {Object.values(termsAndConditionsArray).map((item: ItemType, idx: number) => {
+    <List
+      sx={{
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+      }}
+    >
+      {Object.values(termsAndConditionsArray).map(
+        (item: ItemType, idx: number) => {
           return (
             <Box key={idx}>
               {idx === 1 && (
                 <Divider
-                  variant='middle'
+                  variant="middle"
                   sx={{
                     backgroundColor: 'primary.dark',
                     height: '3px',
@@ -138,9 +137,9 @@ const CheckTermsAndConditions = (props: any) => {
               {CheckboxItem(item, idx)}
             </Box>
           );
-        })}
-      </List>
-    </FormWrapper>
+        },
+      )}
+    </List>
   );
 };
 

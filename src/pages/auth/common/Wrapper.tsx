@@ -1,16 +1,18 @@
 /* eslint-disable import/order */
 import PrevButton from '@/components/common/PrevButton';
-import { Box, Button, Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { ReactNode } from 'react';
 
-const SettingWrapper = ({
-  children,
-  showPrevBtn,
+const Wrapper = ({
+  prevBtnText,
   handlePrevBtn,
+  headerComp,
+  children,
 }: {
-  children: ReactNode;
-  showPrevBtn?: boolean;
+  prevBtnText?: string;
   handlePrevBtn?: () => {} | void;
+  headerComp?: ReactNode;
+  children: ReactNode;
 }) => {
   return (
     <Container
@@ -22,10 +24,18 @@ const SettingWrapper = ({
         padding: '0 16px 23px 16px',
       }}
     >
-      <PrevButton showPrevBtn={showPrevBtn} handlePrevBtn={handlePrevBtn}/>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <PrevButton prevBtnText={prevBtnText} handlePrevBtn={handlePrevBtn} />
+        {headerComp}
+      </Box>
       {children}
     </Container>
   );
 };
 
-export default SettingWrapper;
+export default Wrapper;
