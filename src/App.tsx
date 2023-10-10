@@ -3,11 +3,10 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 import BottomNav from './components/layout/BottomNav';
-import FindID from './pages/auth/FindID';
-import ResetPW from './pages/auth/SetPW';
+import FindID from './pages/auth/findID/FindID';
 
-import SignUp from './pages/auth/SignUp';
 import Login from './pages/auth/login/Login';
+import SignUp from './pages/auth/signup/SignUp';
 import CategoryPage from './pages/category/CategoryPage';
 import CreateCategoryPage from './pages/category/CreateCategoryPage';
 import RecordPage from './pages/record/RecordPage';
@@ -18,6 +17,8 @@ import Modal from './components/common/Modal';
 
 import CreateRecoredPage from '@/pages/record/CreateRecordPage';
 import { theme } from '@/styles';
+import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
+import ResetPWStep from './pages/auth/resetPW/ResetPWSteps';
 import AccountSetting from './pages/settings/AccountSetting';
 
 function App() {
@@ -30,7 +31,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/findID" element={<FindID />} />
-            <Route path="/resetPW" element={<ResetPW />} />
+
+            <Route path="/resetPW" element={<ResetPWStep />} />
+            <Route path="/resetPWMode" element={<ResetPWMode />} />
+            
             <Route path="/record" element={<RecordPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />

@@ -1,14 +1,18 @@
-import { useState, useEffect} from 'react';
+import {
+  signInUpNextButtonState,
+  signUpDataState,
+  signInUpStepInstruction,
+} from '@/store/signUp';
+import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import InputForm, { InputItemType } from './InputForm';
-import FormWrapper from './FormWrapper';
-import { SignUpDataState, SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
-import { Container } from '@mui/material';
+import InputForm, { InputItemType } from '../common/InputForm';
 
 const SetPW = (props: any) => {
-  const [signUpData, setSignUpData] = useRecoilState(SignUpDataState);
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
-  const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
+  const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(
+    signInUpNextButtonState,
+  );
+  const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
 
   const [password, setPassword] = useState(signUpData.password);
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,11 +23,10 @@ const SetPW = (props: any) => {
   const [isHelperError1, setIsHelperError1] = useState(true);
   const [isHelperError2, setIsHelperError2] = useState(true);
 
-
   /**
    * compare two passwords
-   * @param value 
-   * @param compareValue 
+   * @param value
+   * @param compareValue
    */
   const checkPasswordMatch = (value: string, compareValue: string) => {
     let isMatch = true;
@@ -32,7 +35,7 @@ const SetPW = (props: any) => {
       isMatch = false;
       setIsHelperError2(() => isMatch);
       setIsNextButtonDisabled(() => isMatch);
-      setSignUpData({...signUpData, password});
+      setSignUpData({ ...signUpData, password });
     } else {
       setHelper2('동일한 비밀번호를 입력해주세요.');
       setIsHelperError2(() => isMatch);
@@ -49,20 +52,24 @@ const SetPW = (props: any) => {
       name: '비밀번호',
       placeholder: '영어, 숫자, 특수문자를 포함한 8~15자리 이내',
       type: 'password',
-      onChangeHandler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+      onChangeHandler: (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      ) => {
         const value = event.target.value;
         setPassword(value);
-        
+
         const reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
         if (reg.test(value)) {
           setHelper1('사용 가능한 비밀번호입니다.');
           setIsHelperError1(() => false);
           checkPasswordMatch(value, confirmPassword);
         } else {
-          setHelper1('영어, 숫자, 특수문자를 모두 포함한 8 ~ 15자리 이내로 입력해주세요.');
+          setHelper1(
+            '영어, 숫자, 특수문자를 모두 포함한 8 ~ 15자리 이내로 입력해주세요.',
+          );
           setIsHelperError1(() => true);
         }
-      }
+      },
     },
   ];
 
@@ -72,14 +79,16 @@ const SetPW = (props: any) => {
       name: '비밀번호 확인',
       placeholder: '비밀번호를 한번 더 입력해주세요.',
       type: 'password',
-      onChangeHandler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+      onChangeHandler: (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      ) => {
         const value = event.target.value;
         setConfirmPassword(value);
         checkPasswordMatch(value, password);
-      }
+      },
     },
   ];
-  
+
   useEffect(() => {
     setSignUpStepInstruction('비밀번호를 입력해주세요.');
     setSignUpNextButtonProps({
@@ -90,24 +99,21 @@ const SetPW = (props: any) => {
   }, []);
 
   return (
-    <FormWrapper>
-      <form>
-        <InputForm
-          key="password1"
-          itemArray={itemArray1}
-          helper={helper1}
-          isHelperError={isHelperError1}
-          value={password}
-        />
-        <InputForm 
-          key="password2"
-          itemArray={itemArray2}
-          helper={helper2}
-          isHelperError={isHelperError2}     
-        />
-      </form>
-
-    </FormWrapper>
+    <>
+      <InputForm
+        key="password1"
+        itemArray={itemArray1}
+        helper={helper1}
+        isHelperError={isHelperError1}
+        value={password}
+      />
+      <InputForm
+        key="password2"
+        itemArray={itemArray2}
+        helper={helper2}
+        isHelperError={isHelperError2}
+      />
+    </>
   );
 };
 

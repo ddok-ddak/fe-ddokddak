@@ -474,8 +474,9 @@ const ChartContainer = () => {
                 }
               }}
               sx={{
-                border: `1px solid ${isFirstPage ? 'primary.main' : '#949494'}`,
-                borderRight: `1px solid primary.main`, 
+                border: '1px solid',
+                borderColor: isFirstPage ? 'primary.main' : '#949494',
+                borderRightColor: 'primary.main',
                 borderRadius: '3px 0 0 3px',
                 flex: '1 1 50%',
                 height: '50%',

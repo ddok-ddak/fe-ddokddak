@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { addUser, checkDuplicatedNickname } from '@/api/auth';
-import { SignUpDataState, SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import {
+  signInUpNextButtonState,
+  signUpDataState,
+  signInUpStepInstruction,
+} from '@/store/signUp';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import InputForm, { InputItemType } from './InputForm';
-import FormWrapper from './FormWrapper';
-
+import InputForm, { InputItemType } from '../common/InputForm';
 
 const SetNickname = (props: any) => {
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
-  const [signUpData, setSignUpData] = useRecoilState(SignUpDataState);
-  const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
+  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(
+    signInUpNextButtonState,
+  );
+  const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
+  const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
 
   const [nickname, setNickname] = useState(signUpData.nickname);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -21,14 +25,18 @@ const SetNickname = (props: any) => {
     {
       name: '닉네임',
       placeholder: '영어, 숫자, _, -를 사용한 2 ~ 15자리 이내',
-      onChangeHandler: async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+      onChangeHandler: async (
+        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      ) => {
         const value = event.target.value;
         setNickname(() => value);
-        
+
         const reg = /^[a-zA-Z0-9_-]{2,15}$/g;
         let isNotAvail = true;
         if (!reg.test(value)) {
-          setHelper('영어, 숫자, _, - 를 사용한 2 ~ 15자리 이내로 입력해주세요.');
+          setHelper(
+            '영어, 숫자, _, - 를 사용한 2 ~ 15자리 이내로 입력해주세요.',
+          );
           setIsHelperError(isNotAvail);
           setIsNextButtonDisabled(isNotAvail);
         } else {
@@ -36,7 +44,7 @@ const SetNickname = (props: any) => {
             if (response.status === 'SUCCESS') {
               isNotAvail = false;
               setHelper('사용 가능한 닉네임입니다.');
-              setSignUpData({...signUpData, nickname: value});
+              setSignUpData({ ...signUpData, nickname: value });
             } else {
               setHelper('이미 사용하고 있는 닉네임입니다.');
             }
@@ -45,10 +53,10 @@ const SetNickname = (props: any) => {
             setSignUpNextButtonProps({
               ...signUpNextButtonProps,
               isDisabled: isNotAvail,
-            });    
+            });
           });
         }
-      }
+      },
     },
   ];
 
@@ -61,9 +69,9 @@ const SetNickname = (props: any) => {
         const userData = signUpData;
         await addUser(userData).then((response) => {
           if (response.status === 'SUCCESS') {
-            alert('회원 가입 성공')
+            alert('회원 가입 성공');
           } else {
-            alert('회원 가입 실패')
+            alert('회원 가입 실패');
           }
         });
       },
@@ -71,14 +79,12 @@ const SetNickname = (props: any) => {
   }, [nickname]);
 
   return (
-    <FormWrapper>
-      <InputForm 
-        itemArray={itemArray}
-        helper={helper}
-        isHelperError={isHelperError}
-        value={nickname}
-      />
-    </FormWrapper>
+    <InputForm
+      itemArray={itemArray}
+      helper={helper}
+      isHelperError={isHelperError}
+      value={nickname}
+    />
   );
 };
 

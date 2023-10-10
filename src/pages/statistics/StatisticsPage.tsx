@@ -3,7 +3,7 @@ import Period from './Period';
 import CommonHeader from '@/components/layout/CommonHeader';
 import ChartContainer from '@/pages/statistics/ChartContainer';
 // import { useRecoilState } from 'recoil';
-// import { modalState } from '@/store/common';
+// import { modalState } from '@/store/modal';
 
 const StatisticsPage = () => {
   // const [modalInfo, setModalInfo] = useRecoilState(modalState);

@@ -1,8 +1,9 @@
 import { atom } from 'recoil';
+import { INextButtonState } from './common';
 
 // sign up step current index
-export const SignUpStepState = atom({
-  key: 'signUpState',
+export const signUpStep = atom({
+  key: 'SignUpState',
   default: 0,
 });
 
@@ -13,8 +14,8 @@ export interface ISignUpDataState {
   password: string,
 }
 
-export const SignUpDataState = atom({
-  key: 'signUpData',
+export const signUpDataState = atom({
+  key: 'SignUpData',
   default: {
     email: '',
     nickname: '',
@@ -23,15 +24,9 @@ export const SignUpDataState = atom({
   dangerouslyAllowMutability: false
 });
 
-// sign up next button props
-export interface ISignInUpNextButtonState {
-  isDisabled: boolean,
-  clickHandler: () => void,
-  text: string
-}
 
-export const SignInUpNextButtonState = atom({
-  key: 'signUpNextButton',
+export const signInUpNextButtonState = atom<INextButtonState>({
+  key: 'SignInUpNextButtonState',
   default: {
     isDisabled: true,
     clickHandler: () => {},
@@ -39,18 +34,15 @@ export const SignInUpNextButtonState = atom({
   }
 });
 
-// sign up step instructions
-export interface ISignUpStepInstruction {
-  text: string
-}
 
-export const SignUpStepInstruction = atom({
-  key: 'signUpStepInstruction',
-  default: '',
+export const signInUpStepInstruction = atom<string>({
+  key: 'signInUpStepInstruction',
+  default: '다음',
 });
 
 // sign up custom hook
-export const SignUpStepNextButton = atom({
-  key: 'signUpStepNextButton', 
+export const signUpStepNextButton = atom({
+  key: 'SignUpStepNextButton', 
   default: () => {}
 });
+

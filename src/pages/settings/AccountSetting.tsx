@@ -9,13 +9,13 @@ import {
 
 import UserAvatar from '@/components/settings/UserAvatar';
 import { useNavigate } from 'react-router-dom';
-import SettingWrapper from './SettingWrapper';
+import SettingWrapper from '../auth/common/Wrapper';
 
 const AccountSetting = () => {
   const navigation = useNavigate();
 
   return (
-    <SettingWrapper showPrevBtn={true} handlePrevBtn={() => navigation('/settings')}>
+    <SettingWrapper prevBtnText={'뒤로'} handlePrevBtn={() => navigation('/settings')}>
       <Box sx={{ display: 'inline-block', position: 'relative', mt: 1 }}>
         <UserAvatar />
         <IconButton sx={{ position: 'absolute', right: '-5px', bottom: '-5px' }}>
@@ -42,7 +42,6 @@ const AccountSetting = () => {
         id="standard-textarea"
         defaultValue="수달"
         multiline
-        // variant="standard"
         endAdornment={
           <InputAdornment position="end">
             <IconButton

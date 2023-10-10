@@ -1,24 +1,24 @@
 import {
   Box,
-  Button,
-  Container,
   LinearProgress,
-  LinearProgressProps,
+  LinearProgressProps
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { useSignUpStepForm } from '@/hooks/signUpSteps';
-import { SignUpStepState } from '@/store/signUp';
+import { stepIndex } from '@/store/common';
+import SetPW from './SetPW';
+import FormWrapper from '../common/FormWrapper';
+import VerifyCode from '../common/VerifyCode';
+import Wrapper from '../common/Wrapper';
 import CheckTermsAndConditions from './CheckTermsAndConditions';
 import SetEmail from './SetEmail';
 import SetNickname from './SetNickname';
-import SetPW from './SetPW';
-import VerifyCode from './VerifyCode';
 
 const SignUp = () => {
-  const currentStepIndex: number = useRecoilValue(SignUpStepState);
+  const currentStepIndex = useRecoilValue(stepIndex);
 
   /**
    * custom hook for sign up form
@@ -67,54 +67,35 @@ const SignUp = () => {
   };
 
   return (
-    <Container
-      sx={{
-        height: '65vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+    <Wrapper
+      prevBtnText={'뒤로'}
+      handlePrevBtn={handlePrevButton}
+      headerComp={
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography
+              sx={{
+                justifyContent: 'flex-end',
+                color: '#222222',
+                fontWeight: '700',
+                fontSize: '18px',
+              }}
+            >
+              약관동의
+            </Typography>
+          </Box>
+          <LinearProgressWithLabel
+            value={Math.round(((currentStepIndex + 1) / steps.length) * 100)}
+          />
+        </>
+      }
     >
-      <Box
-        sx={{
-          flex: '1 1 15vh',
-          height: 'inherit',
-        }}
-      >
-        <Button
-          sx={{
-            fontWeight: '400',
-            fontSize: '13px',
-            color: '#949494',
-            justifyContent: 'flex-start',
-          }}
-          onClick={handlePrevButton}
-        >
-          뒤로
-        </Button>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Typography
-            sx={{
-              justifyContent: 'flex-end',
-              color: '#222222',
-              fontWeight: '700',
-              fontSize: '18px',
-            }}
-          >
-            약관동의
-          </Typography>
-        </Box>
-        <LinearProgressWithLabel
-          value={Math.round(((currentStepIndex + 1) / steps.length) * 100)}
-        />
-      </Box>
-      <Box
-        sx={{
-          height: 'inherit',
-        }}
-      >
-        {React.cloneElement(steps[currentStepIndex], { handleNextButton })}
-      </Box>
-    </Container>
+      <FormWrapper
+        children={React.cloneElement(steps[currentStepIndex], {
+          handleNextButton,
+        })}
+      />
+    </Wrapper>
   );
 };
 

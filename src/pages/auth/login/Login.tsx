@@ -2,13 +2,14 @@ import Google from '@/components/auth/Google';
 import Kakao from '@/components/auth/Kakao';
 import Logo from '@/components/auth/Logo';
 import Naver from '@/components/auth/Naver';
-import { SignInUpNextButtonState, SignUpStepInstruction } from '@/store/signUp';
+import { stepButtonProps, stepInstruction, stepType } from '@/store/common';
+import { signInUpStepInstruction } from '@/store/signUp';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import FormWrapper from '../FormWrapper';
-import InputForm from '../InputForm';
+import FormWrapper from '../common/FormWrapper';
+import InputForm from '../common/InputForm';
 // import { ReactElement, useEffect, useCallback, useState } from 'react';
 // import { Typography } from '@mui/material';
 // import React from 'react';
@@ -24,8 +25,13 @@ import InputForm from '../InputForm';
 // type 88FormType = Record<'email' | 'password', string>;
 // const initialFormState = { email: '', password: '' };
 
+
+
 export default function Login() {
-  const setSignUpStepInstruction = useSetRecoilState(SignUpStepInstruction);
+  
+  // const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
+  
+  // console.log('mySelector', useRecoilValue(mySelector))
 
   //     const [{ email, password }, setForm] =
   //       useState<LoginFormType>(initialFormState);
@@ -59,10 +65,12 @@ export default function Login() {
   //     //   const handleLoginClicked = () => {
   //     //     setLoginClicked(!loginClicked);
   //     //   };
+  const setStepType = useSetRecoilState(stepType);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(
+    stepButtonProps,
+  );
 
-
-  const [signUpNextButtonProps, setSignUpNextButtonProps] = useRecoilState(SignInUpNextButtonState);
-
+  const setInstruction = useSetRecoilState(stepInstruction)
 
   const itemArray1: InputItemType[] = [
     {
@@ -103,42 +111,51 @@ export default function Login() {
     },
   ];
 
+
   useEffect(() => {
-    setSignUpStepInstruction('');
-    setSignUpNextButtonProps({text: '로그인', clickHandler: signUpNextButtonProps.clickHandler, isDisabled: signUpNextButtonProps.isDisabled});
+    setStepType('LOGIN');
+    setInstruction('');
+    setNextButtonProps({
+      text: '로그인',
+      clickHandler: nextButtonProps.clickHandler,
+      isDisabled: nextButtonProps.isDisabled,
+    });
+
   }, []);
+
 
   return (
     <>
       <Container
         sx={{
-          height: '65vh',
           display: 'flex',
           flexDirection: 'column',
           pb: 0,
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pt: '93px',
-          }}
-        >
-          <Logo/>
-        </Box>
-        <FormWrapper>
-          <form style={{ flex: 1 }}>
-            <InputForm
-              key="id"
-              itemArray={itemArray1}
-              // isHelperError={'isHelperError1'}
-              // value={'password'}
-            />
-            <InputForm key="password" itemArray={itemArray2} />
-          </form>
-        </FormWrapper>
+        <FormWrapper
+          children={
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: '30px 0 73px 0',
+                }}
+              >
+                <Logo />
+              </Box>
+              <InputForm
+                key="id"
+                itemArray={itemArray1}
+                // isHelperError={'isHelperError1'}
+                // value={'password'}
+              />
+              <InputForm key="password" itemArray={itemArray2} />
+            </>
+          }
+        />
       </Container>
       <Container
         sx={{
@@ -241,4 +258,3 @@ export default function Login() {
   );
 }
 
-// export default Login;
