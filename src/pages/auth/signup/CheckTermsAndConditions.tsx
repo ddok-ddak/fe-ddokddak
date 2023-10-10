@@ -124,7 +124,7 @@ const CheckTermsAndConditions = (props: any) => {
             <Box key={idx}>
               {idx === 1 && (
                 <Divider
-                  variant='middle'
+                  variant="middle"
                   sx={{
                     backgroundColor: 'primary.dark',
                     height: '3px',
