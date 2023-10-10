@@ -1,10 +1,10 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button } from '@mui/material';
 
 const PrevButton = ({
-  showPrevBtn,
+  prevBtnText,
   handlePrevBtn,
 }: {
-  showPrevBtn?: boolean;
+  prevBtnText?: string;
   handlePrevBtn?: () => {} | void;
 }) => {
   return (
@@ -16,21 +16,19 @@ const PrevButton = ({
         display: 'flex',
       }}
     >
-      {showPrevBtn && (
-        <Button
-          onClick={handlePrevBtn}
-          sx={{
-            p: 0,
-            m: 0,
-            lineHeight: '13px',
-            color: '#949494',
-            fontSize: '13px',
-            marginRight: '95%',
-          }}
-        >
-          {'뒤로'}
-        </Button>
-      )}
+      <Button
+        onClick={handlePrevBtn}
+        sx={{
+          p: 0,
+          m: 0,
+          lineHeight: '13px',
+          color: '#949494',
+          fontSize: '13px',
+          marginRight: '95%',
+        }}
+      >
+        {prevBtnText}
+      </Button>
     </Box>
   );
 };
