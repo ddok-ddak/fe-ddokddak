@@ -1,7 +1,8 @@
 import { atom } from 'recoil';
 
 import { SelectedRangeData } from '@/pages/record/CreateRecordPage';
-
+import { StatPeriodType } from './statistics';
+import dayjs from 'dayjs';
 
 export const selectedTimeRangeState = atom({
   key: 'selectedTimeRangeState',
@@ -12,7 +13,7 @@ export const selectedTimeRangeState = atom({
 });
 
 export const categories = atom<Category[]>({
-  key: "categories",
+  key: 'categories',
   default: [],
 });
 
@@ -45,4 +46,27 @@ type Category = {
 export const categoriesState = atom<Category[]>({
   key: 'categoriesState',
   default: [],
+});
+
+const currDate = dayjs(new Date().toISOString().slice(0, 10));
+
+export const RecordRecordDate = atom({
+  key: 'recordRecordDate',
+  default: {
+    BY_WEEK: currDate,
+  },
+});
+
+export type RecordPeriodType = 'BY_WEEK';
+
+/**
+ * 통계 범위 종류 리스트
+ */
+export const recordPeriodList: { title: string; id: RecordPeriodType }[] = [
+  { title: '일주일', id: 'BY_WEEK' },
+];
+
+export const RecordPeriod = atom<RecordPeriodType>({
+  key: 'recordPeriodType',
+  default: recordPeriodList[0].id,
 });

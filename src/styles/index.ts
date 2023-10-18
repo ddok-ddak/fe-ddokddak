@@ -5,8 +5,8 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: '#FF7184',
-      light: '#FFC5CC',
-      dark: '#DDDDDD',
+      light: '#FFDCE1',
+      dark: '#FFA2AE',
     },
     secondary: {
       main: '#673ab7',
@@ -51,10 +51,82 @@ export const theme = createTheme({
     }
   },
   components: {
-    MuiDatePicker: {
+    MuiPaper: {
       styleOverrides: {
         root: {
+          borderRadius: '15px',
+          boxShadow: 'none',
+        },
+      },
+    },
+    MuiPickersCalendarHeader: {
+      styleOverrides: {
+        root: {
+          display: 'none',
+        },
+        label: {
+          display: 'none',
+        },
+      },
+    },
+    MuiDayPicker: {
+      styleOverrides: {
+        header: {
+          display: 'none',
+        },
+        monthContainer: {
+          margin: '0px 0 0 0',
+        },
+        weekContainer: {
+          height: '5vh',
+          margin: '3% 2%',
+          ' div': {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: '1',
+            padding: '1%',
+          },
+          '> div > div': {
+            fontSize: '10px',
+          },
+        },
+      },
+    },
+    MuiMonthPicker: {
+      styleOverrides: {
+        root: {
+          display: 'none',
+        },
+      },
+    },
+    MuiYearPicker: {
+      styleOverrides: {
+        root: {
+          display: 'none',
+        },
+      },
+    },
+    MuiCalendarPickerSkeleton: {
+      styleOverrides: {
+        root: {
+          // border: '1px solid red',
           backgroundColor: 'red',
+        },
+        daySkeleton: {
+          // outline: '1px solid red',
+          backgroundColor: 'red',
+        },
+        week: {
+          // outline: '1px solid red',
+          backgroundColor: 'red',
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          display: 'none',
         },
       },
     },

@@ -5,37 +5,42 @@ import {
 } from '@/api/statistics.api';
 import Chevron from '@/components/common/Chevron';
 import DateInput from '@/components/date/DateInput';
+import { CustomCalendar } from '@/components/common/CustomCalendar';
 import {
+  PeriodType,
+  periodTypeList,
   selectedStartDate,
   statisticsResultState,
   statisticsStartHour,
+  StatPeriodType,
 } from '@/store/statistics';
 import {
   AppBar,
   Box,
   Grid,
-  IconButton,
-  InputAdornment,
   styled,
   Tab,
   Tabs,
-  TextField,
+  ThemeProvider,
 } from '@mui/material';
-import type {} from '@mui/material/themeCssVarsAugmentation';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { ManipulateType } from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
+import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import weekdayPlugin from 'dayjs/plugin/weekday';
+import { SyntheticEvent, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import WeekPicker from './WeekPicker';
+import { useStatisticView } from '@/hooks/statisticView';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
 dayjs.locale('ko');
+
+dayjs.extend(isBetweenPlugin);
+dayjs.extend(weekdayPlugin);
 
 function a11yProps(index: number) {
   return {
@@ -44,20 +49,6 @@ function a11yProps(index: number) {
   };
 }
 
-export type PeriodType = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
-
-export interface IPeriodType {
-  title: string;
-  id: PeriodType;
-}
-
-const periodTypeList: IPeriodType[] = [
-  { title: '하루', id: 'BY_DAY' },
-  { title: '일주일', id: 'BY_WEEK' },
-  { title: '한 달', id: 'BY_MONTH' },
-  { title: '일 년', id: 'BY_YEAR' },
-];
-
 interface StyledTabProps {
   key: string;
   label: string;
@@ -65,64 +56,14 @@ interface StyledTabProps {
 }
 
 /**
- * render date input
- */
-export const renderDateInput = ({ params, width }: any) => {
-  return (
-    <TextField
-      {...params}
-      helperText={null}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end" sx={{ m: 0 }}>
-            <IconButton>
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M3.52941 0H4.41176V1.76471H10.5882V0H11.4706V1.76471H14H15V2.76471V13.1176V14.1176H14H1H0V13.1176V2.76471V1.76471H1H3.52941V0ZM10.5882 2.76471V3.52941H11.4706V2.76471H14V6.17647H1V2.76471H3.52941V3.52941H4.41176V2.76471H10.5882ZM1 7.05882V13.1176H14V7.05882H1Z"
-                  fill="#4B4B4B"
-                />
-              </svg>
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        display: 'flex',
-        ' .MuiInputBase-root': { justifyContent: 'center', p: 0 },
-        ' .MuiInputBase-input': {
-          p: '16px 0',
-          flex: '1 1 auto',
-          overflow: 'auto',
-          color: '#4B4B4B',
-          fontWeight: '600',
-          fontSize: '14px',
-          width: width + 'px',
-        },
-        ' .MuiInputAdornment-root': { flex: '0 0 auto', pb: '1px' },
-        '& input': { pl: 0 },
-        '& fieldset': { border: 'none' },
-      }}
-    />
-  );
-};
-
-/**
- * custom styled tab group
+ * custom styled period select tab group
  */
 const StyledTabs = styled((props: StyledTabProps) => (
   <Tabs
-    {...props}
     TabIndicatorProps={{
       children: <span className="MuiTabs-indicatorSpan" />,
     }}
+    {...props}
   />
 ))(({ theme }) => ({
   height: '55px',
@@ -143,7 +84,7 @@ const StyledTabs = styled((props: StyledTabProps) => (
 }));
 
 /**
- * custom styled tab
+ * custom styled period select tab
  */
 const StyledTab = styled((props: StyledTabProps) => (
   <Tab disableRipple {...props} />
@@ -155,74 +96,45 @@ const StyledTab = styled((props: StyledTabProps) => (
   fontWeight: 600,
   '&.Mui-selected': {
     color: '#FF7184',
+    color: '#FF7184',
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
   },
 });
 
-
-  export const setPeriodicalDatePicker = (props: any) => {
-    return (
-      <DatePicker
-        showToolbar={false}
-        disableMaskedInput
-        // components={{
-          
-        //   'DateCalender' : <Box></Box>
-        // }}
-        slots={{
-          ActionBar: <Box></Box>,
-          // SwitchViewButton: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
-          SwitchViewIcon: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
-          PaperContent	: <Box sx={{'outline': '2px solid green'}}>{'sdf'}</Box>,
-        }}
-        slotsProps={{
-          // SwitchViewButton: {
-          //   sx: {
-          //     'div' : {
-          //       'border': '1px solid red'
-          //     }
-          //   }
-          // },
-          SwitchViewIcon: {
-            sx: {
-              'div' : {
-                'border': '1px solid red'
-              }
-            }
-          }
-        }}
-        reduceAnimations={true}
-        showDaysOutsideCurrentMonth={true}
-        {...props}
-      />
-    );
-  };
-  
-
 const Period = () => {
-  const [periodType, setPeriodType] =
-    useRecoilState<PeriodType>(selectedPeriodType);
-
+  const [periodType, setPeriodType] = useState<PeriodType>(
+    periodTypeList[0].id,
+  );
   const currDate = new Date().toISOString().slice(0, 10);
-  const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
   const startHour = useRecoilValue(statisticsStartHour);
+  const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
+  const [periodType, setPeriodType] =
+    useRecoilState<PeriodType>(StatPeriodType);
 
   const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
     statisticsResultState,
   );
 
-  const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodType) => {
-    setPeriodType(selectedDate);
-  };
+  const { getWeekPeriodInputFormat, setNewDateRange } 
+    = useStatisticView();
+
 
   /**
-   * get period string
-   * @returns period string
+   * get data with selected date
+   * @param request
+   * @param request
    */
-  const getPeriodString = (): ManipulateType | undefined => {
-    switch (periodType) {
+  const getStatistics = async (request: StatisticsRequest) => {
+    const response = await getStatisticsData({
+      ...request,
+    });
+    setStatisticsResult(response.result);
+  };
+
+  const getPeriodString = (period: StatPeriodType): ManipulateType | undefined => {
+    switch (period) {
       case 'BY_DAY':
         return 'day';
       case 'BY_WEEK':
@@ -249,6 +161,7 @@ const Period = () => {
   /**
    * get data with selected date
    * @param request
+   * @param request
    */
   const getStatistics = async (request: StatisticsRequest) => {
     const response = await getStatisticsData({
@@ -259,7 +172,7 @@ const Period = () => {
 
   useEffect(() => {
     let startDate = selectedDate[periodType];
-    let endDate = startDate.add(1, getPeriodString());
+    let endDate = startDate.add(1, getPeriodString(periodType));
 
     switch (periodType) {
       case 'BY_WEEK':
@@ -306,7 +219,9 @@ const Period = () => {
         >
           <StyledTabs
             value={periodType}
-            onChange={handlePeriodChange}
+            onChange={(event: SyntheticEvent, selectedDate: StatPeriodType) => {
+              setPeriodType(selectedDate);
+            }}
             aria-label="statistics-category tabs"
             indicatorColor="primary"
             textColor="primary"
@@ -317,8 +232,7 @@ const Period = () => {
                 justifyContent: 'center',
               },
             }}
-          >
-            {periodTypeList.map((period, idx) => (
+            children={periodTypeList.map((period, idx) => (
               <StyledTab
                 key={'period-selector-' + idx}
                 label={period.title}
@@ -326,7 +240,7 @@ const Period = () => {
                 {...a11yProps(idx)}
               />
             ))}
-          </StyledTabs>
+          />
         </AppBar>
         <Box
           sx={{
@@ -352,64 +266,81 @@ const Period = () => {
         <Chevron
           callback={() =>
             setNewDateRange(
-              selectedDate[periodType].subtract(1, getPeriodString()),
+              selectedDate[periodType].subtract(1, getPeriodString(periodType)),
             )
           }
           direction="left"
         />
         {periodType === 'BY_DAY' && (
           <>
-            {setPeriodicalDatePicker({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'MM월 DD일 dddd',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={100} />
-              ),
-              onChange: setNewDateRange,
+            {CustomCalendar({
+              pickerProps: {
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'MM월 DD일 dddd',
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'110px'} />
+                ),
+                onChange: setNewDateRange,
+              },
             })}
           </>
         )}
         {periodType === 'BY_WEEK' && (
-          <WeekPicker
-            value={selectedDate[periodType].locale('ko')}
-            onChange={setNewDateRange}
-            showToolbar={false}
-            setSelectedDate={setSelectedDate}
-          />
+          <>
+            {CustomCalendar({
+              pickerProps: {
+                value: selectedDate[periodType].locale('ko'),
+                onChange: (newValue: any) =>
+                  setNewDateRange(dayjs(newValue).startOf('week')),
+                inputFormat: getWeekPeriodInputFormat(
+                  selectedDate[periodType].locale('ko'),
+                ),
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'230px'} />
+                ),
+              },
+            })}
+          </>
         )}
         {periodType === 'BY_MONTH' && (
           <>
-            {setPeriodicalDatePicker({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'YYYY년 MM월',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={80} />
-              ),
-              onChange: setNewDateRange,
-              views: ['year', 'month'],
-              openTo: 'month',
+            {CustomCalendar({
+              pickerProps: {
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'YYYY년 MM월',
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'85px'} />
+                ),
+                onChange: setNewDateRange,
+                views: ['month', 'year'],
+                openTo: 'month',
+              },
             })}
           </>
         )}
         {periodType === 'BY_YEAR' && (
           <>
-            {setPeriodicalDatePicker({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'YYYY년',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={45} />
-              ),
-              onChange: setNewDateRange,
-              views: ['year'],
-              openTo: 'year',
-              minDate: dayjs('2023-01-01'),
-              maxDate: dayjs(currDate),
+            {CustomCalendar({
+              pickerProps: {
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'YYYY년',
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'55px'} />
+                ),
+                onChange: setNewDateRange,
+                views: ['year'],
+                openTo: 'year',
+                minDate: dayjs('2023-01-01'),
+                maxDate: dayjs(currDate),
+              },
             })}
           </>
         )}
         <Chevron
           callback={() =>
-            setNewDateRange(selectedDate[periodType].add(1, getPeriodString()))
+            setNewDateRange(
+              selectedDate[periodType].add(1, getPeriodString(periodType)),
+            )
           }
           direction="right"
         />
