@@ -24,7 +24,8 @@ const CommonHeader = (props: CommonHeaderProps) => {
   const navigation = useNavigate();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    // <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
           {props.isShowBackButton ? (

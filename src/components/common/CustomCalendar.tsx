@@ -1,38 +1,15 @@
 import Chevron from '@/components/common/Chevron';
 import Spacer from '@/components/common/Spacer';
-import {
-  PeriodType,
-  StatCalendarViewType,
-  StatPeriodType,
-  selectedStartDate,
-} from '@/store/statistics';
+import { useStatisticView } from '@/hooks/statisticView';
+import { currentPeriod, currentSelectedDate } from '@/store/common';
+import { PeriodTypeForView, currentPeriodForView } from '@/store/statistics';
 import { Box, Button, Container, Grid, Paper, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRef } from 'react';
 import { useRecoilState } from 'recoil';
 
-export const CustomCalendar = ({
-  // selectedDate,
-  // periodType,
-  pickerProps,
-}: {
-  // selectedDate: {
-  //   value: Dayjs;
-  //   inputFormat: string;
-  //   renderInput: (params: any) => JSX.Element;
-  //   onChange: (newValue: any) => void;
-  // };
-  // periodType: PeriodType;
-  pickerProps: any;
-}) => {
-  const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
-  const [switchView, setSwitchView] =
-    useRecoilState<PeriodType>(StatCalendarViewType);
-  const [periodType, setPeriodType] =
-    useRecoilState<PeriodType>(StatPeriodType);
-
-
+export const CustomCalendar = (pickerProps: any) => {
   /**
    * ref for calendar previous button
    */
@@ -43,7 +20,14 @@ export const CustomCalendar = ({
    */
   const nextBtn = useRef();
 
- 
+  const [selectedDate, setSelectedDate] =
+    useRecoilState<any>(currentSelectedDate);
+  const [periodType, setPeriodType] = useRecoilState<any>(currentPeriod);
+
+  const [switchView, setSwitchView] =
+    useRecoilState<PeriodTypeForView>(currentPeriodForView);
+
+  const { setNewDateRange } = useStatisticView();
 
   /**
    * render custom calendar day elements (day, week type only)
@@ -53,33 +37,27 @@ export const CustomCalendar = ({
    * @param value
    * @returns customized calendar days
    */
-  const renderCustomCalendarDay = (
-    elementDate: Dayjs,
-    // selectedDate: Dayjs,
-    // periodType: PeriodType,
-    // setNewDateRange: (selectedDate: Dayjs) => void,
-  ) => {
-    const date = selectedDate[periodType];
+  const renderCustomCalendarDay = (elementDate: Dayjs) => {
+    const date = selectedDate![periodType];
     const currentDate = elementDate.date();
     const currentDay = elementDate.day();
     const currentMonth = date.month();
 
     const isCurrentMonth = elementDate.month() === currentMonth;
-    const isCurrentDate = isCurrentMonth && elementDate.date() === date.date();
+    const isCurrentDate = isCurrentMonth && currentDate === date.date();
 
+    // for weekly calendar highlighter
     const start = date.startOf('week');
     const end = date.endOf('week');
+    const dayIsBetween = elementDate.isBetween(start, end, null, '[]');
+    const isFirstDay = elementDate.isSame(start, 'day');
+    const isLastDay = elementDate.isSame(end, 'day');
 
-    let dayIsBetween = isCurrentDate;
-    let isFirstDay = isCurrentDate;
-    let isLastDay = isCurrentDate;
-
-    // if (periodType === 'BY_WEEK') {
-    //   dayIsBetween = date.isBetween(start, end, null, '[]');
-    //   isFirstDay = date.isSame(start, 'day');
-    //   isLastDay = date.isSame(end, 'day');
-    // }
-
+    const backgroundColor =
+      (periodType === 'BY_WEEK' && dayIsBetween) ||
+      (periodType === 'BY_DAY' && isCurrentDate)
+        ? '#FFDCE1'
+        : '';
     let color = '';
     switch (currentDay) {
       case 0:
@@ -97,7 +75,7 @@ export const CustomCalendar = ({
         onClick={(props: any) => {
           const dayProp = props.target.offsetParent.getAttribute('id');
           const newSelectedDate = dayjs(Number(dayProp));
-          // setNewDateRange(newSelectedDate);
+          setNewDateRange(newSelectedDate);
         }}
         key={elementDate}
         sx={{
@@ -113,18 +91,18 @@ export const CustomCalendar = ({
         <Grid
           item
           style={{
-            color,
             position: 'absolute',
             height: '85%',
-            fontWeight: isCurrentDate ? '700' : '400',
-            backgroundColor: dayIsBetween ? 'primary.light' : 'transparent',
-            width: !isFirstDay && !isLastDay ? '110%' : '100%',
             borderTopLeftRadius: isFirstDay ? '5px' : '0px',
             borderBottomLeftRadius: isFirstDay ? '5px' : '0px',
             borderTopRightRadius: isLastDay ? '5px' : '0px',
             borderBottomRightRadius: isLastDay ? '5px' : '0px',
             margin: 0,
             padding: 0,
+            color,
+            backgroundColor,
+            fontWeight: isCurrentDate ? '700' : '400',
+            width: !isFirstDay && !isLastDay ? '110%' : '100%',
           }}
         >
           {currentDate}
@@ -146,11 +124,7 @@ export const CustomCalendar = ({
    * render calendar upper control tool bar
    * @returns
    */
-  const renderToolbar = (
-    // selectedDate: any,
-    // periodType: PeriodType,
-
-  ) => {
+  const renderToolbar = () => {
     const monthSelector = 'BY_MONTH';
 
     const date = selectedDate[periodType];
@@ -329,12 +303,12 @@ export const CustomCalendar = ({
             >
               <Button
                 onClick={() => {
-                  // const oldDate = selectedDate[periodType];
-                  // const newDate =
-                  //   switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
-                  //     ? oldDate.year(elem)
-                  //     : oldDate.month(elem - 1);
-                  // setNewDateRange(newDate);
+                  const oldDate = selectedDate[periodType];
+                  const newDate =
+                    switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
+                      ? oldDate.year(elem)
+                      : oldDate.month(elem - 1);
+                  setNewDateRange(newDate);
                 }}
                 sx={{
                   fontWeight: isCurrentDate ? '700' : '400',
@@ -364,6 +338,7 @@ export const CustomCalendar = ({
       </Container>
     );
   };
+
   return (
     <DatePicker
       disableMaskedInput
@@ -371,45 +346,30 @@ export const CustomCalendar = ({
       showDaysOutsideCurrentMonth={true}
       showToolbar={true}
       orientation="portrait"
-      ToolbarComponent={() => {
-        // render customized upper tool bar
-        return renderToolbar(
-          // selectedDate,
-          // periodType,
-        );
-      }}
+      // render customized upper tool bar
+      ToolbarComponent={() => renderToolbar()}
       components={{
-        LeftArrowButton: (props: any) => {
-          // prev button
-          return (
-            <Box ref={prevBtn}>
-              <Chevron callback={props.onClick} direction={'left'} />
-            </Box>
-          );
-        },
-        RightArrowButton: (props: any) => {
-          // next button
-          return (
-            <Box ref={nextBtn}>
-              <Chevron callback={props.onClick} direction={'right'} />
-            </Box>
-          );
-        },
+        // next button
+        LeftArrowButton: (props: any) => (
+          <Box ref={prevBtn}>
+            <Chevron callback={props.onClick} direction={'left'} />
+          </Box>
+        ),
+        // prev button
+        RightArrowButton: (props: any) => (
+          <Box ref={nextBtn}>
+            <Chevron callback={props.onClick} direction={'right'} />
+          </Box>
+        ),
+        // customized calendar view (month and year type only)
         ActionBar: () => {
-          // render customized calendar view (month and year type only)
           if (periodType === 'BY_MONTH' || periodType === 'BY_YEAR') {
             return renderCustomMonthYearCalendar();
           }
         },
       }}
-      // render day element (day and week type only)
-      renderDay={(date: Dayjs) => {
-        return renderCustomCalendarDay(
-          date,
-          // pickerProps.value,
-          // setNewDateRange,
-        );
-      }}
+      // day element (day and week type only)
+      renderDay={(date: Dayjs) => renderCustomCalendarDay(date)}
       {...pickerProps}
     />
   );

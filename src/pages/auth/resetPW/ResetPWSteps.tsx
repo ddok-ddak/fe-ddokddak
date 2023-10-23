@@ -4,7 +4,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useResetPWSteps } from '@/hooks/resetPWSteps';
 import {
   stepIndex,
-  stepType
+  currentFormType
 } from '@/store/common';
 import {
   resetPWMode
@@ -19,7 +19,7 @@ import VerifyPW from './VerifyPW';
 
 const ResetPWStep = () => {
 
-  const setStepType = useSetRecoilState(stepType);
+  const setStepType = useSetRecoilState(currentFormType);
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(stepIndex);
   const [pWChgMode, setPWChgMode] = useRecoilState(resetPWMode);
 

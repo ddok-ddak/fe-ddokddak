@@ -1,10 +1,11 @@
-import { Box, Typography, LinearProgress } from '@mui/material';
+/* eslint-disable no-template-curly-in-string */
+import { Box, LinearProgress, Typography } from '@mui/material';
 import {
-  Chart as ChartJS,
   ArcElement,
-  Tooltip,
-  Legend,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  Tooltip,
   registerables,
 } from 'chart.js';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
@@ -12,18 +13,27 @@ import { Chart } from 'react-chartjs-2';
 import Carousel from 'react-material-ui-carousel';
 
 import Circle from '@/components/common/Circle';
-import { useRecoilValue } from 'recoil';
-import { periodTypeList, statisticsResultState } from '@/store/statistics';
+import { periodForStatList, statisticsResultState } from '@/store/statistics';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+
+import { StatisticsDetail } from '@/api/statistics.api';
+import BarIcon from '@/icons/BarIcon';
+import DonutIcon from '@/icons/DonutIcon';
+import {
+  currentCalendarType,
+  currentPeriod,
+  customCalendarType,
+} from '@/store/common';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
 interface formattedTimeObject {
-  time: string,
-  hour: number, 
-  minute: number, 
-  hourUnit: string, 
-  minuteUnit: string 
+  time: string;
+  hour: number;
+  minute: number;
+  hourUnit: string;
+  minuteUnit: string;
 }
 
 /**
@@ -36,7 +46,11 @@ const timeFormatter = (timeVal: number): formattedTimeObject => {
   const minute = timeVal ? Math.floor(timeVal % 60) : 0;
   const hourUnit = '시간';
   const minuteUnit = '분';
-  const time = timeVal ? (hour > 0 ? (hour + hourUnit) : '') + ' ' + (minute > 0 ? (minute + minuteUnit) : '') : '0시간';
+  const time = timeVal
+    ? (hour > 0 ? hour + hourUnit : '') +
+      ' ' +
+      (minute > 0 ? minute + minuteUnit : '')
+    : '0시간';
   return {
     time,
     hour,
@@ -51,7 +65,8 @@ const timeFormatter = (timeVal: number): formattedTimeObject => {
  * @param noun noun
  * @returns postposition added noun
  */
-const addPostposition = (noun: string) => noun + ((noun.charCodeAt(noun.length - 1) - 0xac00) % 28 ? '은' : '는');
+const addPostposition = (noun: string) =>
+  noun + ((noun.charCodeAt(noun.length - 1) - 0xac00) % 28 ? '은' : '는');
 
 /**
  * custom background plugin options
@@ -73,9 +88,15 @@ const customBackground = {
 
 const ChartContainer = () => {
   const statisticsResult = useRecoilValue(statisticsResultState);
-  const [categoryDetailData, setCategoryDetailData] = useState(statisticsResult);
+  const [categoryDetailData, setCategoryDetailData] =
+    useState(statisticsResult);
 
-  const periodType = useRecoilValue(selectedPeriodType);
+  const periodType = useRecoilValue(currentPeriod);
+  const periodTypeList = useRecoilValue(periodForStatList);
+  // const periodTypeList = useRecoilValue(currentPeriodTypeList);
+
+  const setCalendarType =
+    useSetRecoilState<customCalendarType>(currentCalendarType);
 
   const [totalSum, setTotalSum] = useState(0);
   const [categorySum, setCategorySum] = useState(0);
@@ -84,15 +105,17 @@ const ChartContainer = () => {
   const [isFirstPage, setIsFirstPage] = useState(true);
 
   const [clickedIndex, setClickedIndex] = useState(-1);
-  
+
   const pieChartRef = useRef<ChartJS>(null);
   const barChartRef = useRef<ChartJS>(null);
 
   const activePageIndicator = useRef(null);
   const inactivePageIndicator = useRef(null);
 
-  const resultData = statisticsResult.length ? [...statisticsResult.filter((data) => data.timeSum > 0)] : [];
-  
+  const resultData = statisticsResult.length
+    ? [...statisticsResult.filter((data) => data.timeSum > 0)]
+    : [];
+
   const chartData = {
     labels: resultData.map((data) => data.categoryName),
     datasets: [
@@ -111,21 +134,35 @@ const ChartContainer = () => {
    * @param elements clicked elements of the chart
    * @param chart react-chartjs
    */
-  const chartClickEventHandler = (event: MouseEvent<HTMLCanvasElement>, elements: any, chart: any) => {
-    let chartData = statisticsResult.filter(data => data.timeSum > 0);
+  const chartClickEventHandler = (
+    event: MouseEvent<HTMLCanvasElement>,
+    elements: any,
+    chart: any,
+  ) => {
+    let chartData = statisticsResult.filter((data) => data.timeSum > 0);
     const clickedElement = elements[0];
-    const periodTypeTitle = periodTypeList.filter(type => type.id === periodType)[0].subTitle;
+    const periodTypeTitle = periodTypeList!.filter(
+      (type) => type.id === periodType,
+    )[0].subTitle;
+    console.log(periodTypeTitle);
     if (clickedElement && chartData) {
       const index = clickedElement.index;
       const label = chart.data.labels[index];
-      chartData = chartData.filter(data => data.categoryName === label)[0].children?.filter((childData: any) => childData.timeSum > 0)!;
+      chartData = chartData
+        .filter((data) => data.categoryName === label)[0]
+        .children?.filter((childData: any) => childData.timeSum > 0)!;
       setTotalSumTitle(addPostposition(`${periodTypeTitle} ${label}`));
       setClickedIndex(index);
     } else {
       setTotalSumTitle(addPostposition(periodTypeTitle));
       setClickedIndex(-1);
     }
-    setCategorySum(chartData?.reduce((accu: number, curr: StatisticsDetail) => accu + curr.timeSum, 0) | 0);
+    setCategorySum(
+      chartData?.reduce(
+        (accu: number, curr: StatisticsDetail) => accu + curr.timeSum,
+        0,
+      ) | 0,
+    );
     setCategoryDetailData(chartData);
   };
 
@@ -146,8 +183,8 @@ const ChartContainer = () => {
     indicatorIconButtonProps: {
       ref: inactivePageIndicator,
       style: {
-        display: 'none'
-      }
+        display: 'none',
+      },
     },
     activeIndicatorIconButtonProps: {
       ref: activePageIndicator,
@@ -177,7 +214,8 @@ const ChartContainer = () => {
         color: '#FFFFFF',
         labels: {
           title: {
-            formatter: (val: any, ctx: any) => `${ctx.chart.data.labels[ctx.dataIndex]}\n`,
+            formatter: (val: any, ctx: any) =>
+              `${ctx.chart.data.labels[ctx.dataIndex]}\n`,
             font: {
               fontWeight: 'bold',
               size: 17,
@@ -235,12 +273,15 @@ const ChartContainer = () => {
           const rawTime = data.dataset.data[data.dataIndex];
           return rawTime % 60 ? -40 : -25;
         },
-        color: (context: any) => context.dataIndex === clickedIndex ? 'primary.main' : '#B7B7B7',
+        color: (context: any) =>
+          context.dataIndex === clickedIndex ? '#FF7184' : '#B7B7B7',
         labels: {
           value: {
             formatter: (val: number) => {
               const time = timeFormatter(val);
-              return `${time.hour}시간` + (time.minute ? `\n ${time.minute}분` : '');
+              return (
+                `${time.hour}시간` + (time.minute ? `\n ${time.minute}분` : '')
+              );
             },
             font: {
               weight: 'bold',
@@ -270,7 +311,8 @@ const ChartContainer = () => {
     scales: {
       x: {
         ticks: {
-          color: (context: any) => context.index === clickedIndex ? 'primary.main' : '#222222',
+          color: (context: any) =>
+            context.index === clickedIndex ? '#FF7184' : '#222222',
           font: {
             weight: 'bold',
             size: 14,
@@ -306,28 +348,24 @@ const ChartContainer = () => {
     const timeObject = timeFormatter(timeVal);
     return (
       <>
-        <Typography sx={{ fontWeight: 'bold', }}>
-          {timeObject.hour}
-        </Typography>
-        <Typography>
-          {timeObject.hourUnit}
-        </Typography>
-        {!!timeVal && !!timeObject.minute && <>
-          <Typography sx={{ fontWeight: 'bold', marginLeft: '3px' }}>
-            {timeObject.minute}
-          </Typography>
-          <Typography>
-            {timeObject.minuteUnit}
-          </Typography>       
-        </>}
+        <Typography sx={{ fontWeight: 'bold' }}>{timeObject.hour}</Typography>
+        <Typography>{timeObject.hourUnit}</Typography>
+        {!!timeVal && !!timeObject.minute && (
+          <>
+            <Typography sx={{ fontWeight: 'bold', marginLeft: '3px' }}>
+              {timeObject.minute}
+            </Typography>
+            <Typography>{timeObject.minuteUnit}</Typography>
+          </>
+        )}
       </>
-    )
+    );
   };
 
   /**
    * returns detail data list of the seleted category
    * 선택한 카테고리의 세부 항목을 반환한다.
-   * @param dataArray 
+   * @param dataArray
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => (
@@ -343,74 +381,91 @@ const ChartContainer = () => {
             alignItems: 'flex-end',
           }}
         >
-          <Circle 
-            color={data.categoryColor} 
-            size={40} 
+          <Circle
+            color={data.categoryColor}
+            size={40}
             onClick={() => {
               const subCategoryData = data.children;
-              const periodTypeTitle = periodTypeList.filter((type)=> type.id === periodType)[0].subTitle;
+              const periodTypeTitle = periodTypeList!.filter(
+                (type) => type.id === periodType,
+              )[0].subTitle;
               if (subCategoryData) {
                 setCategoryDetailData(subCategoryData);
-                setTotalSumTitle(addPostposition(`${periodTypeTitle} ${data.categoryName}`));
+                setTotalSumTitle(
+                  addPostposition(`${periodTypeTitle} ${data.categoryName}`),
+                );
               } else {
                 setCategoryDetailData(statisticsResult);
                 setTotalSumTitle(addPostposition(periodTypeTitle));
               }
             }}
           />
-            <Box
-              sx={{ 
-                flex: '1 1 100%',
-                margin: '0px 10px 3px 10px', 
-              }}
-            >
-              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                {data.categoryName}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ width: '100%', mr: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(data.timeSum * 100) / (categorySum || 100)}
-                    sx={{
-                      height: 10,
-                      '&.MuiLinearProgress-root': {
-                        backgroundColor: '#F5F5F5 !important',
-                        borderRadius: 5,
-                      },
-                      '& > .MuiLinearProgress-bar': {
-                        backgroundColor: data.categoryColor,
-                        borderRadius: 5,
-                      },
-                    }}
-                  />
-                </Box>
+          <Box
+            sx={{
+              flex: '1 1 100%',
+              margin: '0px 10px 3px 10px',
+            }}
+          >
+            <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+              {data.categoryName}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ width: '100%', mr: 1 }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={(data.timeSum * 100) / (categorySum || 100)}
+                  sx={{
+                    height: 10,
+                    '&.MuiLinearProgress-root': {
+                      backgroundColor: '#F5F5F5 !important',
+                      borderRadius: 5,
+                    },
+                    '& > .MuiLinearProgress-bar': {
+                      backgroundColor: data.categoryColor,
+                      borderRadius: 5,
+                    },
+                  }}
+                />
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flex: '0 0 20%',
-                margin: '0px 10px 3px 10px', 
-                fontSize: '16px',
-              }}
-            >
-              {setCategoryDetailDataTime(data.timeSum)}
-            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              flex: '0 0 20%',
+              margin: '0px 10px 3px 10px',
+              fontSize: '16px',
+            }}
+          >
+            {setCategoryDetailDataTime(data.timeSum)}
+          </Box>
         </Box>
       ))}
     </>
   );
 
   useEffect(() => {
-    const timeSum = statisticsResult?.reduce((accumulator, currentValue) => accumulator + currentValue.timeSum, 0) | 0;
+    setCalendarType('STAT');
+    console.log(periodTypeList);
+  }, []);
+
+  useEffect(() => {
+    const timeSum =
+      statisticsResult?.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.timeSum,
+        0,
+      ) | 0;
     setTotalSum(() => timeSum);
     setCategorySum(() => timeSum);
 
-    setTotalSumTitle(addPostposition(periodTypeList.filter(type => type.id === periodType)[0].subTitle));
-    setCategoryDetailData(statisticsResult.filter(data => data.timeSum > 0));
+    setTotalSumTitle(
+      addPostposition(
+        periodTypeList!.filter((type) => type.id === periodType)[0].subTitle,
+      ),
+    );
+    setCategoryDetailData(statisticsResult.filter((data) => data.timeSum > 0));
   }, [statisticsResult, periodType]);
 
   return (
@@ -430,157 +485,170 @@ const ChartContainer = () => {
               fontSize: '14px',
             }}
           >
-            <span>{totalSumTitle} {'‎'}</span>
+            <span>
+              {totalSumTitle} {'‎'}
+            </span>
             <span
               style={{
                 fontSize: '16px',
-                color: 'primary.main',
+                color: '#FF7184',
               }}
             >
               {timeFormatter(categorySum).time}
             </span>
           </Box>
-          {!!totalSum && 
+          {!!totalSum && (
             <Box
-            sx={{
-              position: 'absolute',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              top: 0,
-              right: '5%',
-              width: '72px',
-              height: 'calc(100% - 3px)'
-            }}
-            >
-            <Box
-              onClick={() => {
-                // first page label is 1
-                const indicator: any = activePageIndicator.current;
-                if (Number(indicator.getAttribute('aria-label').match(/\d+/)[0]) !== 1) {
-                  const inactiveIndicator: any = inactivePageIndicator.current;
-                  inactiveIndicator.click();
-                  setIsFirstPage(true);
-                }
-                if (clickedIndex > -1) {
-                  const pieChart = pieChartRef.current;
-                  pieChart?.setActiveElements([{datasetIndex: 0, index: clickedIndex}]);
-                }
-              }}
               sx={{
-                border: '1px solid',
-                borderColor: isFirstPage ? 'primary.main' : '#949494',
-                borderRightColor: 'primary.main',
-                borderRadius: '3px 0 0 3px',
-                flex: '1 1 50%',
-                height: '50%',
-                padding: 'auto',
-                display: 'flex',  
-                justifyContent: 'center',
+                position: 'absolute',
+                display: 'flex',
+                flexDirection: 'row',
                 alignItems: 'center',
+                top: 0,
+                right: '5%',
+                width: '72px',
+                height: 'calc(100% - 3px)',
               }}
             >
-              <DonutIcon iconColor={isFirstPage ? 'primary.main' : '#949494'}/>
+              <Box
+                onClick={() => {
+                  // first page label is 1
+                  const indicator: any = activePageIndicator.current;
+                  if (
+                    Number(
+                      indicator.getAttribute('aria-label').match(/\d+/)[0],
+                    ) !== 1
+                  ) {
+                    const inactiveIndicator: any =
+                      inactivePageIndicator.current;
+                    inactiveIndicator.click();
+                    setIsFirstPage(true);
+                  }
+                  if (clickedIndex > -1) {
+                    const pieChart = pieChartRef.current;
+                    pieChart?.setActiveElements([
+                      { datasetIndex: 0, index: clickedIndex },
+                    ]);
+                  }
+                }}
+                sx={{
+                  border: '1px solid',
+                  borderColor: isFirstPage ? '#FF7184' : '#949494',
+                  borderRightColor: '#FF7184',
+                  borderRadius: '3px 0 0 3px',
+                  flex: '1 1 50%',
+                  height: '50%',
+                  padding: 'auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <DonutIcon iconColor={isFirstPage ? '#FF7184' : '#949494'} />
+              </Box>
+              <Box
+                onClick={() => {
+                  // second page label is 2
+                  const indicator: any = activePageIndicator.current;
+                  if (
+                    Number(
+                      indicator.getAttribute('aria-label').match(/\d+/)[0],
+                    ) !== 2
+                  ) {
+                    const inactiveIndicator: any =
+                      inactivePageIndicator.current;
+                    inactiveIndicator.click();
+                    setIsFirstPage(false);
+                  }
+                }}
+                sx={{
+                  border: `1px solid ${isFirstPage ? '#949494' : '#FF7184'}`,
+                  borderLeft: 'none',
+                  borderRadius: '0 3px 3px 0',
+                  flex: '1 1 50%',
+                  height: '50%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <BarIcon iconColor={isFirstPage ? '#949494' : '#FF7184'} />
+              </Box>
             </Box>
-            <Box
-              onClick={() => {
-                // second page label is 2
-                const indicator: any = activePageIndicator.current;
-                if (Number(indicator.getAttribute('aria-label').match(/\d+/)[0]) !== 2) {
-                  const inactiveIndicator: any = inactivePageIndicator.current;
-                  inactiveIndicator.click();
-                  setIsFirstPage(false);
-                }
-              }}
-              sx={{
-                border: `1px solid ${isFirstPage ? '#949494' : 'primary.main'}`,
-                borderLeft: 'none',
-                borderRadius: '0 3px 3px 0',
-                flex: '1 1 50%',
-                height: '50%',
-                display: 'flex',  
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <BarIcon iconColor={isFirstPage ? '#949494' : 'primary.main'} />
-            </Box>
-            </Box>
-          }
+          )}
         </Box>
-          {!!totalSum && 
-            <Carousel
-                {...carouselOption} 
+        {!!totalSum && (
+          <Carousel {...carouselOption}>
+            <Box
+              sx={{
+                display: 'flex',
+                height: '274px',
+                justifyContent: 'center',
+                position: 'relative',
+                width: '100%',
+              }}
             >
+              <Chart
+                ref={pieChartRef}
+                type={'doughnut'}
+                data={chartData}
+                options={pieChartOptions}
+                plugins={[ChartDataLabels, customBackground]}
+              />
+            </Box>
+            <Box sx={{ backgroundColor: '#FFF4F6' }}>
               <Box
                 sx={{
                   display: 'flex',
                   height: '274px',
                   justifyContent: 'center',
-                  position: 'relative',
+                  alignItems: 'center',
+                  flexDirection: 'column',
                   width: '100%',
                 }}
               >
                 <Chart
-                  ref={pieChartRef}
-                  type={'doughnut'}
+                  ref={barChartRef}
+                  type={'bar'}
                   data={chartData}
-                  options={pieChartOptions}
+                  options={barChartOptions}
                   plugins={[ChartDataLabels, customBackground]}
                 />
               </Box>
-              <Box sx={{ backgroundColor: '#FFF4F6' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    height: '274px',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    width: '100%',
-                  }}
-                >
-                  <Chart
-                    ref={barChartRef}
-                    type={'bar'}
-                    data={chartData}
-                    options={barChartOptions}
-                    plugins={[ChartDataLabels, customBackground]}
-                  />
-                </Box>
-              </Box>
-            </Carousel>
-          }
-          {!!!totalSum && 
-            <Carousel
-              {...carouselOption} 
+            </Box>
+          </Carousel>
+        )}
+        {!!!totalSum && (
+          <Carousel {...carouselOption}>
+            <Box
+              sx={{
+                display: 'flex',
+                height: '278px',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                width: '100%',
+              }}
             >
-              <Box
+              <Typography
                 sx={{
-                  display: 'flex',
-                  height: '278px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                  width: '100%',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#B7B7B7',
                 }}
               >
-                <Typography
-                  sx={{
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    color: '#B7B7B7'
-                  }}
-                >
                 {'아직 데이터가 없어요'}
-                <br/>
+                <br />
                 {'기록을 남겨보세요 :)'}
-                </Typography>
-              </Box>
-            </Carousel>
-          }
+              </Typography>
+            </Box>
+          </Carousel>
+        )}
       </Box>
-      {setCategoryDetailDataList(totalSum ? categoryDetailData : statisticsResult)}
+
+      {setCategoryDetailDataList(
+        totalSum ? categoryDetailData : statisticsResult,
+      )}
     </>
   );
 };

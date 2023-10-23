@@ -1,23 +1,12 @@
-import { stepButtonProps, stepInstruction } from '@/store/common';
-import { Box, Button, Container, Typography } from '@mui/material';
-import { ReactNode, useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import BottomButton from '@/components/common/BottomButton';
+import { stepInstruction } from '@/store/common';
+import { Box, Container, Typography } from '@mui/material';
+import { ReactNode } from 'react';
+import { useRecoilValue } from 'recoil';
 
 const FormWrapper = ({children}: {children: ReactNode}) => {
-  
   const instruction = useRecoilValue(stepInstruction);
-  const [nextButtonProps, setNextButtonProps] = useRecoilState(
-    stepButtonProps,
-  );
-
-
-  // const nextButtonState = customHook.nextButtonState;
-  // const instruction = customHook.instruction;
-
-  useEffect(() => {
-
-  }, []);
-
+  
   return (
     <Container
       sx={{
@@ -42,25 +31,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
         {children}
         </form>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        fullWidth
-        disabled={nextButtonProps.isDisabled}
-        onClick={nextButtonProps.clickHandler}
-        sx={{
-          bottom: 0,
-          borderRadius: '5px',
-          boxShadow: 'none',
-          color: 'common.white',
-          '&:Mui-disabled': {
-            backgroundColor: 'primary.dark',
-          },
-        }}
-      >
-        {nextButtonProps.text}
-      </Button>
+      {BottomButton()}
     </Container>
   );
 };

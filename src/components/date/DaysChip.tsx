@@ -5,32 +5,63 @@ export interface DaysChipProps {
   isselected: boolean;
   onClick: () => void;
   underline: boolean;
+  color?: string;
 }
 
 const DaysChip = (props: DaysChipProps) => {
+  const color = props.color
+    ? props.color
+    : `${props.isselected ? 'inherit' : 'text.primary'}`;
+  const fontWeight = props.underline ? '700' : '400';
   return (
     <Box
-      sx={{
-        padding: '8px',
-        borderRadius: '50%',
-        width: '24px',
-        height: '24px',
-        textAlign: 'center',
-        backgroundColor: `${props.isselected && '#FFDCE1'}`,
-        textDecoration: `${props.underline && 'underline #FF7184 4px'}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
       onClick={props.onClick}
+      sx={{
+        display: 'flex',
+        flex: '0 0 11vw',
+        flexDirection: 'column',
+
+      }}
     >
-      <Typography
+      <Box
         sx={{
-          color: `${props.isselected ? 'inherit' : 'text.primary'}`,
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 'inherit',
         }}
       >
-        {props.title}
-      </Typography>
+        <Box
+          sx={{
+            backgroundColor: `${props.isselected && '#FFDCE1'}`,
+            borderRadius: '50%',
+            flexDirection: 'column',
+            width: '6vw',
+            flex: '0 0 6vw',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography
+            sx={{
+              color,
+              fontWeight,
+            }}
+          >
+            {props.title}
+          </Typography>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: props.underline ? '#FF7184' : '',
+          width: '100%',
+          height: '5px',
+          borderRadius: '5px',
+        }}
+      />
     </Box>
   );
 };

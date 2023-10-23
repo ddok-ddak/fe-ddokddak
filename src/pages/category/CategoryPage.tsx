@@ -12,15 +12,15 @@ import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import { selectedSubCategoryState } from '../../store/category';
 
-export interface MainCategory {
+export interface MainCategoryProps {
   categoryId: number;
   name: string;
   level?: number;
   color: string;
-  subCategories: SubCategory[];
+  subCategories: SubCategoryProps[];
 }
 
-export interface SubCategory {
+export interface SubCategoryProps {
   categoryId?: number;
   name: string;
   color: string;
@@ -29,10 +29,10 @@ export interface SubCategory {
 
 const CategoryPage = () => {
   const navigation = useNavigate();
-  const setSelectedSubCategory = useSetRecoilState<SubCategory>(
+  const setSelectedSubCategory = useSetRecoilState<SubCategoryProps>(
     selectedSubCategoryState,
   );
-  const [categories, setCategories] = useState<MainCategory[]>([]);
+  const [categories, setCategories] = useState<MainCategoryProps[]>([]);
 
   const getAllCategories = async () => {
     const response = await getCategories();
@@ -117,7 +117,7 @@ const CategoryPage = () => {
                         setSelectedSubCategory({
                           mainCategoryId: category.categoryId,
                           color: '#D9D9D9',
-                        } as SubCategory);
+                        } as SubCategoryProps);
                         navigation('/category/add', {
                           state: {
                             mode: 'add',

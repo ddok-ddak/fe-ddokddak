@@ -1,4 +1,4 @@
-import { StatCalendarViewType, PeriodType, selectedStartDate, StatPeriodType } from '@/store/statistics';
+import { currentPeriodForView, PeriodTypeForStat, currentSelectedDateForStat, currentPeriodForStat } from '@/store/statistics';
 import { Dayjs, ManipulateType } from 'dayjs';
 import { useRecoilState } from 'recoil';
 
@@ -9,17 +9,17 @@ export function useStatisticView() {
   /**
    * selected period type state
    */
-  const [periodType, setPeriodType] = useRecoilState<PeriodType>(
-    StatPeriodType,
+  const [periodType, setPeriodType] = useRecoilState<PeriodTypeForStat>(
+    currentPeriodForStat,
   );
 
-  const getPeriodType = (): PeriodType => periodType;
-  const setNewPeriodType = (newPeriodType: PeriodType) => setPeriodType(newPeriodType);
+  const getPeriodType = (): PeriodTypeForStat => periodType;
+  const setNewPeriodType = (newPeriodType: PeriodTypeForStat) => setPeriodType(newPeriodType);
   /**
    * get period string
    * @returns period string
    */
-  const getPeriodString = (period: PeriodType): ManipulateType | undefined => {
+  const getPeriodString = (period: PeriodTypeForStat): ManipulateType | undefined => {
     switch (period) {
       case 'BY_DAY':
         return 'day';
@@ -37,16 +37,16 @@ export function useStatisticView() {
   /**
    * month/year view state (month type only) 
    */
-  const [switchView, setSwitchView] = useRecoilState<PeriodType>(StatCalendarViewType);
+  const [switchView, setSwitchView] = useRecoilState<PeriodTypeForStat>(currentPeriodForView);
   const getSwitchView = () => switchView;
   const setNewSwitchView = () => setSwitchView(switchView === 'BY_MONTH' ? 'BY_YEAR' : 'BY_MONTH')
 
   /**
    * selected date for statistic view (all types)
    */
-  const [selectedDate, setSelectedDate] = useRecoilState(selectedStartDate);
+  const [selectedDate, setSelectedDate] = useRecoilState(currentSelectedDateForStat);
   const getSelectedDate = () => selectedDate;
-  const setNewSelectedDate = (periodType: PeriodType, newDate: Dayjs) => {
+  const setNewSelectedDate = (periodType: PeriodTypeForStat, newDate: Dayjs) => {
     setSelectedDate({
       [periodType]: newDate,
       ...selectedDate,

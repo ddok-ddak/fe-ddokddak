@@ -1,9 +1,9 @@
-import { MainCategory } from '../pages/category/CategoryPage';
+import { MainCategoryProps } from '../pages/category/CategoryPage';
 
 /**
  * 임시 data
  */
-export const categories: MainCategory[] = [
+export const categories: MainCategoryProps[] = [
   {
     name: '직장',
     color: '#20FFD7',

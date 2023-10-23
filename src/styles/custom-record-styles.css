@@ -124,7 +124,7 @@
 
 .fc table a.fc-col-header-cell-cushion {
   width: 100%;
-  padding: 2px 0;
+  padding: 2px 0 6px 0;
 }
 
 .fc-header-toolbar .fc-toolbar-chunk {
