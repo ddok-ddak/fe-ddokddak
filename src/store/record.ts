@@ -1,15 +1,19 @@
 import { atom } from 'recoil';
 
-import { SelectedRangeData } from '@/pages/record/CreateRecordPage';
-import { StatPeriodType } from './statistics';
 import dayjs from 'dayjs';
+import { INextButtonState } from './common';
 
-export const selectedTimeRangeState = atom({
-  key: 'selectedTimeRangeState',
-  default: {
-    start: new Date('December 16, 2023 16:00:00'),
-    end: new Date('December 16, 2023 18:30:00'),
-  } as SelectedRangeData,
+// export const selectedTimeRangeState = atom({
+//   key: 'selectedTimeRangeState',
+//   default: {
+//     start: new Date('December 16, 2023 16:00:00'),
+//     end: new Date('December 16, 2023 18:30:00'),
+//   } as SelectedRangeData,
+// });
+
+export const currentSelectedEvent = atom({
+  key: 'CurrentSelectedEvent',
+  default: {},
 });
 
 export const categories = atom<Category[]>({
@@ -32,7 +36,7 @@ export const selectedDaysState = atom<number[]>({
   default: [],
 });
 
-type SubCategory = {
+type SubCategoryProps = {
   name: string;
   color: string;
 };
@@ -40,7 +44,7 @@ type SubCategory = {
 type Category = {
   name: string;
   color: string;
-  subCategories: SubCategory[];
+  subCategories: SubCategoryProps[];
 };
 
 export const categoriesState = atom<Category[]>({
@@ -48,25 +52,50 @@ export const categoriesState = atom<Category[]>({
   default: [],
 });
 
-const currDate = dayjs(new Date().toISOString().slice(0, 10));
-
-export const RecordRecordDate = atom({
-  key: 'recordRecordDate',
+export const currentSelectedDateForRecord = atom({
+  key: 'CurrentSelectedDateForRecord',
   default: {
-    BY_WEEK: currDate,
+    BY_WEEK: dayjs(new Date().toISOString().slice(0, 10)),
   },
 });
 
-export type RecordPeriodType = 'BY_WEEK';
+/**
+ * RECORD PAGE TYPE
+ */
+
+type RecordPageType = 'CREATE' | 'UPDATE';
+export const currentRecordPageType = atom<RecordPageType>({
+  key: 'CurrentRecordPageType',
+  default: 'CREATE',
+});
 
 /**
- * 통계 범위 종류 리스트
+ * CALENDAR FOR RECORD
  */
-export const recordPeriodList: { title: string; id: RecordPeriodType }[] = [
-  { title: '일주일', id: 'BY_WEEK' },
-];
+export type PeriodTypeForRecord = 'BY_WEEK';
 
-export const RecordPeriod = atom<RecordPeriodType>({
-  key: 'recordPeriodType',
-  default: recordPeriodList[0].id,
+export const periodForRecordListValue: {
+  title: string;
+  id: PeriodTypeForRecord;
+}[] = [{ title: '일주일', id: 'BY_WEEK' }];
+
+export const periodForRecordList = atom<
+  { title: string; id: PeriodTypeForRecord }[]
+>({
+  key: 'PeriodForRecordList',
+  default: periodForRecordListValue,
+});
+
+export const currentPeriodForRecord = atom<PeriodTypeForRecord>({
+  key: 'CurrentPeriodForRecord',
+  default: periodForRecordListValue[0].id,
+});
+
+export const recordEditNextButtonState = atom<INextButtonState>({
+  key: 'RecordEditNextButtonState',
+  default: {
+    isDisabled: false,
+    clickHandler: () => {},
+    text: '삭제하기'
+  }
 });

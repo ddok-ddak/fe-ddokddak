@@ -15,8 +15,7 @@ import StatisticsPage from './pages/statistics/StatisticsPage';
 
 import Modal from './components/common/Modal';
 
-import CreateRecoredPage from '@/pages/record/CreateRecordPage';
-import UpdateRecoredPage from '@/pages/record/UpdateRecordPage';
+import EditRecordPage from '@/pages/record/EditRecordPage';
 
 import { theme } from '@/styles';
 import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
@@ -27,29 +26,29 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <Box sx={{ paddingBottom: '56px' }}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signUp" element={<SignUp />} />
-            <Route path="/findID" element={<FindID />} />
+        <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+          <Box sx={{height: '94vh'}}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/findID" element={<FindID />} />
 
-            <Route path="/resetPW" element={<ResetPWStep />} />
-            <Route path="/resetPWMode" element={<ResetPWMode />} />
-            
-            <Route path="/record" element={<RecordPage />} />
-            <Route path="/statistics" element={<StatisticsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/settings/account" element={<AccountSetting />} />
+              <Route path="/resetPW" element={<ResetPWStep />} />
+              <Route path="/resetPWMode" element={<ResetPWMode />} />
 
-            <Route path="/record/create" element={<CreateRecoredPage />} />
-            <Route path="/record/update" element={<UpdateRecoredPage />} />
-            <Route path="/category" element={<CategoryPage />} />
-            <Route path="/category/add" element={<CreateCategoryPage />} />
-          </Routes>
+              <Route path="/record" element={<RecordPage />} />
+              <Route path="/statistics" element={<StatisticsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/settings/account" element={<AccountSetting />} />
+
+              <Route path="/record/edit" element={<EditRecordPage />} />
+              <Route path="/category" element={<CategoryPage />} />
+              <Route path="/category/add" element={<CreateCategoryPage />} />
+            </Routes>
+          </Box>
+          <BottomNav />
         </Box>
-
-        <BottomNav />
         <Modal />
       </ThemeProvider>
     </BrowserRouter>

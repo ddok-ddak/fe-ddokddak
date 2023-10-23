@@ -1,4 +1,4 @@
-import { SubCategory } from '../pages/category/CategoryPage';
+import { SubCategoryProps } from '../pages/category/CategoryPage';
 import { callAPI } from './common/api';
 import CommonResponse from './http';
 
@@ -26,7 +26,7 @@ export const getCategories = async () => {
   return response as CommonResponse;
 };
 
-export const addSubCategory = async (request: SubCategory) => {
+export const addSubCategory = async (request: SubCategoryProps) => {
   const response = await callAPI({
     url: `/api/v1/categories`,
     method: 'POST',
@@ -42,7 +42,7 @@ export const addSubCategory = async (request: SubCategory) => {
   return response as CommonResponse;
 };
 
-export const updateSubCategory = async (request: SubCategory) => {
+export const updateSubCategory = async (request: SubCategoryProps) => {
   const response = await callAPI({
     url: `/api/v1/categories/value`,
     method: 'PUT',

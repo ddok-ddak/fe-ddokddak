@@ -2,7 +2,7 @@ import Google from '@/components/auth/Google';
 import Kakao from '@/components/auth/Kakao';
 import Logo from '@/components/auth/Logo';
 import Naver from '@/components/auth/Naver';
-import { stepButtonProps, stepInstruction, stepType } from '@/store/common';
+import { stepButtonProps, stepInstruction, currentFormType } from '@/store/common';
 import { signInUpStepInstruction } from '@/store/signUp';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect } from 'react';
@@ -65,7 +65,7 @@ export default function Login() {
   //     //   const handleLoginClicked = () => {
   //     //     setLoginClicked(!loginClicked);
   //     //   };
-  const setStepType = useSetRecoilState(stepType);
+  const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(
     stepButtonProps,
   );

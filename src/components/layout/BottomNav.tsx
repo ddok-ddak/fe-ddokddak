@@ -1,17 +1,22 @@
+import { showBottomNav } from '@/store/common';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import React from 'react';
-// import './BottomNav.css';
 import { Link } from 'react-router-dom';
-// import BarChartIcon from '@mui/icons-material/BarChart';
-// import SettingsIcon from '@mui/icons-material/Settings';
-// import CreateIcon from '@mui/icons-material/Create';
+import { useRecoilValue } from 'recoil';
 
 const BottomNav = () => {
   const [value, setValue] = React.useState(0);
+  const showNav = useRecoilValue(showBottomNav);
 
   return (
     <BottomNavigation
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      sx={{
+        display: showNav ? 'flex' : 'none',
+        height: '6vh',
+        position: 'fixed',
+        bottom: '0px',
+        width: '100vw',
+      }}
       showLabels
       value={value}
       onChange={(event, newValue) => {

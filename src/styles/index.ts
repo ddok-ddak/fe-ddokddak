@@ -107,22 +107,6 @@ export const theme = createTheme({
         },
       },
     },
-    MuiCalendarPickerSkeleton: {
-      styleOverrides: {
-        root: {
-          // border: '1px solid red',
-          backgroundColor: 'red',
-        },
-        daySkeleton: {
-          // outline: '1px solid red',
-          backgroundColor: 'red',
-        },
-        week: {
-          // outline: '1px solid red',
-          backgroundColor: 'red',
-        },
-      },
-    },
     MuiDialogActions: {
       styleOverrides: {
         root: {
