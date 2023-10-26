@@ -194,7 +194,7 @@ const ChartContainer = () => {
               if (!totalSum) {
                 return '';
               }
-              return `\n${Math.round((val * 100) / (totalSum | 100))}%`;
+              return `\n${Math.round((val * 100) / (totalSum || 100))}%`;
             },
             font: {
               size: 14,
@@ -377,7 +377,7 @@ const ChartContainer = () => {
                 <Box sx={{ width: '100%', mr: 1 }}>
                   <LinearProgress
                     variant="determinate"
-                    value={(data.timeSum * 100) / (categorySum | 100)}
+                    value={(data.timeSum * 100) / (categorySum || 100)}
                     sx={{
                       height: 10,
                       '&.MuiLinearProgress-root': {
