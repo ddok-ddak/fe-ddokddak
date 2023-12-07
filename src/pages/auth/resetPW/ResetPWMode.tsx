@@ -51,12 +51,6 @@ const ResetPWMode = (props: any) => {
     });
   }, []);
 
-
-  useEffect(() => {
-    
-
-  }, [pWChgMode]);
-    
   return (
     <Container
       sx={{

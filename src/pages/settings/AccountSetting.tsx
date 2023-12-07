@@ -4,21 +4,32 @@ import {
   IconButton,
   Input,
   InputAdornment,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import UserAvatar from '@/components/settings/UserAvatar';
 import { useNavigate } from 'react-router-dom';
-import SettingWrapper from '../auth/common/Wrapper';
+import Wrapper from '../auth/common/Wrapper';
+import CommonHeader from '@/components/layout/CommonHeader';
 
 const AccountSetting = () => {
   const navigation = useNavigate();
 
   return (
-    <SettingWrapper prevBtnText={'뒤로'} handlePrevBtn={() => navigation('/settings')}>
+    <Wrapper
+      headerComp={
+        <CommonHeader
+          title={'비밀번호 변경'}
+          isShowPrevButton={true}
+        />
+      }
+      handlePrevBtn={() => navigation('/settings')}
+    >
       <Box sx={{ display: 'inline-block', position: 'relative', mt: 1 }}>
         <UserAvatar />
-        <IconButton sx={{ position: 'absolute', right: '-5px', bottom: '-5px' }}>
+        <IconButton
+          sx={{ position: 'absolute', right: '-5px', bottom: '-5px' }}
+        >
           <svg
             width="20"
             height="20"
@@ -44,11 +55,7 @@ const AccountSetting = () => {
         multiline
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              // onClick={handleClickShowPassword}
-              // onMouseDown={handleMouseDownPassword}
-            >
+            <IconButton aria-label="toggle password visibility">
               <svg
                 width="14"
                 height="14"
@@ -68,7 +75,7 @@ const AccountSetting = () => {
       <Typography sx={{ fontSize: '14px', mt: '3px' }}>
         {'dodonenow.com'}
       </Typography>
-    </SettingWrapper>
+    </Wrapper>
   );
 };
 

@@ -34,7 +34,7 @@ export interface INextButtonState {
   text: string;
 }
 
-export type FormType = 'SIGNUP' | 'LOGIN' | 'RECORD';
+export type FormType = 'SIGNUP' | 'LOGIN' | 'RECORD' | 'RESETPW';
 
 export const currentFormType = atom<FormType>({
   key: 'CurrentFormType',

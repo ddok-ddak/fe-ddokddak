@@ -26,11 +26,13 @@ const Wrapper = ({
     >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          width: '100%',
+          // display: 'flex',
+          // flexDirection: 'row',
+          // flex: '1 0 100%',
         }}
       >
-        <PrevButton prevBtnText={prevBtnText} handlePrevBtn={handlePrevBtn} />
+        {/* <PrevButton prevBtnText={prevBtnText} handlePrevBtn={handlePrevBtn} /> */}
         {headerComp}
       </Box>
       {children}

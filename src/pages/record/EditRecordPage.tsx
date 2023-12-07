@@ -42,6 +42,7 @@ import { LocalizationProvider } from 'mui_pickers_6/LocalizationProvider';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/effect-coverflow';
 import FlexBox from '@/components/common/FlexBox';
+import Wrapper from '../auth/common/Wrapper';
 
 export interface MainCategoryProps {
   categoryId: number;
@@ -568,192 +569,194 @@ const EditRecordPage = (): ReactElement => {
   }, [selectedSubCategoryIdx, setRecoilSubCategoryValue, recoilCategoryValue]);
 
   return (
-    <Box
-      className={'edit-record'}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-      }}
-    >
-      <Box>
+    <Wrapper
+      headerComp={
         <CommonHeader
           title={'기록하기'}
-          isShowBackButton={true}
-          isShowRightButton={true}
-          onClickRightButton={postAllDays}
+          isShowPrevButton={true}
+          isShowNextButton={true}
+          onClickNextButton={postAllDays}
         />
-      </Box>
-      <Container sx={{ flexGrow: '1' }}>
-        <Spacer y={8} />
+      }
+    >
+      <Box>
+        <Container sx={{ flexGrow: '1' }}>
+          <Spacer y={8} />
 
-        {/* Selected Days */}
-        <Box
-          sx={{
-            position: 'relative',
-            height: '12vw',
-            display: 'flex',
-          }}
-        >
+          {/* Selected Days */}
           <Box
             sx={{
-              position: 'absolute',
-              width: '100%',
-              height: 'calc(11vw + 2px)',
-              flex: '1 0 12vh',
-              boxShadow: '0px 9px 15px 0px rgba(0, 0, 0, 0.04)',
+              position: 'relative',
+              height: '12vw',
+              display: 'flex',
             }}
-          />
-          <Box
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '100%',
+                height: 'calc(11vw + 2px)',
+                flex: '1 0 12vh',
+                boxShadow: '0px 9px 15px 0px rgba(0, 0, 0, 0.04)',
+              }}
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '100%',
+                height: '13vw',
+                flex: '1 1 12vh',
+                display: 'flex',
+                justifyContent: 'space-evenly',
+              }}
+            >
+              {['일', '월', '화', '수', '목', '금', '토'].map(
+                (day, dayIndex) => {
+                  const isSelected = selectedDays.includes(dayIndex);
+                  const isCurrentDate = currentDay === dayIndex;
+                  return (
+                    <DaysChip
+                      key={day}
+                      title={day}
+                      isselected={isSelected}
+                      underline={isCurrentDate}
+                      onClick={() => handleDayChipClick(dayIndex)}
+                      color={
+                        dayIndex === 0
+                          ? '#FF4444'
+                          : dayIndex === 6
+                          ? '#3B66FF'
+                          : ''
+                      }
+                    />
+                  );
+                },
+              )}
+            </Box>
+          </Box>
+
+          {/* Time Range */}
+          <Container
             sx={{
-              position: 'absolute',
-              width: '100%',
-              height: '13vw',
-              flex: '1 1 12vh',
               display: 'flex',
               justifyContent: 'space-evenly',
+              padding: '32px',
             }}
           >
-            {['일', '월', '화', '수', '목', '금', '토'].map((day, dayIndex) => {
-              const isSelected = selectedDays.includes(dayIndex);
-              const isCurrentDate = currentDay === dayIndex;
-              return (
-                <DaysChip
-                  key={day}
-                  title={day}
-                  isselected={isSelected}
-                  underline={isCurrentDate}
-                  onClick={() => handleDayChipClick(dayIndex)}
-                  color={
-                    dayIndex === 0 ? '#FF4444' : dayIndex === 6 ? '#3B66FF' : ''
-                  }
-                />
-              );
-            })}
-          </Box>
-        </Box>
+            {formatRangeTimeElem('start')}
+            <FlexBox>
+              <Typography sx={{ fontweight: '400', fontSize: '13px' }}>
+                ~
+              </Typography>
+            </FlexBox>
+            {formatRangeTimeElem('end')}
+          </Container>
 
-        {/* Time Range */}
-        <Container
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
-            padding: '32px',
-          }}
-        >
-          {formatRangeTimeElem('start')}
-          <FlexBox>
-            <Typography sx={{ fontweight: '400', fontSize: '13px' }}>
-              ~
-            </Typography>
-          </FlexBox>
-          {formatRangeTimeElem('end')}
-        </Container>
+          <Divider sx={{ bgcolor: '#FFDCE1', border: '2px solid #FFDCE1' }} />
 
-        <Divider sx={{ bgcolor: '#FFDCE1', border: '2px solid #FFDCE1' }} />
+          <Container sx={{ textAlign: 'right' }}>
+            <Button
+              variant="text"
+              component={Link}
+              to="/category"
+              sx={{ color: '#949494', paddingTop: '17px' }}
+            >
+              카테고리 설정
+            </Button>
+          </Container>
 
-        <Container sx={{ textAlign: 'right' }}>
-          <Button
-            variant="text"
-            component={Link}
-            to="/category"
-            sx={{ color: '#949494', paddingTop: '17px' }}
+          {/* Main Categories */}
+          <Container
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              overflowX: 'scroll',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch',
+              padding: '2% 0 3% 0',
+            }}
           >
-            카테고리 설정
-          </Button>
-        </Container>
+            {categories.length &&
+              categories.map((category: MainCategoryProps, idx) => {
+                const isSelected = idx === selectedCategoryIdx;
+                return (
+                  <StyledChip
+                    key={category.categoryId}
+                    label={category.name}
+                    variant={isSelected ? 'filled' : 'outlined'}
+                    onClick={() => {
+                      setSelectedSubCategoryIdx(() => 0);
+                      setSelectedCategoryIdx(idx);
+                    }}
+                    props={{
+                      isSelected,
+                      backgroundColor: category.highlightColor,
+                    }}
+                  />
+                );
+              })}
+          </Container>
 
-        {/* Main Categories */}
-        <Container
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            overflowX: 'scroll',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            WebkitOverflowScrolling: 'touch',
-            padding: '2% 0 3% 0',
-          }}
-        >
-          {categories.length &&
-            categories.map((category: MainCategoryProps, idx) => {
-              const isSelected = idx === selectedCategoryIdx;
-              return (
-                <StyledChip
-                  key={category.categoryId}
-                  label={category.name}
-                  variant={isSelected ? 'filled' : 'outlined'}
-                  onClick={() => {
-                    setSelectedSubCategoryIdx(() => 0);
-                    setSelectedCategoryIdx(idx);
-                  }}
-                  props={{
-                    isSelected,
-                    backgroundColor: category.highlightColor,
-                  }}
-                />
-              );
-            })}
-        </Container>
+          <Spacer y={8} />
 
-        <Spacer y={8} />
+          {/* Sub Categories */}
+          <Container
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              paddingBottom: '30px',
+            }}
+          >
+            {categories[selectedCategoryIdx]?.subCategories.map(
+              (sub: SubCategoryProps) => {
+                const subSelected = selectedSubCategoryIdx === sub.categoryId;
+                return (
+                  <Circle
+                    key={sub.name}
+                    label={sub.name}
+                    variant={subSelected ? 'filled' : 'outlined'}
+                    color={sub.color}
+                    fontColor={subSelected ? sub.highlightColor : ''}
+                    borderColor={subSelected ? sub.highlightColor : ''}
+                    size={40}
+                    iconName={sub.iconName}
+                    iconSize={26}
+                    selected={subSelected}
+                    onClick={() =>
+                      setSelectedSubCategoryIdx(() => sub.categoryId)
+                    }
+                  />
+                );
+              },
+            )}
+          </Container>
 
-        {/* Sub Categories */}
-        <Container
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
-            paddingBottom: '30px',
-          }}
-        >
-          {categories[selectedCategoryIdx]?.subCategories.map(
-            (sub: SubCategoryProps) => {
-              const subSelected = selectedSubCategoryIdx === sub.categoryId;
-              return (
-                <Circle
-                  key={sub.name}
-                  label={sub.name}
-                  variant={subSelected ? 'filled' : 'outlined'}
-                  color={sub.color}
-                  fontColor={subSelected ? sub.highlightColor : ''}
-                  borderColor={subSelected ? sub.highlightColor : ''}
-                  size={40}
-                  iconName={sub.iconName}
-                  iconSize={26}
-                  selected={subSelected}
-                  onClick={() =>
-                    setSelectedSubCategoryIdx(() => sub.categoryId)
-                  }
-                />
-              );
-            },
-          )}
-        </Container>
+          <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
 
-        <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
-
-        <Container sx={{ padding: '24px' }}>
-          <TextField
-            hiddenLabel
-            id="filled-hidden-label-normal"
-            placeholder="메모하기"
-            variant="standard"
-            fullWidth
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <Container sx={{ padding: '24px' }}>
+            <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              placeholder="메모하기"
+              variant="standard"
+              fullWidth
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </Container>
         </Container>
-      </Container>
-      {recordType === 'UPDATE' && (
-        <Container
-          sx={{
-            flex: '0 0 10vh',
-          }}
-        >
-          {BottomButton()}
-        </Container>
-      )}
-    </Box>
+        {recordType === 'UPDATE' && (
+          <Container
+            sx={{
+              flex: '0 0 10vh',
+            }}
+          >
+            {BottomButton()}
+          </Container>
+        )}
+      </Box>
+    </Wrapper>
   );
 };
 

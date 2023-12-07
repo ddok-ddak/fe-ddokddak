@@ -1,8 +1,4 @@
-import {
-  Box,
-  LinearProgress,
-  LinearProgressProps
-} from '@mui/material';
+import { Box, LinearProgress, LinearProgressProps } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
@@ -16,6 +12,7 @@ import Wrapper from '../common/Wrapper';
 import CheckTermsAndConditions from './CheckTermsAndConditions';
 import SetEmail from './SetEmail';
 import SetNickname from './SetNickname';
+import CommonHeader from '@/components/layout/CommonHeader';
 
 const SignUp = () => {
   const currentStepIndex = useRecoilValue(stepIndex);
@@ -68,26 +65,30 @@ const SignUp = () => {
 
   return (
     <Wrapper
-      prevBtnText={'뒤로'}
-      handlePrevBtn={handlePrevButton}
       headerComp={
-        <>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Typography
-              sx={{
-                justifyContent: 'flex-end',
-                color: '#222222',
-                fontWeight: '700',
-                fontSize: '18px',
-              }}
-            >
-              약관동의
-            </Typography>
-          </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <CommonHeader
+            title={''}
+            isShowPrevButton={true}
+            prevButtonText={'뒤로'}
+            onClickPrevButton={handlePrevButton}
+            isShowNextButton={false}
+          />
+          <Typography
+            sx={{
+              width: '100%',
+              textAlign: 'center',
+              color: '#222222',
+              fontWeight: '700',
+              fontSize: '18px',
+            }}
+          >
+            약관동의
+          </Typography>
           <LinearProgressWithLabel
             value={Math.round(((currentStepIndex + 1) / steps.length) * 100)}
           />
-        </>
+        </Box>
       }
     >
       <FormWrapper
