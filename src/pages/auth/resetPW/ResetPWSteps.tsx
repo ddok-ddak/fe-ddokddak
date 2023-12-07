@@ -1,14 +1,8 @@
-import Typography from '@mui/material/Typography';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { useResetPWSteps } from '@/hooks/resetPWSteps';
-import {
-  stepIndex,
-  currentFormType
-} from '@/store/common';
-import {
-  resetPWMode
-} from '@/store/resetPW';
+import { stepIndex, currentFormType } from '@/store/common';
+import { resetPWMode } from '@/store/resetPW';
 import React, { useEffect, useState } from 'react';
 import FormWrapper from '../common/FormWrapper';
 import VerifyCode from '../common/VerifyCode';
@@ -16,9 +10,9 @@ import Wrapper from '../common/Wrapper';
 import ResetPW from './ResetPW';
 import ResetPWMode from './ResetPWMode';
 import VerifyPW from './VerifyPW';
+import CommonHeader from '@/components/layout/CommonHeader';
 
 const ResetPWStep = () => {
-
   const setStepType = useSetRecoilState(currentFormType);
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(stepIndex);
   const [pWChgMode, setPWChgMode] = useRecoilState(resetPWMode);
@@ -49,20 +43,12 @@ const ResetPWStep = () => {
 
   return (
     <Wrapper
-      prevBtnText={'뒤로'}
-      handlePrevBtn={handlePrevButton}
       headerComp={
-        <Typography
-          align={'center'}
-          sx={{
-            color: '#949494',
-            fontSize: '14px',
-            width: '100%',
-            fontWeight: '700',
-          }}
-        >
-          {'비밀번호 변경'}
-        </Typography>
+        <CommonHeader
+          title={'비밀번호 변경'}
+          isShowPrevButton={true}
+          onClickPrevButton={handlePrevButton}
+        />
       }
     >
       <FormWrapper

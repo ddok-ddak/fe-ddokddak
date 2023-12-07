@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Divider, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import FolderTop from '../../components/common/FolderTop';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import { selectedSubCategoryState } from '../../store/category';
+import Wrapper from '../auth/common/Wrapper';
 
 export interface MainCategoryProps {
   categoryId: number;
@@ -48,8 +49,11 @@ const CategoryPage = () => {
   }, []);
 
   return (
-    <>
-      <CommonHeader title={'카테고리 설정하기'} isShowBackButton={true} />
+    <Wrapper
+      headerComp={
+        <CommonHeader title={'카테고리 설정하기'} isShowPrevButton={true} />
+      }
+    >
       <Spacer y={20} />
       <Box>
         {categories?.map((category, idx) => {
@@ -139,7 +143,7 @@ const CategoryPage = () => {
         })}
       </Box>
       <Spacer y={12} />
-    </>
+    </Wrapper>
   );
 };
 

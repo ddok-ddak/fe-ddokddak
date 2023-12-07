@@ -13,7 +13,7 @@ const StatisticsPage = () => {
 
   return (
     <>
-      <CommonHeader title={'통계'} isShowBackButton={false} />
+      <CommonHeader title={'통계'} isShowPrevButton={false} />
       {/* <button onClick={handleClickBtn}>POPUP TEST</button> */}
 
       <Period />

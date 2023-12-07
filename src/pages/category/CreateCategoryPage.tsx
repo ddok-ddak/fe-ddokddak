@@ -1,7 +1,6 @@
-import AddIcon from '@mui/icons-material/Add';
-import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ColorResult, SwatchesPicker } from 'react-color';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -15,7 +14,7 @@ import Circle from '../../components/common/Circle';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import { selectedSubCategoryState } from '../../store/category';
-import { categories } from '../../store/tempData';
+import Wrapper from '../auth/common/Wrapper';
 
 const CreateCategoryPage = () => {
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
@@ -74,13 +73,16 @@ const CreateCategoryPage = () => {
   };
 
   return (
-    <>
-      <CommonHeader
-        title={mode === 'edit' ? '카테고리 수정하기' : '카테고리 추가하기'}
-        isShowBackButton={true}
-        isShowRightButton={true}
-        onClickRightButton={() => handleSave()}
-      />
+    <Wrapper
+      headerComp={
+        <CommonHeader
+          title={mode === 'edit' ? '카테고리 수정하기' : '카테고리 추가하기'}
+          isShowPrevButton={true}
+          isShowNextButton={true}
+          onClickNextButton={() => handleSave()}
+          />
+      }
+    >
       <Box
         sx={{
           display: 'flex',
@@ -131,7 +133,7 @@ const CreateCategoryPage = () => {
           삭제하기
         </Button>
       </Box>
-    </>
+    </Wrapper>
   );
 };
 

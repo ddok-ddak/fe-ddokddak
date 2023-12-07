@@ -33,6 +33,7 @@ import utc from 'dayjs/plugin/utc';
 import '../../styles/custom-calendar-styles.css';
 import '../../styles/custom-record-styles.css';
 import { customCalendarType, currentCalendarType } from '@/store/common';
+import Wrapper from '../auth/common/Wrapper';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -60,9 +61,7 @@ const RecordPage = () => {
 
   const setSelectedEvent = useSetRecoilState(currentSelectedEvent);
 
-  const selectedDate = useRecoilValue(
-    currentSelectedDateForRecord,
-  );
+  const selectedDate = useRecoilValue(currentSelectedDateForRecord);
   const periodType = useRecoilValue<PeriodTypeForRecord>(
     currentPeriodForRecord,
   );
@@ -84,7 +83,6 @@ const RecordPage = () => {
   const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
 
   const interval = '00:30:00';
-
 
   /**
    * route to record create page of dragged time
@@ -207,8 +205,7 @@ const RecordPage = () => {
   }, []);
 
   return (
-    <>
-      <CommonHeader title={'일주일 기록하기'} />
+    <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'} />}>
       <Box
         sx={{
           height: 'calc(100vh - 112px)',
@@ -329,7 +326,7 @@ const RecordPage = () => {
           />
         </Container>
       </Box>
-    </>
+    </Wrapper>
   );
 };
 

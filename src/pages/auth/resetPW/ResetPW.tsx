@@ -9,7 +9,6 @@ import InputForm, { InputItemType } from '../common/InputForm';
 const SetPW = (props: any) => {
   const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
-  // const setInstruction = useSetRecoilState(stepInstruction);
 
   const [pWChgMode, setPWChgMode] = useRecoilState(resetPWMode);
 
