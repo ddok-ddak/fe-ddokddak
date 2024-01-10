@@ -45,7 +45,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
               }
             }
           >
-            <Typography sx={{ fontSize: '13px', color: '#949494' }}>
+            <Typography sx={{ fontSize: '13px', color: 'grey.500' }}>
               {props.prevButtonText ?? '뒤로'}
             </Typography>
           </IconButton>
@@ -68,7 +68,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
             verticalAlign: 'center',
             fontSize: '16px',
             fontWeight: '700',
-            color: '#949494',
+            color: 'grey.500',
           }}
         >
           {props.title}
@@ -82,7 +82,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
             aria-label="menu"
             onClick={props.onClickNextButton}
           >
-            <Typography sx={{ fontSize: '13px', color: '#949494' }}>
+            <Typography sx={{ fontSize: '13px', color: 'grey.500' }}>
               {props.nextButtonText ?? '완료'}
             </Typography>
           </IconButton>

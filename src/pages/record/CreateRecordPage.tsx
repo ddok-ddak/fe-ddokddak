@@ -28,6 +28,7 @@ import {
   recoilSubCategory,
   selectedTimeRangeState,
 } from '@/store/record';
+import { theme } from '@/styles';
 
 export interface MainCategory {
   categoryId: number;
@@ -235,6 +236,8 @@ const CreateRecordPage = (): ReactElement => {
     }
   };
 
+  const pink200 = theme.palette.pink![200];
+
   return (
     <>
       <CommonHeader
@@ -333,14 +336,14 @@ const CreateRecordPage = (): ReactElement => {
             <Typography variant="h5">{getAMPM(selectedDate.end)}</Typography>
           </FlexBox>
         </Container>
-        <Divider sx={{ bgcolor: '#FFDCE1', border: '2px solid #FFDCE1' }} />
+        <Divider sx={{ bgcolor: pink200, border: `2px solid ${pink200}` }} />
 
         <Container sx={{ textAlign: 'right' }}>
           <Button
             variant="text"
             component={Link}
             to="/category"
-            sx={{ color: '#949494', paddingTop: '17px' }}
+            sx={{ color: 'grey.500', paddingTop: '17px' }}
           >
             카테고리 설정
           </Button>
@@ -405,7 +408,7 @@ const CreateRecordPage = (): ReactElement => {
             />
           ))}
         </Container>
-        <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
+        <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
 
         <Container sx={{ padding: '24px' }}>
           <TextField

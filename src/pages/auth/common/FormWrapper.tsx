@@ -19,7 +19,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 47vh', }}>
         <Typography
           sx={{
-            color: '#222222',
+            color: 'grey.700',
             fontWeight: '700',
             fontSize: '18px',
             padding: '30px 0 41px 0',

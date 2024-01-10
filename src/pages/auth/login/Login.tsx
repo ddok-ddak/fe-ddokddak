@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
-import InputForm from '../common/InputForm';
+import InputForm, { InputItemType } from '../common/InputForm';
 // import { ReactElement, useEffect, useCallback, useState } from 'react';
 // import { Typography } from '@mui/material';
 // import React from 'react';

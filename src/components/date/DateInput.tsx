@@ -33,7 +33,7 @@ const DateInput = ({ params, width }: any) => {
         ' .MuiInputBase-input': {
           p: '16px 0',
           overflow: 'auto',
-          color: '#4B4B4B',
+          color: 'grey.600',
           fontWeight: '600',
           fontSize: '14px',
         },

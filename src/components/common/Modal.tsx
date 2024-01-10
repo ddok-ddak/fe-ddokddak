@@ -115,7 +115,7 @@ const Modal = () => {
                           />
                         }
                         sx={{
-                          color: '#222222',
+                          color: 'grey.700',
                           m: 0,
                           p: 0,
                           height: '14px',
@@ -127,10 +127,10 @@ const Modal = () => {
                             height: '15px',
                           },
                           '& .MuiSvgIcon-root:first-of-type ': {
-                            color: '#222222',
+                            color: 'grey.700',
                           },
                           '& .MuiSvgIcon-root:last-of-type ': {
-                            color: '#FF7184',
+                            color: 'pink.700',
                           },
                           ' .MuiFormControlLabel-label': {
                             fontSize: '13px',
@@ -180,7 +180,7 @@ const Modal = () => {
                 sx={{
                   gridArea: 'btn-a',
                   flex: '1 1 49%',
-                  color: '#4F75FF',
+                  color: 'button.blue',
                   fontSize: '13px',
                 }}
                 onClick={modalInfo.btn1ClickHandler}
@@ -196,7 +196,7 @@ const Modal = () => {
                 sx={{
                   gridArea: 'btn-b',
                   flex: '1 1 49%',
-                  color: '#4F75FF',
+                  color: 'button.blue',
                   fontSize: '13px',
                   fontWeight: '600',
                 }}

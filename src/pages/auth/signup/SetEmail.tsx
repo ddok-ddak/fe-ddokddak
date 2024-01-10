@@ -71,7 +71,7 @@ const SetEmail = (props: any) => {
             onClick={duplicateCheckerHandler}
             disabled={disableDuplicateChkBtn}
             sx={{
-              color: '#FF8999',
+              color: 'pink.600',
               fontSize: '13px',
               fontWeight: '400',
             }}

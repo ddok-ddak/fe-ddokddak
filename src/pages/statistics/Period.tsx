@@ -102,10 +102,10 @@ const StyledTab = styled((props: StyledTabProps) => (
   textTransform: 'none',
   fontSize: 14,
   lineHeight: 3,
-  color: '#949494',
+  color: 'grey.500',
   fontWeight: 600,
   '&.Mui-selected': {
-    color: '#FF7184',
+    color: 'pink.700',
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
