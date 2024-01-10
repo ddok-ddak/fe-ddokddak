@@ -110,7 +110,7 @@ const SettingPage = () => {
             <Typography
               sx={{
                 pt: '3px',
-                color: '#222222',
+                color: 'grey.700',
                 lineHeight: '24px',
                 fontSize: '13px',
               }}
@@ -197,7 +197,7 @@ const SettingPage = () => {
           <Typography
             sx={{
               fontSize: '12px',
-              color: '#949494',
+              color: 'grey.500',
               textDecoration: 'underline',
             }}
           >

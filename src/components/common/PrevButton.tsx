@@ -22,7 +22,7 @@ const PrevButton = ({
           p: 0,
           m: 0,
           lineHeight: '13px',
-          color: '#949494',
+          color: 'grey.500',
           fontSize: '13px',
           marginRight: '95%',
         }}

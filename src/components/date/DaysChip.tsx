@@ -20,7 +20,6 @@ const DaysChip = (props: DaysChipProps) => {
         display: 'flex',
         flex: '0 0 11vw',
         flexDirection: 'column',
-
       }}
     >
       <Box
@@ -35,7 +34,7 @@ const DaysChip = (props: DaysChipProps) => {
       >
         <Box
           sx={{
-            backgroundColor: `${props.isselected && '#FFDCE1'}`,
+            backgroundColor: `${props.isselected && 'pink.200'}`,
             borderRadius: '50%',
             flexDirection: 'column',
             width: '6vw',
@@ -56,7 +55,7 @@ const DaysChip = (props: DaysChipProps) => {
       </Box>
       <Box
         sx={{
-          backgroundColor: props.underline ? '#FF7184' : '',
+          backgroundColor: `${props.underline && 'pink.700'}`,
           width: '100%',
           height: '5px',
           borderRadius: '5px',

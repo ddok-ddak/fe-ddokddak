@@ -29,6 +29,9 @@ export const CustomCalendar = (pickerProps: any) => {
 
   const { setNewDateRange } = useStatisticView();
 
+  const currentYear = new Date().getFullYear();
+  const yearList = Array.from({ length: 12 }, (_, i) => currentYear - 11 + i);
+
   /**
    * render custom calendar day elements (day, week type only)
    * @param date
@@ -56,18 +59,18 @@ export const CustomCalendar = (pickerProps: any) => {
     const backgroundColor =
       (periodType === 'BY_WEEK' && dayIsBetween) ||
       (periodType === 'BY_DAY' && isCurrentDate)
-        ? '#FFDCE1'
+        ? 'pink.200'
         : '';
     let color = '';
     switch (currentDay) {
       case 0:
-        color = isCurrentMonth ? '#FF4444' : '#FF9E9E';
+        color = isCurrentMonth ? 'calendar.currSun' : 'calendar.outSun';
         break;
       case 6:
-        color = isCurrentMonth ? '#3B66FF' : '#3B66FF';
+        color = isCurrentMonth ? 'calendar.currSat' : 'calendar.outSat';
         break;
       default:
-        color = isCurrentMonth ? '#4B4B4B' : '#B3B3B3';
+        color = isCurrentMonth ? 'calendar.currDay' : 'calendar.outCay';
         break;
     }
     return (
@@ -114,7 +117,7 @@ export const CustomCalendar = (pickerProps: any) => {
             height: '3px',
             width: '100%',
             borderRadius: '5px',
-            background: isCurrentDate ? '#FFA2AE' : 'transparent',
+            background: isCurrentDate ? 'pink.500' : 'transparent',
           }}
         />
       </Paper>
@@ -268,7 +271,7 @@ export const CustomCalendar = (pickerProps: any) => {
   const renderCustomMonthYearCalendar = () => {
     const list =
       switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
-        ? [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+        ? yearList
         : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     return (
       <Container
@@ -312,7 +315,7 @@ export const CustomCalendar = (pickerProps: any) => {
                 }}
                 sx={{
                   fontWeight: isCurrentDate ? '700' : '400',
-                  color: '#222222',
+                  color: 'grey.600',
                   backgroundColor: isCurrentDate ? 'primary.light' : '',
                   borderRadius: '5px',
                   width: '98%',
@@ -329,7 +332,7 @@ export const CustomCalendar = (pickerProps: any) => {
                   height: '3px',
                   width: '100%',
                   borderRadius: '5px',
-                  background: isCurrentDate ? '#FFA2AE' : 'transparent',
+                  background: isCurrentDate ? 'pink.500' : 'transparent',
                 }}
               />
             </Paper>

@@ -70,13 +70,13 @@ const VerifyCode = (props: any) => {
             margin: '16px 0 8px 10px',
             justifyContent: 'center',
             radius: '5px',
-            backgroundColor: '#E8E8E8',
+            backgroundColor: 'grey.200',
           }}
         >
           <Typography
             sx={{
               fontSize: '11px',
-              color: '#949494',
+              color: 'grey.500',
             }}
           >
             인증코드 재요청
@@ -159,7 +159,7 @@ const VerifyCode = (props: any) => {
         <Typography
           sx={{
             fontSize: '11px',
-            color: '#949494',
+            color: 'grey.500',
           }}
         >
           ! 인증 코드가 오지 않으면 스팸함을 확인해주세요. <br />

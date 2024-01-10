@@ -320,10 +320,10 @@ const RecordPage = () => {
               const dayNumber = date.getDay();
               const color =
                 dayNumber === 0
-                  ? '#FF4444'
+                  ? 'calendar.currSun'
                   : dayNumber === 6
-                  ? '#3B66FF'
-                  : '##4B4B4B';
+                  ? 'calendar.currSat'
+                  : 'grey.600';
               return (
                 <>
                   <div style={{ color }}>{dateNumber}</div>
@@ -333,7 +333,7 @@ const RecordPage = () => {
                         padding: '0 0 0 0',
                         margin: '5px 0 -2px 0',
                         width: '100%',
-                        backgroundColor: '#FF8999',
+                        backgroundColor: 'pink.600',
                         borderRadius: '3px',
                         height: '3px',
                       }}

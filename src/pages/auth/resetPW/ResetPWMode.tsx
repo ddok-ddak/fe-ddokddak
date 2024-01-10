@@ -14,7 +14,7 @@ const ResetPWMode = (props: any) => {
     handleClick: () => void,
   ) => {
     const buttonColor =
-      isCurrentPWMode === pWChgMode ? 'primary.main' : '#949494';
+      isCurrentPWMode === pWChgMode ? 'primary.main' : 'grey.500';
     return (
       <Button
         onClick={handleClick}

@@ -1,12 +1,61 @@
+import { Color } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { ColorPartial } from '@mui/material/styles/createPalette';
+import type { } from '@mui/x-date-pickers/themeAugmentation';
+
+declare module '@mui/material/styles' {
+  interface PaletteOptions {
+    grey?: ColorPartial;
+    pink?: ColorPartial;
+    calendar?: any;
+    chart?: any;
+    button?: any;
+  }
+  interface Palette {
+    grey?: Color;
+    pink?: Color;
+    calendar?: any;
+    chart?: any;
+    button?: any;
+  }
+}
+
+const greyPalette = {
+  50: '',
+  100: '#F5F5F5',
+  200: '#E8E8E8',
+  300: '#DDDDDD',
+  400: '#B7B7B7',
+  500: '#949494',
+  600: '#4B4B4B',
+  700: '#222222',
+  800: '',
+  900: '',
+};
+
+const pinkPalette = {
+  50: '',
+  100: '#FFE4E8',
+  200: '#FFDCE1',
+  300: '#FFC5CC',
+  400: '#FFB4BE',
+  500: '#FFA2AE',
+  600: '#FF8999',
+  700: '#FF7184',
+  800: '',
+  900: '',
+};
 
 export const theme = createTheme({
+  typography: {
+  },
   palette: {
+    grey: greyPalette,
+    pink: pinkPalette,
     primary: {
-      main: '#FF7184',
-      light: '#FFDCE1',
-      dark: '#FFA2AE',
+      main: pinkPalette[700],
+      light: pinkPalette[200],
+      dark: pinkPalette[500],
     },
     secondary: {
       main: '#673ab7',
@@ -28,26 +77,28 @@ export const theme = createTheme({
       light: '#fff8e1',
       dark: '#ffc107',
     },
-    grey: {
-      50: '#fafafa',
-      100: '#f5f5f5',
-      200: '#eeeeee',
-      300: '#e0e0e0',
-      400: '#bdbdbd',
-      500: '#95989a',
-      600: '#757575',
-      700: '#616161',
-      800: '#424242',
-      900: '#212121',
-    },
     common: {
-      white: '#ffffff',
+      white: '#FFFFFF',
       black: '#000000',
     },
     text: {
-      primary: '#222222',
-      secondary: '#b7b7b7',
+      primary: greyPalette[700],
+      secondary: greyPalette[400],
       disabled: ''
+    },
+    calendar: {
+      currSun: '#FF4444',
+      outSun: '#FF9E9E',
+      currSat: '#3B66FF',
+      outSat: '#3B66FF',
+      currDay: '#4B4B4B',
+      outCay: '#B3B3B3',
+    },
+    chart: {
+      customBackground: '#FFF4F6',
+    },
+    button: {
+      blue: '#4F75FF',
     }
   },
   components: {

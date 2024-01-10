@@ -137,14 +137,14 @@ const EditCategoryPage = () => {
         isShowPrevButton={true}
         isShowNextButton={true}
         prevButtonIcon={
-          <Typography sx={{ color: '#949494', fontSize: '13px' }}>
+          <Typography sx={{ color: 'grey.500', fontSize: '13px' }}>
             뒤로
           </Typography>
         }
         nextButtonIcon={
           <Typography
             sx={{
-              color: isInputNameEmpty ? '#FF7184' : '#949494',
+              color: isInputNameEmpty ? 'pink.700' : 'grey.500',
               fontSize: '13px',
             }}
           >

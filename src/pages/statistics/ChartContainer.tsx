@@ -25,6 +25,7 @@ import {
   currentPeriod,
   customCalendarType,
 } from '@/store/common';
+import { theme } from '@/styles';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
@@ -86,6 +87,10 @@ const customBackground = {
   },
 };
 
+const palette = theme.palette;
+const pink700 = palette.pink![700];
+const paletteGrey = palette.grey!;
+
 const ChartContainer = () => {
   const statisticsResult = useRecoilValue(statisticsResultState);
   const [categoryDetailData, setCategoryDetailData] =
@@ -93,7 +98,6 @@ const ChartContainer = () => {
 
   const periodType = useRecoilValue(currentPeriod);
   const periodTypeList = useRecoilValue(periodForStatList);
-  // const periodTypeList = useRecoilValue(currentPeriodTypeList);
 
   const setCalendarType =
     useSetRecoilState<customCalendarType>(currentCalendarType);
@@ -193,6 +197,7 @@ const ChartContainer = () => {
   /**
    * pie chart options
    */
+
   const pieChartOptions = {
     onClick: chartClickEventHandler,
     layout: {
@@ -210,7 +215,7 @@ const ChartContainer = () => {
         display: false,
       },
       datalabels: {
-        color: '#FFFFFF',
+        color: palette.common.white,
         labels: {
           title: {
             formatter: (val: any, ctx: any) =>
@@ -239,7 +244,7 @@ const ChartContainer = () => {
         },
       },
       customBackgroundColor: {
-        color: '#FFF4F6',
+        color: palette.chart.customBackground,
       },
     },
   };
@@ -273,7 +278,9 @@ const ChartContainer = () => {
           return rawTime % 60 ? -40 : -25;
         },
         color: (context: any) =>
-          context.dataIndex === clickedIndex ? '#FF7184' : '#B7B7B7',
+          context.dataIndex === clickedIndex
+            ? pink700
+            : paletteGrey[400],
         labels: {
           value: {
             formatter: (val: number) => {
@@ -295,7 +302,7 @@ const ChartContainer = () => {
         },
       },
       customBackgroundColor: {
-        color: '#FFF4F6',
+        color: palette.chart.customBackground,
       },
     },
     barThickness: 'flex',
@@ -311,7 +318,7 @@ const ChartContainer = () => {
       x: {
         ticks: {
           color: (context: any) =>
-            context.index === clickedIndex ? '#FF7184' : '#222222',
+            context.index === clickedIndex ? pink700 : paletteGrey[700],
           font: {
             weight: 'bold',
             size: 14,
@@ -416,7 +423,7 @@ const ChartContainer = () => {
                   sx={{
                     height: 10,
                     '&.MuiLinearProgress-root': {
-                      backgroundColor: '#F5F5F5 !important',
+                      backgroundColor: `${paletteGrey[100]} !important`,
                       borderRadius: 5,
                     },
                     '& > .MuiLinearProgress-bar': {
@@ -468,7 +475,7 @@ const ChartContainer = () => {
 
   return (
     <>
-      <Box sx={{ backgroundColor: '#FFF4F6' }}>
+      <Box sx={{ backgroundColor: palette.chart.customBackground }}>
         <Box sx={{ position: 'relative' }}>
           <Box
             sx={{
@@ -478,7 +485,7 @@ const ChartContainer = () => {
               justifyContent: 'center',
               alignItems: 'center',
               borderBottom: '3px solid white',
-              color: '#222222',
+              color: paletteGrey[700],
               fontWeight: 'bold',
               fontSize: '14px',
             }}
@@ -489,7 +496,7 @@ const ChartContainer = () => {
             <span
               style={{
                 fontSize: '16px',
-                color: '#FF7184',
+                color: pink700,
               }}
             >
               {timeFormatter(categorySum).time}
@@ -531,8 +538,8 @@ const ChartContainer = () => {
                 }}
                 sx={{
                   border: '1px solid',
-                  borderColor: isFirstPage ? '#FF7184' : '#949494',
-                  borderRightColor: '#FF7184',
+                  borderColor: isFirstPage ? pink700 : paletteGrey[500],
+                  borderRightColor: pink700,
                   borderRadius: '3px 0 0 3px',
                   flex: '1 1 50%',
                   height: '50%',
@@ -542,7 +549,7 @@ const ChartContainer = () => {
                   alignItems: 'center',
                 }}
               >
-                <DonutIcon iconColor={isFirstPage ? '#FF7184' : '#949494'} />
+                <DonutIcon iconColor={isFirstPage ? pink700 : paletteGrey[500]} />
               </Box>
               <Box
                 onClick={() => {
@@ -560,7 +567,7 @@ const ChartContainer = () => {
                   }
                 }}
                 sx={{
-                  border: `1px solid ${isFirstPage ? '#949494' : '#FF7184'}`,
+                  border: `1px solid ${isFirstPage ? paletteGrey[500] : pink700}`,
                   borderLeft: 'none',
                   borderRadius: '0 3px 3px 0',
                   flex: '1 1 50%',
@@ -570,7 +577,7 @@ const ChartContainer = () => {
                   alignItems: 'center',
                 }}
               >
-                <BarIcon iconColor={isFirstPage ? '#949494' : '#FF7184'} />
+                <BarIcon iconColor={isFirstPage ? paletteGrey[500] : pink700} />
               </Box>
             </Box>
           )}
@@ -594,7 +601,7 @@ const ChartContainer = () => {
                 plugins={[ChartDataLabels, customBackground]}
               />
             </Box>
-            <Box sx={{ backgroundColor: '#FFF4F6' }}>
+            <Box sx={{ backgroundColor: palette.chart.customBackground }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -632,7 +639,7 @@ const ChartContainer = () => {
                 sx={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: '#B7B7B7',
+                  color: paletteGrey[400],
                 }}
               >
                 {'아직 데이터가 없어요'}

@@ -15,7 +15,10 @@ import Circle from '../../components/common/Circle';
 import FolderTop from '../../components/common/FolderTop';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
-import { selectedMainCategoryState, selectedSubCategoryState } from '../../store/category';
+import {
+  selectedMainCategoryState,
+  selectedSubCategoryState,
+} from '../../store/category';
 import Wrapper from '../auth/common/Wrapper';
 
 import { currentUserInfo } from '@/store/info';
@@ -105,7 +108,7 @@ const CategoryPage = () => {
    */
   // const getUserInfo = async () => {
   //   const response = await getInfo();
-  //   if (response.status === 'SUCCESS') {11 5 
+  //   if (response.status === 'SUCCESS') {11 5
   //     setUserInfo(response.result);
   //   } else {
   //     alert('Error');
@@ -115,7 +118,11 @@ const CategoryPage = () => {
   const getUserInfo = () => {
     const data: UserData = { email: '', nickname: '', templateType: 'STUDENT' };
     setUserInfo(data);
-    setCurrentUserMode(UserModeList.filter((userMode: ModeProps) => {return userMode.type === data.templateType })[0]);
+    setCurrentUserMode(
+      UserModeList.filter((userMode: ModeProps) => {
+        return userMode.type === data.templateType;
+      })[0],
+    );
   };
 
   /**
@@ -130,29 +137,32 @@ const CategoryPage = () => {
     }
   };
 
-  const getCategoryIcon = (sub: SubCategoryProps) => (
-    <Circle
-      label={sub.name}
-      labelSize={'10px'}
-      color={sub.color}
-      size={40}
-      onClick={() => {
-        const category = categories.filter(
-          (category) => category.categoryId === sub.mainCategoryId,
-        )[0];
-        sub.highlightColor = category.color;
-        setSelectedMainCategory(category);
-        setSelectedSubCategory(sub);
-        navigation('/category/edit', {
-          state: {
-            mode: 'edit',
-          },
-        });
-      }}
-      iconSize={40}
-      iconName={sub.iconFile.filename?.split('.')[0] || ''}
-    />
-  );
+  const getCategoryIcon = (sub: SubCategoryProps) => {
+    console.log(sub);
+    return (
+      <Circle
+        label={sub.name}
+        labelSize={'10px'}
+        color={sub.color}
+        size={40}
+        onClick={() => {
+          const category = categories.filter(
+            (category) => category.categoryId === sub.mainCategoryId,
+          )[0];
+          sub.highlightColor = category.color;
+          setSelectedMainCategory(category);
+          setSelectedSubCategory(sub);
+          navigation('/category/edit', {
+            state: {
+              mode: 'edit',
+            },
+          });
+        }}
+        iconSize={40}
+        iconName={sub.iconFile.filename?.split('.')[0] || ''}
+      />
+    );
+  };
 
   useEffect(() => {
     getUserInfo();
@@ -207,8 +217,8 @@ const CategoryPage = () => {
               <RadioGroup key={idx}>
                 <Circle
                   label={`${mode.name} 모드`}
-                  labelSize={'13px'}
-                  color={'#FFC5CC'}
+                  labelSize='13px'
+                  color='pink.300'
                   size={63}
                   iconSize={41}
                   iconName={mode.id}
@@ -235,10 +245,10 @@ const CategoryPage = () => {
                       height: '15px',
                     },
                     '& .MuiSvgIcon-root:first-of-type ': {
-                      color: '#222222',
+                      color: 'grey.700',
                     },
                     '& .MuiSvgIcon-root:last-of-type ': {
-                      color: '#FF7184',
+                      color: 'pink.700',
                     },
                   }}
                 />
@@ -254,7 +264,7 @@ const CategoryPage = () => {
         sx={{
           width: '100vw',
           height: '3px',
-          backgroundColor: '#FFF4F6',
+          backgroundColor: 'chart.customBackground',
           border: 'none',
         }}
       />

@@ -43,6 +43,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/effect-coverflow';
 import FlexBox from '@/components/common/FlexBox';
 import Wrapper from '../auth/common/Wrapper';
+import { theme } from '@/styles';
 
 export interface MainCategoryProps {
   categoryId: number;
@@ -86,8 +87,8 @@ const StyledChip = styled(Chip)<StyledChipProps>(({ theme, props }) => {
     flex: '0 0 95px',
     height: '6vh',
     margin: '0 1%',
-    color: isSelected ? '#FFFFFF' : '#949494',
-    borderColor: isSelected ? backgroundColor : '#B7B7B7',
+    color: isSelected ? 'common.white' : 'grey.500',
+    borderColor: isSelected ? backgroundColor : 'grey.400',
     borderRadius: '50px',
     cursor: 'grab',
     backgroundColor: isSelected ? backgroundColor : 'transparent',
@@ -201,8 +202,8 @@ const EditRecordPage = (): ReactElement => {
           const listLength = optionList.length;
 
           if (diffIndex === 0) {
-            color = '#222222';
-            backgroundColor = '#FFDCE1';
+            color = 'grey.700';
+            backgroundColor = 'pink.200';
             fontWeight = '500';
             fontSize = '18px';
           } else if (
@@ -210,13 +211,13 @@ const EditRecordPage = (): ReactElement => {
             diffIndex === listLength - 1 ||
             (type === 'period' && toSwipeIndex !== index)
           ) {
-            color = '#949494';
+            color = 'grey.500';
             fontSize = '15px';
           } else if (diffIndex === 2 || diffIndex === listLength - 2) {
-            color = '#B7B7B7';
+            color = 'grey.400';
             fontSize = '14px';
           } else {
-            color = '#DDDDDD';
+            color = 'grey.300';
             fontSize = '13px';
           }
 
@@ -337,7 +338,7 @@ const EditRecordPage = (): ReactElement => {
                       setIsTimePickerOpen(false);
                     }}
                     sx={{
-                      color: '#949494',
+                      color: 'grey.500',
                       fontSize: '13px',
                       p: 0,
                       m: '15px 0 0 0',
@@ -347,7 +348,7 @@ const EditRecordPage = (): ReactElement => {
                   </Button>
                   <Button
                     sx={{
-                      color: '#949494',
+                      color: 'grey.500',
                       fontSize: '13px',
                       p: 0,
                       m: '15px 0 0 0',
@@ -525,6 +526,8 @@ const EditRecordPage = (): ReactElement => {
     }
   };
 
+  const pink200 = theme.palette.pink![200];
+
   useEffect(() => {
     // set initially selected day
     setSelectedDays([selectedEvent.start.getDay()]);
@@ -623,9 +626,9 @@ const EditRecordPage = (): ReactElement => {
                       onClick={() => handleDayChipClick(dayIndex)}
                       color={
                         dayIndex === 0
-                          ? '#FF4444'
+                          ? 'calendar.currSun'
                           : dayIndex === 6
-                          ? '#3B66FF'
+                          ? 'calendar.currDay'
                           : ''
                       }
                     />
@@ -652,14 +655,14 @@ const EditRecordPage = (): ReactElement => {
             {formatRangeTimeElem('end')}
           </Container>
 
-          <Divider sx={{ bgcolor: '#FFDCE1', border: '2px solid #FFDCE1' }} />
+          <Divider sx={{ bgcolor: pink200, border: `2px solid ${pink200}` }} />
 
           <Container sx={{ textAlign: 'right' }}>
             <Button
               variant="text"
               component={Link}
               to="/category"
-              sx={{ color: '#949494', paddingTop: '17px' }}
+              sx={{ color: 'grey.500', paddingTop: '17px' }}
             >
               카테고리 설정
             </Button>
@@ -732,7 +735,7 @@ const EditRecordPage = (): ReactElement => {
             )}
           </Container>
 
-          <Divider sx={{ bgcolor: '#FFDCE1', border: '3px solid #FFDCE1' }} />
+          <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
 
           <Container sx={{ padding: '24px' }}>
             <TextField

@@ -45,7 +45,7 @@ const SignUp = () => {
             sx={{
               display: 'flex',
               justifyContent: 'flex-end',
-              color: '#B7B7B7',
+              color: 'grey.400',
               fontSize: '13px',
             }}
           >
@@ -78,7 +78,7 @@ const SignUp = () => {
             sx={{
               width: '100%',
               textAlign: 'center',
-              color: '#222222',
+              color: 'grey.700',
               fontWeight: '700',
               fontSize: '18px',
             }}
