@@ -1,4 +1,5 @@
 import { stepButtonProps, stepInstruction } from '@/store/common';
+import { theme } from '@/styles';
 import {
   Box,
   Checkbox,
@@ -126,7 +127,7 @@ const CheckTermsAndConditions = (props: any) => {
                 <Divider
                   variant="middle"
                   sx={{
-                    backgroundColor: 'primary.dark',
+                    backgroundColor: theme.palette.grey![300],
                     height: '3px',
                     border: 'none',
                     margin: '10px 0 10px 5px',

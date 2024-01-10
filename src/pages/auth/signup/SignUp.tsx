@@ -13,6 +13,7 @@ import CheckTermsAndConditions from './CheckTermsAndConditions';
 import SetEmail from './SetEmail';
 import SetNickname from './SetNickname';
 import CommonHeader from '@/components/layout/CommonHeader';
+import { theme } from '@/styles';
 
 const SignUp = () => {
   const currentStepIndex = useRecoilValue(stepIndex);
@@ -36,6 +37,7 @@ const SignUp = () => {
   const LinearProgressWithLabel = (
     props: LinearProgressProps & { value: number },
   ) => {
+    console.log(theme.palette)
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ minWidth: 35, mb: '5px', mr: 1 }}>
@@ -55,7 +57,7 @@ const SignUp = () => {
         <Box sx={{ m: 0.5 }}>
           <LinearProgress
             variant="determinate"
-            sx={{ width: '100%', backgroundColor: 'primary.dark' }}
+            sx={{ width: '100%', backgroundColor: theme.palette.grey![300] }}
             {...props}
           />
         </Box>
