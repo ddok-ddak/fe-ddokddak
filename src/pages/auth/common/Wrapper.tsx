@@ -19,20 +19,17 @@ const Wrapper = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 16px 23px 16px',
+        height: '100vh',
       }}
     >
       <Box
         sx={{
           width: '100%',
-          // display: 'flex',
-          // flexDirection: 'row',
-          // flex: '1 0 100%',
         }}
       >
-        {/* <PrevButton prevBtnText={prevBtnText} handlePrevBtn={handlePrevBtn} /> */}
         {headerComp}
       </Box>
       {children}

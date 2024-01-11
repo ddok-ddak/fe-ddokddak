@@ -12,3 +12,12 @@ export const selectedSubCategoryState = atom({
   key: 'SelectedSubCategoryState',
   default: {} as SubCategoryProps,
 });
+
+export const deleteCategoryButtonState = atom({
+  key: 'DeleteCategoryButtonState',
+  default: {
+    isDisabled: true,
+    clickHandler: () => {},
+    text: '삭제하기',
+  },
+});

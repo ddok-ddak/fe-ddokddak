@@ -28,7 +28,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
           {instruction}
         </Typography>
         <form>
-        {children}
+          {children}
         </form>
       </Box>
       <BottomButton btnStyleProps={{}} textStyleProps={{}}/>
