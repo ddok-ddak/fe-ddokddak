@@ -37,7 +37,6 @@ const SignUp = () => {
   const LinearProgressWithLabel = (
     props: LinearProgressProps & { value: number },
   ) => {
-    console.log(theme.palette)
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ minWidth: 35, mb: '5px', mr: 1 }}>
