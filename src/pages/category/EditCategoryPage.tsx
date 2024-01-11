@@ -1,8 +1,8 @@
 import { Box, Container } from '@mui/system';
-import { Button, TextField, Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import {
   addSubCategory,
@@ -18,10 +18,13 @@ import {
 } from '../../store/category';
 import { MainCategoryProps, SubCategoryProps } from './CategoryPage';
 import Wrapper from '../auth/common/Wrapper';
+import BottomButton from '@/components/common/BottomButton';
+import { stepButtonProps } from '@/store/common';
 
 const EditCategoryPage = () => {
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
   const [inputName, setInputName] = useState(selectedSubCategory.name);
   const [isInputNameEmpty, setIsInputNameEmpty] = useState(true);
@@ -127,33 +130,39 @@ const EditCategoryPage = () => {
   useEffect(() => {
     getCategoryData();
     setIsInputNameEmpty(!(mode === 'edit'));
+    setNextButtonProps({
+      ...nextButtonProps,
+      text: '삭제하기',
+      isDisabled: false,
+      clickHandler: handleDelete,
+    });
   }, []);
 
   return (
     <Wrapper
-    headerComp={
-      <CommonHeader
-        title={mode === 'edit' ? '카테고리 수정하기' : '카테고리 추가하기'}
-        isShowPrevButton={true}
-        isShowNextButton={true}
-        prevButtonIcon={
-          <Typography sx={{ color: 'grey.500', fontSize: '13px' }}>
-            뒤로
-          </Typography>
-        }
-        nextButtonIcon={
-          <Typography
-            sx={{
-              color: isInputNameEmpty ? 'pink.700' : 'grey.500',
-              fontSize: '13px',
-            }}
-          >
-            완료
-          </Typography>
-        }
-        onClickNextButton={handleSave}
-      />
-    }
+      headerComp={
+        <CommonHeader
+          title={mode === 'edit' ? '카테고리 수정하기' : '카테고리 추가하기'}
+          isShowPrevButton={true}
+          isShowNextButton={true}
+          prevButtonIcon={
+            <Typography sx={{ color: 'grey.500', fontSize: '13px' }}>
+              뒤로
+            </Typography>
+          }
+          nextButtonIcon={
+            <Typography
+              sx={{
+                color: isInputNameEmpty ? 'pink.700' : 'grey.500',
+                fontSize: '13px',
+              }}
+            >
+              완료
+            </Typography>
+          }
+          onClickNextButton={handleSave}
+        />
+      }
     >
       <Box
         sx={{
@@ -242,17 +251,13 @@ const EditCategoryPage = () => {
             {getCategoryIcon()}
           </Box>
         </Container>
-        {mode === 'edit' && (
-          <Button
-            variant="contained"
-            color="error"
-            fullWidth
-            onClick={handleDelete}
-          >
-            삭제하기
-          </Button>
-        )}
       </Box>
+      {mode === 'edit' && (
+        <BottomButton
+        btnStyleProps={{ borderRadius: '0px', flex: '0 0 5vh' }}
+        textStyleProps={{}}
+        />
+      )}
     </Wrapper>
   );
 };

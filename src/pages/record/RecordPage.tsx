@@ -249,10 +249,10 @@ const RecordPage = () => {
     <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'} />}>
       <Box
         sx={{
-          height: 'calc(100vh - 112px)',
+          width: '100vw',
+          height: '100vh',
         }}
       >
-        <Spacer y={10} />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Container
             sx={{
@@ -261,6 +261,9 @@ const RecordPage = () => {
               justifyContent: 'space-between',
               '& .fc': { justifyContent: 'center' },
               '& .fc-toolbar-chunk': { padding: '0px' },
+              mb: 0,
+              pb: 0,
+              height: '7vh',
             }}
           >
             <Chevron
@@ -299,7 +302,7 @@ const RecordPage = () => {
         </LocalizationProvider>
         <Container
           sx={{
-            height: '78vh',
+            height: '82vh',
           }}
         >
           <FullCalendar

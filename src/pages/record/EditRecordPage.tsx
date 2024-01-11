@@ -580,10 +580,7 @@ const EditRecordPage = (): ReactElement => {
         />
       }
     >
-      <Box>
-        <Container sx={{ flexGrow: '1' }}>
-          <Spacer y={8} />
-
+        <Container sx={{ flex: '1 1 100vh', }}>
           {/* Selected Days */}
           <Box
             sx={{
@@ -747,16 +744,12 @@ const EditRecordPage = (): ReactElement => {
             />
           </Container>
         </Container>
-        {recordType === 'UPDATE' && (
-          <Container
-            sx={{
-              flex: '0 0 10vh',
-            }}
-          >
-            <BottomButton btnStyleProps={{}} textStyleProps={{}} />
-          </Container>
-        )}
-      </Box>
+      {recordType === 'UPDATE' && (
+        <BottomButton
+          btnStyleProps={{ borderRadius: '0px', flex: '0 0 5vh' }}
+          textStyleProps={{}}
+        />
+      )}
     </Wrapper>
   );
 };

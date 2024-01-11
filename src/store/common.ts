@@ -20,6 +20,7 @@ import {
   currentSelectedDateForStat,
 } from './statistics';
 import { setModeNextButtonState } from './auth';
+import { deleteCategoryButtonState } from './category';
 
 /* ============ STEP FORM (SignUp Pages / PW Reset Pages / Record Edit Page) ============ */
 export interface INextButtonState {
@@ -31,11 +32,18 @@ export interface INextButtonState {
 /**
  * SIGNUP 회원 가입
  * LOGIN 로그인
- * RECORD 기록
+ * RECORD 기록 (삭제)
  * RESETPW 비밀번호 재설정
  * SETTEMPLATE 템플릿 모드 (유저 모드) 설정
+ * CATEGORY 카테고리 (삭제)
  */
-export type FormType = 'SIGNUP' | 'LOGIN' | 'RECORD' | 'RESETPW' | 'SETTEMPLATE';
+export type FormType =
+  | 'SIGNUP'
+  | 'LOGIN'
+  | 'RECORD'
+  | 'RESETPW'
+  | 'SETTEMPLATE'
+  | 'CATEGORY';
 
 export const currentFormType = atom<FormType>({
   key: 'CurrentFormType',
@@ -54,6 +62,8 @@ export const stepButtonProps = selector({
       return get(recordEditNextButtonState);
     } else if (type === 'SETTEMPLATE') {
       return get(setModeNextButtonState);
+    } else if (type === 'CATEGORY') {
+      return get(deleteCategoryButtonState);
     } else {
       return get(recordEditNextButtonState);
     }
@@ -63,11 +73,13 @@ export const stepButtonProps = selector({
     if (type === 'SIGNUP') {
       set(signInUpNextButtonState, newValue);
     } else if (type === 'LOGIN') {
-      set (resetPWNextButtonState, newValue);
+      set(resetPWNextButtonState, newValue);
     } else if (type === 'RECORD') {
-      set (recordEditNextButtonState, newValue);
+      set(recordEditNextButtonState, newValue);
     } else if (type === 'SETTEMPLATE') {
-      set (setModeNextButtonState, newValue);
+      set(setModeNextButtonState, newValue);
+    } else if (type === 'CATEGORY') {
+      set(deleteCategoryButtonState, newValue);
     } else {
       set(recordEditNextButtonState, newValue);
     }
