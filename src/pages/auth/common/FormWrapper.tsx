@@ -1,4 +1,5 @@
 import BottomButton from '@/components/common/BottomButton';
+import Spacer from '@/components/common/Spacer';
 import { stepInstruction } from '@/store/common';
 import { Box, Container, Typography } from '@mui/material';
 import { ReactNode } from 'react';
@@ -31,7 +32,8 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
           {children}
         </form>
       </Box>
-      <BottomButton btnStyleProps={{}} textStyleProps={{}}/>
+      <BottomButton btnStyleProps={{ flex: '0 0 6vh' }} textStyleProps={{}}/>
+      <Spacer y={140} />
     </Container>
   );
 };
