@@ -7,6 +7,7 @@ import Modal from '@/components/common/Modal';
 import { stepButtonProps, stepIndex, stepInstruction } from '@/store/common';
 import { modalState } from '@/store/modal';
 import InputForm, { InputItemType } from './InputForm';
+import { modalAnswer } from '@/constants/message';
 
 const VerifyCode = (props: any) => {
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
@@ -52,11 +53,11 @@ const VerifyCode = (props: any) => {
                 title:
                   '인증 요청 제한 횟수(5회)를 초과했습니다. 다른 이메일로 시도하시겠습니까? ',
                 msg: '그렇지 않은 경우 해당 이메일로는 24시간 후에 시도할 수 있습니다.',
-                btn1Text: '아니오',
+                btn1Text: modalAnswer.no,
                 btn1ClickHandler: () => {
                   setModalInfo({ ...modalInfo, open: false });
                 },
-                btn2Text: '네',
+                btn2Text: modalAnswer.yes,
                 btn2ClickHandler: () => {
                   setModalInfo({ ...modalInfo, open: false });
                   setCurrentStepIndex(currentStepIndex - 1);
@@ -113,13 +114,13 @@ const VerifyCode = (props: any) => {
             title:
               '인증코드 입력 횟수(5회)를 초과했습니다. 다른 이메일로 시도하시겠습니까? ',
             msg: '그렇지 않은 경우 해당 이메일로는 24시간 후에 시도할 수 있습니다.',
-            btn1Text: '아니오',
+            btn1Text: modalAnswer.no,
             btn1ClickHandler: () => {
               setModalInfo({ ...modalInfo, open: false });
               // TODO: block the email use for 24h
               // TODO: reset email
             },
-            btn2Text: '네',
+            btn2Text: modalAnswer.yes,
             btn2ClickHandler: () => {
               setModalInfo({ ...modalInfo, open: false });
               setCurrentStepIndex(currentStepIndex - 1);

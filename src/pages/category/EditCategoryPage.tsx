@@ -20,6 +20,7 @@ import { MainCategoryProps, SubCategoryProps } from './CategoryPage';
 import Wrapper from '../auth/common/Wrapper';
 import BottomButton from '@/components/common/BottomButton';
 import { stepButtonProps } from '@/store/common';
+import { buttonText } from '@/constants/message';
 
 const EditCategoryPage = () => {
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
@@ -132,7 +133,7 @@ const EditCategoryPage = () => {
     setIsInputNameEmpty(!(mode === 'edit'));
     setNextButtonProps({
       ...nextButtonProps,
-      text: '삭제하기',
+      text: buttonText.delete,
       isDisabled: false,
       clickHandler: handleDelete,
     });

@@ -14,6 +14,7 @@ import SetEmail from './SetEmail';
 import SetNickname from './SetNickname';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { theme } from '@/styles';
+import { buttonText } from '@/constants/message';
 
 const SignUp = () => {
   const currentStepIndex = useRecoilValue(stepIndex);
@@ -71,7 +72,7 @@ const SignUp = () => {
           <CommonHeader
             title={''}
             isShowPrevButton={true}
-            prevButtonText={'뒤로'}
+            prevButtonText={buttonText.prev}
             onClickPrevButton={handlePrevButton}
             isShowNextButton={false}
           />

@@ -44,6 +44,7 @@ import 'swiper/css/effect-coverflow';
 import FlexBox from '@/components/common/FlexBox';
 import Wrapper from '../auth/common/Wrapper';
 import { theme } from '@/styles';
+import { buttonText } from '@/constants/message';
 
 export interface MainCategoryProps {
   categoryId: number;
@@ -543,7 +544,7 @@ const EditRecordPage = (): ReactElement => {
     setNextButtonProps(() => {
       return {
         isDisabled: false,
-        text: '삭제하기',
+        text: buttonText.delete,
         clickHandler: deleteEventReord,
       };
     });

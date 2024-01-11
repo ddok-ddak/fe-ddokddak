@@ -25,6 +25,7 @@ import { currentUserInfo } from '@/store/info';
 import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
 import { UserData, UserTemplateType } from '@/store/userData';
+import { modalAnswer } from '@/constants/message';
 
 export interface MainCategoryProps {
   highlightColor?: string | undefined;
@@ -173,11 +174,11 @@ const CategoryPage = () => {
       open: true,
       title: mode?.modalTitle || '',
       msg: mode?.modalMsg || '',
-      btn1Text: '아니오',
+      btn1Text: modalAnswer.no,
       btn1ClickHandler: () => {
         setModalInfo({ ...modalInfo, open: false });
       },
-      btn2Text: '네',
+      btn2Text: modalAnswer.yes,
       btn2ClickHandler: () => {
         setModalInfo({ ...modalInfo, open: false });
         // TODO: delete category and date, create new category, change user data template mode

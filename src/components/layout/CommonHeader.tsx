@@ -1,3 +1,4 @@
+import { buttonText } from '@/constants/message';
 import { AppBar, Box, IconButton, Typography } from '@mui/material';
 import { ReactElement, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +47,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
             }
           >
             <Typography sx={{ fontSize: '13px', color: 'grey.500' }}>
-              {props.prevButtonText ?? '뒤로'}
+              {props.prevButtonText ?? buttonText.prev}
             </Typography>
           </IconButton>
         )}

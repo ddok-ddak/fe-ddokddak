@@ -2,6 +2,7 @@ import { atom } from 'recoil';
 
 import dayjs from 'dayjs';
 import { INextButtonState } from './common';
+import { buttonText } from '@/constants/message';
 
 // export const selectedTimeRangeState = atom({
 //   key: 'selectedTimeRangeState',
@@ -96,6 +97,6 @@ export const recordEditNextButtonState = atom<INextButtonState>({
   default: {
     isDisabled: false,
     clickHandler: () => {},
-    text: '삭제하기'
+    text: buttonText.delete,
   }
 });
