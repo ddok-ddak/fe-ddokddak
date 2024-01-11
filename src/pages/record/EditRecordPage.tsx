@@ -109,8 +109,6 @@ const EditRecordPage = (): ReactElement => {
   const navigate = useNavigate();
   const currentDay = new Date().getDay();
 
-  // const setShowNav = useSetRecoilState(showBottomNav);
-
   const setStepType = useSetRecoilState<FormType>(currentFormType);
   const setNextButtonProps = useSetRecoilState(stepButtonProps);
 
@@ -755,7 +753,7 @@ const EditRecordPage = (): ReactElement => {
               flex: '0 0 10vh',
             }}
           >
-            {BottomButton()}
+            <BottomButton btnStyleProps={{}} textStyleProps={{}} />
           </Container>
         )}
       </Box>

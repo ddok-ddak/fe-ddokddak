@@ -1,17 +1,14 @@
-import { showBottomNav } from '@/store/common';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
 const BottomNav = () => {
   const [value, setValue] = React.useState(0);
-  const showNav = useRecoilValue(showBottomNav);
 
   return (
     <BottomNavigation
       sx={{
-        display: showNav ? 'flex' : 'none',
+        display: 'flex',
         height: '6vh',
         position: 'fixed',
         bottom: '0px',

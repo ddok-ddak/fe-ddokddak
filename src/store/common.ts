@@ -21,13 +21,6 @@ import {
 } from './statistics';
 import { setModeNextButtonState } from './auth';
 
-/* ============ BOTTOM NAV ============ */
-
-export const showBottomNav = atom<boolean>({
-  key: 'ShowBottomNav',
-  default: true,
-});
-
 /* ============ STEP FORM (SignUp Pages / PW Reset Pages / Record Edit Page) ============ */
 export interface INextButtonState {
   isDisabled: boolean;
