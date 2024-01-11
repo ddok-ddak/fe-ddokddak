@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { MainCategoryProps, SubCategoryProps } from '../pages/category/CategoryPage';
+import { buttonText } from '@/constants/message';
 
 // selected Main Category
 export const selectedMainCategoryState = atom({
@@ -18,6 +19,6 @@ export const deleteCategoryButtonState = atom({
   default: {
     isDisabled: true,
     clickHandler: () => {},
-    text: '삭제하기',
+    text: buttonText.delete,
   },
 });
