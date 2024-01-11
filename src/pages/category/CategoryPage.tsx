@@ -138,7 +138,6 @@ const CategoryPage = () => {
   };
 
   const getCategoryIcon = (sub: SubCategoryProps) => {
-    console.log(sub);
     return (
       <Circle
         label={sub.name}

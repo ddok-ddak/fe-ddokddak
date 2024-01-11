@@ -222,7 +222,7 @@ const RecordPage = () => {
 
     // set type for next button (for template mode setting modal)
     setCurrentFormType('SETTEMPLATE');
-    
+
     setNextButtonProps({
       ...nextButtonProps,
       text: '시작하기!',

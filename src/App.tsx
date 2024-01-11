@@ -37,9 +37,9 @@ function App() {
               <Route path="/resetPW" element={<ResetPWStep />} />
               <Route path="/resetPWMode" element={<ResetPWMode />} />
 
-              <Route path="/record" element={<RecordPage />} />
-              <Route path="/statistics" element={<StatisticsPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/record" element={<><RecordPage /><BottomNav /></>} />
+              <Route path="/statistics" element={<><StatisticsPage /><BottomNav /></>} />
+              <Route path="/settings" element={<><SettingsPage /><BottomNav /></>} />
               <Route path="/settings/account" element={<AccountSetting />} />
 
               <Route path="/record/edit" element={<EditRecordPage />} />
@@ -47,7 +47,6 @@ function App() {
               <Route path="/category/edit" element={<EditCategoryPage />} />
             </Routes>
           </Box>
-          <BottomNav />
         </Box>
         <Modal />
       </ThemeProvider>
