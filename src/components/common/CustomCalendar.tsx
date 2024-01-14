@@ -3,6 +3,7 @@ import Spacer from '@/components/common/Spacer';
 import { useStatisticView } from '@/hooks/statisticView';
 import { currentPeriod, currentSelectedDate } from '@/store/common';
 import { PeriodTypeForView, currentPeriodForView } from '@/store/statistics';
+import { theme } from '@/styles';
 import { Box, Button, Container, Grid, Paper, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
@@ -62,9 +63,11 @@ export const CustomCalendar = (pickerProps: any) => {
         ? 'pink.200'
         : '';
     let color = '';
+    const calendarPalette = theme.palette.calendar;
     switch (currentDay) {
       case 0:
-        color = isCurrentMonth ? 'calendar.currSun' : 'calendar.outSun';
+        // color = isCurrentMonth ? 'calendar.currSun' : 'calendar.outSun';
+        color = isCurrentMonth ? calendarPalette!.currSun : calendarPalette!.outSun;
         break;
       case 6:
         color = isCurrentMonth ? 'calendar.currSat' : 'calendar.outSat';
@@ -128,43 +131,10 @@ export const CustomCalendar = (pickerProps: any) => {
    * @returns
    */
   const renderToolbar = () => {
-    const monthSelector = 'BY_MONTH';
-
     const date = selectedDate[periodType];
     const month = date.month() + 1;
     const year = date.year();
 
-    // const handlePrevClickEvent2 = () => {
-    //   if (periodType === monthSelector) {
-    //     const prevYear = selectedDate[monthSelector].subtract(1, 'year');
-    //     setSelectedDate({
-    //       ...selectedDate,
-    //       [monthSelector]: prevYear,
-    //     });
-    //   } else {
-    //     const prev: HTMLElement = prevBtn.current!;
-    //     prev.querySelector('button')!.click();
-    //   }
-    // };
-
-    // const handleNexClickEvent2 = () => {
-    //   if (periodType === monthSelector) {
-    //     const nextYear = selectedDate[monthSelector].add(1, 'year');
-    //     setSelectedDate({
-    //       ...selectedDate,
-    //       [monthSelector]: nextYear,
-    //     });
-    //   } else {
-    //     const next: HTMLElement = nextBtn.current!;
-    //     next.querySelector('button')!.click();
-    //   }
-    // };
-
-    // const handleSwitchClickEvent2 = () => {
-    //   setSwitchView(() => {
-    //     return switchView === 'BY_MONTH' ? 'BY_YEAR' : 'BY_MONTH';
-    //   });
-    // };
     return (
       <Container
         sx={{
@@ -279,8 +249,8 @@ export const CustomCalendar = (pickerProps: any) => {
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
-          width: 'inherit',
-          height: '20vh',
+          height: '265px',
+          width: '300px',
           padding: 0,
           m: 1,
         }}

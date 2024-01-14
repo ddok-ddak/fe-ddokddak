@@ -471,6 +471,7 @@ const ChartContainer = () => {
       ),
     );
     setCategoryDetailData(statisticsResult.filter((data) => data.timeSum > 0));
+    setIsFirstPage(true);
   }, [statisticsResult, periodType]);
 
   return (
