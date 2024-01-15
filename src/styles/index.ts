@@ -10,6 +10,7 @@ declare module '@mui/material/styles' {
     calendar?: any;
     chart?: any;
     button?: any;
+    popup?: any;
   }
   interface Palette {
     grey?: Color;
@@ -17,6 +18,7 @@ declare module '@mui/material/styles' {
     calendar?: any;
     chart?: any;
     button?: any;
+    popup?: any;
   }
 }
 
@@ -99,7 +101,11 @@ export const theme = createTheme({
     },
     button: {
       blue: '#4F75FF',
-    }
+    },
+    popup: {
+      background: '#D1F1E4',
+      icon: '#16B978',
+    },
   },
   components: {
     MuiPaper: {

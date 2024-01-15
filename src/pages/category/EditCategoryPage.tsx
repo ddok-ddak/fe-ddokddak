@@ -2,7 +2,7 @@ import { Box, Container } from '@mui/system';
 import { TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
   addSubCategory,
@@ -19,13 +19,22 @@ import {
 import { MainCategoryProps, SubCategoryProps } from './CategoryPage';
 import Wrapper from '../auth/common/Wrapper';
 import BottomButton from '@/components/common/BottomButton';
-import { stepButtonProps } from '@/store/common';
+import {
+  currentPopupMessageType,
+  popupMessageText,
+  stepButtonProps,
+} from '@/store/common';
 import { buttonText } from '@/constants/message';
+import { popupShowState } from '@/store/popupMessage';
 
 const EditCategoryPage = () => {
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
+
+  const setIsPopupShow = useSetRecoilState(popupShowState);
+  const setPopupText = useSetRecoilState(popupMessageText);
+  const setPopupMessageType = useSetRecoilState(currentPopupMessageType);
 
   const [inputName, setInputName] = useState(selectedSubCategory.name);
   const [isInputNameEmpty, setIsInputNameEmpty] = useState(true);
@@ -43,25 +52,30 @@ const EditCategoryPage = () => {
    * handle save event
    */
   const handleSave = async () => {
-    if (isInputNameEmpty || selectedIcon.iconFile.filename === '') {
+    const iconFile = selectedIcon.iconFile;
+    if (isInputNameEmpty || !iconFile.filename) {
       return true;
     }
+
     let response;
+    let popupText: string = '';
     if (mode === 'add') {
       response = await addSubCategory({
         mainCategoryId: selectedMainCategory.categoryId,
         color: selectedMainCategory.color,
         highlightColor: selectedMainCategory.highlightColor,
         name: inputName,
-        iconId: selectedIcon.iconFile.id,
+        iconId: iconFile.id,
       });
+      popupText = '카테고리가 추가되었습니다.';
     } else {
+      popupText = '카테고리가 수정되었습니다.';
       const categoryId = selectedSubCategory.categoryId;
       if (categoryId) {
-        const iconName = selectedIcon.iconFile.filename;
+        const iconName = iconFile.filename;
         const name = inputName;
         if (
-          iconName === selectedSubCategory.iconFile.filename &&
+          iconName === iconFile.filename &&
           name === selectedSubCategory.name
         ) {
           navigation(-1);
@@ -69,32 +83,43 @@ const EditCategoryPage = () => {
         }
         response = await updateSubCategory({
           categoryId,
-          iconId: selectedIcon.iconFile.id,
+          iconId: iconFile.id,
           name,
         });
       }
     }
+
     if (response?.status === 'SUCCESS') {
       navigation(-1);
     } else {
-      alert('Error');
+      popupText = '카테고리 설정에 실패했습니다.';
     }
+
+    setPopupMessageType('CATEGORY');
+    setIsPopupShow(() => true);
+    setPopupText(popupText);
   };
 
   /**
    * handle delete event
    */
   const handleDelete = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let popupText;
     const response = await deleteCategory(selectedSubCategory.categoryId!);
     if (response.status === 'SUCCESS') {
-      alert('Successfully deleted');
+      popupText = '카테고리 삭제에 성공했습니다.';
       navigation(-1);
     } else {
-      alert('Error');
+      popupText = '카테고리 삭제에 실패했습니다.';
     }
+    setPopupMessageType('CATEGORY');
+    setIsPopupShow(() => true);
+    setPopupText(popupText);
   };
 
+  /**
+   * get category data
+   */
   const getCategoryData = async () => {
     const response = await getCategories();
     if (response.result) {
@@ -102,6 +127,10 @@ const EditCategoryPage = () => {
     }
   };
 
+  /**
+   * get category icons
+   * @returns
+   */
   const getCategoryIcon = () => {
     if (categories) {
       const categoryId = selectedIcon?.categoryId;
@@ -148,7 +177,7 @@ const EditCategoryPage = () => {
           isShowNextButton={true}
           prevButtonIcon={
             <Typography sx={{ color: 'grey.500', fontSize: '13px' }}>
-              뒤로
+              {buttonText.prev}
             </Typography>
           }
           nextButtonIcon={
@@ -158,7 +187,7 @@ const EditCategoryPage = () => {
                 fontSize: '13px',
               }}
             >
-              완료
+              {buttonText.complete}
             </Typography>
           }
           onClickNextButton={handleSave}
@@ -255,8 +284,8 @@ const EditCategoryPage = () => {
       </Box>
       {mode === 'edit' && (
         <BottomButton
-        btnStyleProps={{ borderRadius: '0px', flex: '0 0 5vh' }}
-        textStyleProps={{}}
+          btnStyleProps={{ borderRadius: '0px', flex: '0 0 5vh' }}
+          textStyleProps={{}}
         />
       )}
     </Wrapper>
