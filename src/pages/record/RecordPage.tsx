@@ -10,7 +10,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectedRangeData } from './EditRecordPage';
 
-import Spacer from '@/components/common/Spacer';
 import CommonHeader from '@/components/layout/CommonHeader';
 import { statisticsStartHour } from '@/store/statistics';
 import { getRecord } from '../../api/record.api';
@@ -43,7 +42,6 @@ import Wrapper from '../auth/common/Wrapper';
 import { modalState } from '@/store/modal';
 import { currentUserInfo } from '@/store/info';
 import { UserData } from '@/store/userData';
-import { UserModeList } from '../category/CategoryPage';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -234,15 +232,15 @@ const RecordPage = () => {
       },
     });
 
-    setModalInfo({
-      open: true,
-      title: `${userInfo.nickname}님 환영합니다!`,
-      msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
-      optionList: UserModeList.map((userMode) => {
-        return { id: userMode.id, type: userMode.type, name: userMode.name };
-      }),
-      isShowConfirmBtn: true,
-    });
+    // setModalInfo({
+    //   open: true,
+    //   title: `${userInfo.nickname}님 환영합니다!`,
+    //   msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
+    //   optionList: UserModeList.map((userMode) => {
+    //     return { id: userMode.id, type: userMode.type, name: userMode.name };
+    //   }),
+    //   isShowConfirmBtn: true,
+    // });
   }, []);
 
   return (

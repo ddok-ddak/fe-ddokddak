@@ -5,14 +5,13 @@ import {
   signUpStep,
 } from './signUp';
 import {
-  resetPWNextButtonState,
+  resetPWCompletePopupMessage, resetPWNextButtonState,
   resetPWStep,
-  resetPWStepInstruction,
+  resetPWStepInstruction
 } from './resetPW';
 import {
   currentPeriodForRecord,
-  currentSelectedDateForRecord,
-  recordEditNextButtonState,
+  currentSelectedDateForRecord, recordEditNextButtonState
 } from './record';
 import {
   currentPeriodForStat,
@@ -185,5 +184,70 @@ export const currentPeriod = selector({
 //     } else if (type === 'VIEW') {
 //       return get(periodForViewList);
 //     }
+//   },
+// });
+
+/* ============ POPUP MESSAGE (PW Reset Pages / ... ) ============ */
+
+
+/**
+ * RESETPW 비밀번호 재설정
+ * RECORD: Calendar for Record Page
+ * SETTEMPLATE 템플릿 모드 (유저 모드) 설정
+ * CATEGORY 카테고리 (삭제)
+ */
+export type PopupMessageType =
+  'RESETPW'
+  | 'RECORD'
+  | 'SETTEMPLATE'
+  | 'CATEGORY';
+
+export const popupMessageShowStatus = atom({
+  key: 'PopupMessageShowStatus',
+  default: true,
+});
+
+export const currentPopupMessageType = atom<PopupMessageType>({
+  key: 'CurrentPopupMessageType',
+  default: 'RESETPW',
+});
+
+export const popupMessageText = atom({
+  key: 'PopupMessageText',
+  default: '',
+});
+
+export const popupMessagePosition = selector({
+  key: 'PopupMessagePosition',
+  get: ({ get }) => {
+    const type = get(currentPopupMessageType);
+    if (type === 'RESETPW') {
+      return get(resetPWCompletePopupMessage);
+    } else if (type === 'SETTEMPLATE') {
+      return 'ETC MESSAGE TEXT';
+      // return get(currentSelectedDateForStat);
+    } else {
+      return 'ETC MESSAGE TEXT 2222';
+    }
+  },
+});
+
+// export const popupMessageShowStatus = selector({
+//   key: 'PopupMessageShowStatus',
+//   get: ({ get }) => {
+//     const type = get(currentPopupMessageType);
+//     if (type === 'RESETPW') {
+//       return get(resetPWCompletePopupShow);
+//     } else if (type === 'SETTEMPLATE') {
+//       // return get(currentSelectedDateForStat);
+//     }
+//   },
+//   set: ({ set, get }, newValue) => {
+//     const type = get(currentPopupMessageType);
+//     // if (type === 'RESETPW') {
+//     //   set(resetPWCompletePopupShow, newValue);
+//     // } else if (type === 'SETTEMPLATE') {
+//     //   set(resetPWCompletePopupShow, newValue);
+//     // }
 //   },
 // });

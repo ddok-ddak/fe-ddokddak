@@ -49,7 +49,6 @@ export const resetPWNextButtonState = atom({
   },
 });
 
-
 export const resetPWStepInstruction = atom<string>({
   key: 'ResetPWStepInstruction',
   default: '',
@@ -62,6 +61,11 @@ export const resetPWMode = atom({
 
 export const resetPWCompletePopupShow = atom({
   key: 'resetPWCompletePopupShow',
-  default: false,
+  default: true,
+});
+
+export const resetPWCompletePopupMessage = atom({
+  key: 'ResetPWCompletePopupMessage',
+  default: '비밀번호가 변경되었습니다.',
 });
 

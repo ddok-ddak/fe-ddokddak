@@ -33,7 +33,13 @@ import {
 } from '@/store/record';
 import Spacer from '@/components/common/Spacer';
 import BottomButton from '@/components/common/BottomButton';
-import { FormType, currentFormType, stepButtonProps } from '@/store/common';
+import {
+  FormType,
+  currentFormType,
+  currentPopupMessageType,
+  popupMessageText,
+  stepButtonProps,
+} from '@/store/common';
 import dayjs, { Dayjs } from 'dayjs';
 import { TimePicker } from 'mui_pickers_6';
 import { AdapterDayjs } from 'mui_pickers_6/AdapterDayjs';
@@ -45,6 +51,7 @@ import FlexBox from '@/components/common/FlexBox';
 import Wrapper from '../auth/common/Wrapper';
 import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
+import { popupShowState } from '@/store/popupMessage';
 
 export interface MainCategoryProps {
   categoryId: number;
@@ -106,12 +113,17 @@ const StyledChip = styled(Chip)<StyledChipProps>(({ theme, props }) => {
 const formatDate = (date: any): string =>
   dayjs(date).format('YYYY-MM-DDTHH:mm:ss');
 
+const pink200 = theme.palette.pink![200];
+
 const EditRecordPage = (): ReactElement => {
   const navigate = useNavigate();
   const currentDay = new Date().getDay();
 
   const setStepType = useSetRecoilState<FormType>(currentFormType);
   const setNextButtonProps = useSetRecoilState(stepButtonProps);
+  const setPopupMessageType = useSetRecoilState(currentPopupMessageType);
+  const setPopupText = useSetRecoilState(popupMessageText);
+  const setIsPopupShow = useSetRecoilState(popupShowState);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
 
@@ -119,7 +131,7 @@ const EditRecordPage = (): ReactElement => {
 
   // 수정중인 이벤트
   const [selectedEvent, setSelectedEvent] =
-    useRecoilState<SubCategoryProps>(currentSelectedEvent);
+    useRecoilState(currentSelectedEvent);
 
   const [selectedDays, setSelectedDays] = useRecoilState(selectedDaysState);
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
@@ -343,7 +355,7 @@ const EditRecordPage = (): ReactElement => {
                       m: '15px 0 0 0',
                     }}
                   >
-                    취소
+                    {buttonText.cancel}
                   </Button>
                   <Button
                     sx={{
@@ -362,7 +374,7 @@ const EditRecordPage = (): ReactElement => {
                       setIsTimePickerOpen(false);
                     }}
                   >
-                    완료
+                    {buttonText.complete}
                   </Button>
                 </Box>
                 <DialogContent
@@ -461,8 +473,7 @@ const EditRecordPage = (): ReactElement => {
         finishedAt,
         content,
       });
-      const result = response.result;
-      return result;
+      return response.result;
     } catch (err) {
       console.error(err);
       throw new Error(`${err}`);
@@ -477,6 +488,7 @@ const EditRecordPage = (): ReactElement => {
     const currentSelectedDay = dayjs(selectedEvent.start).day();
     const firstSelectedDay = selectedDays[0];
 
+    let result;
     for (const dayIndex of selectedDays) {
       const diff = dayIndex - firstSelectedDay;
       const startedAtOfDay = formatDate(new Date(addDays(start, diff)));
@@ -484,10 +496,19 @@ const EditRecordPage = (): ReactElement => {
 
       // update currently being edited event
       if (recordType === 'UPDATE' && currentSelectedDay === dayIndex) {
-        await updateEventRecord(startedAtOfDay, finishedAtOfDay);
+        result = await updateEventRecord(startedAtOfDay, finishedAtOfDay);
       } else {
-        await createEventRecord(startedAtOfDay, finishedAtOfDay);
+        result = await createEventRecord(startedAtOfDay, finishedAtOfDay);
       }
+    }
+
+    if (result) {
+      setIsPopupShow(() => true);
+      setPopupText(
+        recordType === 'UPDATE'
+          ? '기록 수정에 성공했습니다.'
+          : '기록 등록에 성공했습니다.',
+      );
     }
     setSelectedDays([]);
     navigate('/record');
@@ -499,12 +520,15 @@ const EditRecordPage = (): ReactElement => {
   const deleteEventReord = async () => {
     const eventId = selectedEvent.id;
     const result = await deleteRecord(eventId);
+    let popupText = '';
     if (result.status === 'SUCCESS') {
       navigate('/record');
+      popupText = '기록 삭제에 성공했습니다.';
     } else {
-      console.error('FAILED TO DELETE');
-      // TODO: MODAL
+      popupText = '기록 삭제에 실패했습니다.';
     }
+    setIsPopupShow(() => true);
+    setPopupText(popupText);
   };
 
   /**
@@ -525,33 +549,6 @@ const EditRecordPage = (): ReactElement => {
     }
   };
 
-  const pink200 = theme.palette.pink![200];
-
-  useEffect(() => {
-    // set initially selected day
-    setSelectedDays([selectedEvent.start.getDay()]);
-
-    // get all category data
-    getAllCategories();
-
-    // hide bottom nav
-    // setShowNav(false);
-
-    // set form type
-    setStepType(() => 'RECORD');
-
-    // set button props
-    setNextButtonProps(() => {
-      return {
-        isDisabled: false,
-        text: buttonText.delete,
-        clickHandler: deleteEventReord,
-      };
-    });
-
-    setContent(selectedEvent.content || '');
-  }, []);
-
   useEffect(() => {
     if (recordType === 'CREATE') {
       // setSelectedSubCategoryIdx(0);
@@ -570,6 +567,33 @@ const EditRecordPage = (): ReactElement => {
     setRecoilSubCategoryValue(selectedSubCategoryIdx);
   }, [selectedSubCategoryIdx, setRecoilSubCategoryValue, recoilCategoryValue]);
 
+  useEffect(() => {
+    // set initially selected day
+    setSelectedDays([selectedEvent.start.getDay()]);
+
+    // get all category data
+    getAllCategories();
+
+    // hide bottom nav
+    // setShowNav(false);
+
+    // set form type
+    setStepType(() => 'RECORD');
+
+    setPopupMessageType('RECORD');
+
+    // set button props
+    setNextButtonProps(() => {
+      return {
+        isDisabled: false,
+        text: buttonText.delete,
+        clickHandler: deleteEventReord,
+      };
+    });
+
+    setContent(selectedEvent.content || '');
+  }, []);
+
   return (
     <Wrapper
       headerComp={
@@ -581,170 +605,168 @@ const EditRecordPage = (): ReactElement => {
         />
       }
     >
-        <Container sx={{ flex: '1 1 100vh', }}>
-          {/* Selected Days */}
+      <Container sx={{ flex: '1 1 100vh' }}>
+        {/* Selected Days */}
+        <Box
+          sx={{
+            position: 'relative',
+            height: '12vw',
+            display: 'flex',
+          }}
+        >
           <Box
             sx={{
-              position: 'relative',
-              height: '12vw',
+              position: 'absolute',
+              width: '100%',
+              height: 'calc(11vw + 2px)',
+              flex: '1 0 12vh',
+              boxShadow: '0px 9px 15px 0px rgba(0, 0, 0, 0.04)',
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              width: '100%',
+              height: '13vw',
+              flex: '1 1 12vh',
               display: 'flex',
+              justifyContent: 'space-evenly',
             }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '100%',
-                height: 'calc(11vw + 2px)',
-                flex: '1 0 12vh',
-                boxShadow: '0px 9px 15px 0px rgba(0, 0, 0, 0.04)',
-              }}
-            />
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '100%',
-                height: '13vw',
-                flex: '1 1 12vh',
-                display: 'flex',
-                justifyContent: 'space-evenly',
-              }}
-            >
-              {['일', '월', '화', '수', '목', '금', '토'].map(
-                (day, dayIndex) => {
-                  const isSelected = selectedDays.includes(dayIndex);
-                  const isCurrentDate = currentDay === dayIndex;
-                  return (
-                    <DaysChip
-                      key={day}
-                      title={day}
-                      isselected={isSelected}
-                      underline={isCurrentDate}
-                      onClick={() => handleDayChipClick(dayIndex)}
-                      color={
-                        dayIndex === 0
-                          ? 'calendar.currSun'
-                          : dayIndex === 6
-                          ? 'calendar.currDay'
-                          : ''
-                      }
-                    />
-                  );
-                },
-              )}
-            </Box>
+            {['일', '월', '화', '수', '목', '금', '토'].map((day, dayIndex) => {
+              const isSelected = selectedDays.includes(dayIndex);
+              const isCurrentDate = currentDay === dayIndex;
+              return (
+                <DaysChip
+                  key={day}
+                  title={day}
+                  isselected={isSelected}
+                  underline={isCurrentDate}
+                  onClick={() => handleDayChipClick(dayIndex)}
+                  color={
+                    dayIndex === 0
+                      ? 'calendar.currSun'
+                      : dayIndex === 6
+                      ? 'calendar.currDay'
+                      : ''
+                  }
+                />
+              );
+            })}
           </Box>
+        </Box>
 
-          {/* Time Range */}
-          <Container
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-evenly',
-              padding: '32px',
-            }}
-          >
-            {formatRangeTimeElem('start')}
-            <FlexBox>
-              <Typography sx={{ fontweight: '400', fontSize: '13px' }}>
-                ~
-              </Typography>
-            </FlexBox>
-            {formatRangeTimeElem('end')}
-          </Container>
-
-          <Divider sx={{ bgcolor: pink200, border: `2px solid ${pink200}` }} />
-
-          <Container sx={{ textAlign: 'right' }}>
-            <Button
-              variant="text"
-              component={Link}
-              to="/category"
-              sx={{ color: 'grey.500', paddingTop: '17px' }}
-            >
-              카테고리 설정
-            </Button>
-          </Container>
-
-          {/* Main Categories */}
-          <Container
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              overflowX: 'scroll',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch',
-              padding: '2% 0 3% 0',
-            }}
-          >
-            {categories.length &&
-              categories.map((category: MainCategoryProps, idx) => {
-                const isSelected = idx === selectedCategoryIdx;
-                return (
-                  <StyledChip
-                    key={category.categoryId}
-                    label={category.name}
-                    variant={isSelected ? 'filled' : 'outlined'}
-                    onClick={() => {
-                      setSelectedSubCategoryIdx(() => 0);
-                      setSelectedCategoryIdx(idx);
-                    }}
-                    props={{
-                      isSelected,
-                      backgroundColor: category.highlightColor,
-                    }}
-                  />
-                );
-              })}
-          </Container>
-
-          <Spacer y={8} />
-
-          {/* Sub Categories */}
-          <Container
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-evenly',
-              paddingBottom: '30px',
-            }}
-          >
-            {categories[selectedCategoryIdx]?.subCategories.map(
-              (sub: SubCategoryProps) => {
-                const subSelected = selectedSubCategoryIdx === sub.categoryId;
-                return (
-                  <Circle
-                    key={sub.name}
-                    label={sub.name}
-                    variant={subSelected ? 'filled' : 'outlined'}
-                    color={sub.color}
-                    fontColor={subSelected ? sub.highlightColor : ''}
-                    borderColor={subSelected ? sub.highlightColor : ''}
-                    size={40}
-                    iconName={sub.iconName}
-                    iconSize={26}
-                    selected={subSelected}
-                    onClick={() =>
-                      setSelectedSubCategoryIdx(() => sub.categoryId)
-                    }
-                  />
-                );
-              },
-            )}
-          </Container>
-
-          <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
-
-          <Container sx={{ padding: '24px' }}>
-            <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              placeholder="메모하기"
-              variant="standard"
-              fullWidth
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </Container>
+        {/* Time Range */}
+        <Container
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            padding: '32px',
+          }}
+        >
+          {formatRangeTimeElem('start')}
+          <FlexBox>
+            <Typography sx={{ fontweight: '400', fontSize: '13px' }}>
+              ~
+            </Typography>
+          </FlexBox>
+          {formatRangeTimeElem('end')}
         </Container>
+
+        <Divider sx={{ bgcolor: pink200, border: `2px solid ${pink200}` }} />
+
+        <Container sx={{ textAlign: 'right' }}>
+          <Button
+            variant="text"
+            component={Link}
+            to="/category"
+            sx={{ color: 'grey.500', paddingTop: '17px' }}
+          >
+            카테고리 설정
+          </Button>
+        </Container>
+
+        {/* Main Categories */}
+        <Container
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            overflowX: 'scroll',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch',
+            padding: '2% 0 3% 0',
+          }}
+        >
+          {categories.length &&
+            categories.map((category: MainCategoryProps, idx) => {
+              const isSelected = idx === selectedCategoryIdx;
+              return (
+                <StyledChip
+                  key={category.categoryId}
+                  label={category.name}
+                  variant={isSelected ? 'filled' : 'outlined'}
+                  onClick={() => {
+                    setSelectedSubCategoryIdx(() => 0);
+                    setSelectedCategoryIdx(idx);
+                  }}
+                  props={{
+                    isSelected,
+                    backgroundColor: category.highlightColor,
+                  }}
+                />
+              );
+            })}
+        </Container>
+
+        <Spacer y={8} />
+
+        {/* Sub Categories */}
+        <Container
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            paddingBottom: '30px',
+          }}
+        >
+          {categories[selectedCategoryIdx]?.subCategories.map(
+            (sub: SubCategoryProps) => {
+              const subSelected = selectedSubCategoryIdx === sub.categoryId;
+              return (
+                <Circle
+                  key={sub.name}
+                  label={sub.name}
+                  variant={subSelected ? 'filled' : 'outlined'}
+                  color={sub.color}
+                  fontColor={subSelected ? sub.highlightColor : ''}
+                  borderColor={subSelected ? sub.highlightColor : ''}
+                  size={40}
+                  iconName={sub.iconName}
+                  iconSize={26}
+                  selected={subSelected}
+                  onClick={() =>
+                    setSelectedSubCategoryIdx(() => sub.categoryId)
+                  }
+                />
+              );
+            },
+          )}
+        </Container>
+
+        <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
+
+        <Container sx={{ padding: '24px' }}>
+          <TextField
+            hiddenLabel
+            id="filled-hidden-label-normal"
+            placeholder="메모하기"
+            variant="standard"
+            fullWidth
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </Container>
+      </Container>
       {recordType === 'UPDATE' && (
         <BottomButton
           btnStyleProps={{ borderRadius: '0px', flex: '0 0 5vh' }}
