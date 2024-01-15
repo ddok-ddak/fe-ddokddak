@@ -9,4 +9,6 @@ export const buttonText = {
     next: '다음',
     confirm: '확인',
     delete: '삭제하기',
+    cancel: '취소',
+    complete: '완료',
 };

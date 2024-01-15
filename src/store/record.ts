@@ -12,9 +12,9 @@ import { buttonText } from '@/constants/message';
 //   } as SelectedRangeData,
 // });
 
-export const currentSelectedEvent = atom({
+export const currentSelectedEvent = atom<any>({
   key: 'CurrentSelectedEvent',
-  default: {},
+  default: { name: '', color: '' },
 });
 
 export const categories = atom<Category[]>({
@@ -98,5 +98,10 @@ export const recordEditNextButtonState = atom<INextButtonState>({
     isDisabled: false,
     clickHandler: () => {},
     text: buttonText.delete,
-  }
+  },
+});
+
+export const recordEditCompletePopupMessage = atom({
+  key: 'RecordEditCompletePopupMessage',
+  default: '기록이 완료되었습니다.',
 });
