@@ -4,37 +4,19 @@ import { Icon, Typography, Popover, Paper } from '@mui/material';
 import Spacer from '@/components/common/Spacer';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { theme } from '@/styles';
-import { currentPopupMessageType, popupMessageText } from '@/store/common';
-import { useEffect, useState } from 'react';
+import { popupMessageText } from '@/store/common';
+import { useState } from 'react';
 import { popupShowState } from '@/store/popupMessage';
-import { DEFAULT_POPUP_MSG_TIMEOUT } from '@/constants/sample';
 
-interface PopoverVirtualElement {
-  nodeType: 1;
-  getBoundingClientRect: () => DOMRect;
-}
-
-const selection = window.getSelection();
 
 const PopupMessage = () => {
 
   const popupText = useRecoilValue(popupMessageText);
-  const popupMessageType = useRecoilValue(currentPopupMessageType);
 
   const [isPopupShow, setIsPopupShow] = useRecoilState(popupShowState);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const { background, icon } = theme.palette.popup;
-  
-  useEffect(() => {
-    
-    setTimeout(() => {
-      console.log(isPopupShow)
-      console.log(popupText)
-      console.log(popupMessageType)
-      setIsPopupShow(false);
-    }, DEFAULT_POPUP_MSG_TIMEOUT);
-  }, []);
 
   return (
     <Popover
@@ -45,17 +27,12 @@ const PopupMessage = () => {
         setIsPopupShow(false);
       }}
       anchorOrigin={{
-        // vertical: 'bottom',
-        // horizontal: 'center',
         vertical: 'top',
         horizontal: 'center',
       }}
       transformOrigin={{
-        // vertical: 'center',
-        // horizontal: 'center',
         vertical: 'top',
         horizontal: 'center',
-
       }}
     >
       <Paper
