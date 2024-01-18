@@ -94,7 +94,7 @@ export const theme = createTheme({
       currSat: '#3B66FF',
       outSat: '#3B66FF',
       currDay: '#4B4B4B',
-      outCay: '#B3B3B3',
+      outDay: '#B3B3B3',
     },
     chart: {
       customBackground: '#FFF4F6',

@@ -69,6 +69,7 @@ export const periodForStatListValue: IPeriodTypeForStat [] = [
   { title: '한 달', id: 'BY_MONTH', subTitle: '이번달' },
   { title: '일 년', id: 'BY_YEAR', subTitle: '이번해' },
 ];
+
 export const periodForStatList = atom<IPeriodType[]>({
   key: 'PeriodForStatList',
   default: periodForStatListValue,
