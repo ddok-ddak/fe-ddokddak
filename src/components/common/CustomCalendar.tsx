@@ -2,13 +2,26 @@ import Chevron from '@/components/common/Chevron';
 import Spacer from '@/components/common/Spacer';
 import { useStatisticView } from '@/hooks/statisticView';
 import { currentPeriod, currentSelectedDate } from '@/store/common';
-import { PeriodTypeForView, currentPeriodForView } from '@/store/statistics';
+import {
+  PeriodTypeForView,
+  currentPeriodForView,
+  tempSelectedDateForStat,
+} from '@/store/statistics';
 import { theme } from '@/styles';
 import { Box, Button, Container, Grid, Paper, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+
+const calendarPalette = theme.palette.calendar!;
+const pinkPalette = theme.palette.pink!;
+
+const date = new Date();
+const currentDate = date.getDate();
+const currentMonth = date.getMonth();
+const currentYear = date.getFullYear();
+const yearList = Array.from({ length: 12 }, (_, i) => currentYear - 8 + i);
 
 export const CustomCalendar = (pickerProps: any) => {
   /**
@@ -21,41 +34,35 @@ export const CustomCalendar = (pickerProps: any) => {
    */
   const nextBtn = useRef();
 
-  // previously selected date
-  const [selectedDate, setSelectedDate] =
-    useRecoilState<any>(currentSelectedDate);
-
-  // newly selected date (temporary)
-  // const [tempSelectedDate, setTempSelectedDate] =
-  //   useState<any>(currentSelectedDate);
-
   const periodType = useRecoilValue<any>(currentPeriod);
+
+  const setSelectedDate = useSetRecoilState<any>(currentSelectedDate);
+
+  // const tempSelectedDate = useRecoilValue<any>(
+  //   tempSelectedDateForStat,
+  // );
+
+  const [tempSelectedDate, setTempSelectedDate] = useRecoilState<any>(
+    tempSelectedDateForStat,
+  );
 
   const [switchView, setSwitchView] =
     useRecoilState<PeriodTypeForView>(currentPeriodForView);
 
-  const { setNewDateRange, tempSelectedDate, setTempSelectedDate } = useStatisticView();
-
-  const currentYear = new Date().getFullYear();
-  const yearList = Array.from({ length: 12 }, (_, i) => currentYear - 11 + i);
+  const { setNewDateRange } = useStatisticView();
 
   /**
    * render custom calendar day elements (day, week type only)
-   * @param date
-   * @param selectedDates
-   * @param pickersDayProps
-   * @param value
-   * @returns customized calendar days
+   * @param elementDate
+   * @returns rendered calendar day
    */
   const renderCustomCalendarDay = (elementDate: Dayjs) => {
-    // const date = tempSelectedDate![periodType];
-    const date = selectedDate![periodType];
-    const currentDate = elementDate.date();
-    const currentDay = elementDate.day();
-    const currentMonth = date.month();
+    const date = tempSelectedDate![periodType];
 
-    const isCurrentMonth = elementDate.month() === currentMonth;
-    const isCurrentDate = isCurrentMonth && currentDate === date.date();
+    const elemYear = elementDate.year();
+    const elemMonth = elementDate.month();
+    const elemWeekday = elementDate.weekday();
+    const elemDate = elementDate.date();
 
     // for weekly calendar highlighter
     const start = date.startOf('week');
@@ -64,36 +71,42 @@ export const CustomCalendar = (pickerProps: any) => {
     const isFirstDay = elementDate.isSame(start, 'day');
     const isLastDay = elementDate.isSame(end, 'day');
 
-    const backgroundColor =
+    const isPrevDate = elemYear < currentYear || elemMonth < currentMonth;
+
+    const isCurrentDate =
+      currentYear === elemYear &&
+      currentMonth === elemMonth &&
+      currentDate === elemDate;
+
+    const isSelectedDate =
       (periodType === 'BY_WEEK' && dayIsBetween) ||
-      (periodType === 'BY_DAY' && isCurrentDate)
-        ? 'pink.200'
-        : '';
+      (periodType === 'BY_DAY' &&
+        tempSelectedDate[periodType].year() === elemYear &&
+        tempSelectedDate[periodType].month() === elemMonth &&
+        tempSelectedDate[periodType].date() === elemDate);
+
+    const borderRadiusLeft =
+      isFirstDay || periodType === 'BY_DAY' ? '5px' : '0px';
+    const borderRadiusRight =
+      isLastDay || periodType === 'BY_DAY' ? '5px' : '0px';
+
     let color = '';
-    const calendarPalette = theme.palette.calendar;
-    switch (currentDay) {
+    switch (elemWeekday) {
       case 0:
-        color = isCurrentMonth
-          ? calendarPalette!.currSun
-          : calendarPalette!.outSun;
+        color = isPrevDate ? calendarPalette.outSun : calendarPalette.currSun;
         break;
       case 6:
-        color = isCurrentMonth
-          ? calendarPalette!.currSat
-          : calendarPalette!.outSat;
+        color = isPrevDate ? calendarPalette.outSat : calendarPalette.currSat;
         break;
       default:
-        color = isCurrentMonth
-          ? calendarPalette!.currDay
-          : calendarPalette!.outDay;
+        color = isPrevDate ? calendarPalette.outDay : calendarPalette.currDay;
         break;
     }
+
     return (
       <Paper
-        onClick={(props: any) => {
-          const dayProp = props.target.offsetParent.getAttribute('id');
-          const newSelectedDate = dayjs(Number(dayProp));
-          setNewDateRange(newSelectedDate);
+        onClick={() => {
+          setNewDateRange(elementDate);
         }}
         key={elementDate}
         sx={{
@@ -103,35 +116,34 @@ export const CustomCalendar = (pickerProps: any) => {
           position: 'relative',
           borderRadius: 0,
           margin: 0,
-          padding: 0,
+          padding: '0px !important',
+          width: '28px',
+          height: '28px',
         }}
       >
         <Grid
           item
           style={{
-            position: 'absolute',
-            borderTopLeftRadius: isFirstDay ? '5px' : '0px',
-            borderBottomLeftRadius: isFirstDay ? '5px' : '0px',
-            borderTopRightRadius: isLastDay ? '5px' : '0px',
-            borderBottomRightRadius: isLastDay ? '5px' : '0px',
+            width: '100%',
+            height: '100%',
             margin: 0,
             padding: 0,
+            borderRadius: `${borderRadiusLeft} ${borderRadiusRight} ${borderRadiusRight} ${borderRadiusLeft}`,
+            fontWeight: isSelectedDate ? '700' : '',
+            backgroundColor: isSelectedDate ? pinkPalette![200] : '',
             color,
-            backgroundColor,
-            fontWeight: isCurrentDate ? '700' : '400',
-            width: !isFirstDay && !isLastDay ? '110%' : '100%',
           }}
         >
-          {currentDate}
+          {elemDate}
         </Grid>
         <span
           style={{
             position: 'absolute',
-            bottom: '5%',
+            bottom: '-2%',
             height: '3px',
             width: '100%',
             borderRadius: '5px',
-            background: isCurrentDate ? theme.palette.pink![500] : 'transparent',
+            background: isCurrentDate ? pinkPalette![500] : 'transparent',
           }}
         />
       </Paper>
@@ -143,13 +155,13 @@ export const CustomCalendar = (pickerProps: any) => {
    * @returns
    */
   const renderToolbar = () => {
-    const date = selectedDate[periodType];
+    const date = tempSelectedDate[periodType];
     const month = date.month() + 1;
     const year =
-      periodType === 'BY_YEAR' || switchView === 'BY_YEAR'
+      periodType === 'BY_YEAR' ||
+      (periodType === 'BY_MONTH' && switchView === 'BY_YEAR')
         ? `${yearList[0]} ~ ${yearList[11]}`
         : date.year();
-
     return (
       <Container
         sx={{
@@ -169,20 +181,15 @@ export const CustomCalendar = (pickerProps: any) => {
           >
             <Chevron
               callback={() => {
-                if (periodType === 'BY_MONTH') {
-                  const prevYear = tempSelectedDate['BY_MONTH'].subtract(1, 'year');
-                  // setTempSelectedDate({
-                  //   ...tempSelectedDate,
-                  //   ['BY_MONTH']: prevYear,
-                  // });
-                  setSelectedDate({
-                    ...selectedDate,
-                    ['BY_MONTH']: prevYear,
-                  });
-                } else {
+                const prevPeriod = tempSelectedDate[periodType].subtract(
+                  1,
+                  periodType === 'BY_MONTH' ? 'year' : 'month',
+                );
+                if (periodType !== 'BY_MONTH') {
                   const prev: HTMLElement = prevBtn.current!;
                   prev.querySelector('button')!.click();
                 }
+                setNewDateRange(prevPeriod);
               }}
               direction={'left'}
             />
@@ -236,20 +243,15 @@ export const CustomCalendar = (pickerProps: any) => {
           >
             <Chevron
               callback={() => {
-                if (periodType === 'BY_MONTH') {
-                  const nextYear = tempSelectedDate['BY_MONTH'].add(1, 'year');
-                  // setTempSelectedDate({
-                  //   ...tempSelectedDate,
-                  //   ['BY_MONTH']: nextYear,
-                  // });
-                  setSelectedDate({
-                    ...selectedDate,
-                    ['BY_MONTH']: nextYear,
-                  });
-                } else {
+                const nextPeriod = tempSelectedDate[periodType].add(
+                  1,
+                  periodType === 'BY_MONTH' ? 'year' : 'month',
+                );
+                if (periodType !== 'BY_MONTH') {
                   const next: HTMLElement = nextBtn.current!;
                   next.querySelector('button')!.click();
                 }
+                setNewDateRange(nextPeriod);
               }}
               direction={'right'}
             />
@@ -262,13 +264,14 @@ export const CustomCalendar = (pickerProps: any) => {
   /**
    * render customized calendar (month, year type only)
    * @param props
-   * @returns
+   * @returns rendered calendar (month, year)
    */
   const renderCustomMonthYearCalendar = () => {
     const list =
       switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
         ? yearList
         : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
     return (
       <Container
         sx={{
@@ -288,7 +291,17 @@ export const CustomCalendar = (pickerProps: any) => {
             switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
               ? date.year()
               : date.month() + 1;
-          const isCurrentDate = elem === selected;
+
+          const isSelected = elem === selected;
+          const isPrevDate =
+            switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
+              ? elem < currentYear
+              : elem < currentMonth || date.year() < currentYear;
+          const isCurrentDate =
+            switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
+              ? elem === currentYear
+              : date.year() === currentYear && currentMonth + 1 === elem;
+
           return (
             <Paper
               key={elem}
@@ -303,22 +316,18 @@ export const CustomCalendar = (pickerProps: any) => {
             >
               <Button
                 onClick={() => {
-                  const oldDate = selectedDate[periodType];
-                  // const oldDate = tempSelectedDate[periodType];
+                  const oldDate = tempSelectedDate[periodType];
                   const newDate =
                     switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
                       ? oldDate.year(elem)
                       : oldDate.month(elem - 1);
                   setNewDateRange(newDate);
-                  setTempSelectedDate(newDate);
-                  setSelectedDate(newDate);
-                  console.log('renderCustomMonthYearCalendar', newDate.year(), newDate.month())
                 }}
                 sx={{
                   p: 0,
                   m: 0,
-                  fontWeight: isCurrentDate ? '700' : '400',
-                  color: isCurrentDate ? 'grey.600' : 'calendar.outDay',
+                  fontWeight: isSelected ? '700' : '400',
+                  color: isSelected ? 'grey.600' : 'calendar.outDay',
                   borderRadius: '5px',
                 }}
                 key={index}
@@ -328,9 +337,10 @@ export const CustomCalendar = (pickerProps: any) => {
                     width: '37px',
                     height: '28px',
                     borderRadius: '5px',
-                    backgroundColor: isCurrentDate
-                      ? theme.palette.pink![200]
-                      : '',
+                    backgroundColor: isSelected ? pinkPalette![200] : '',
+                    color: isPrevDate
+                      ? calendarPalette!.outDay
+                      : calendarPalette!.currDay,
                   }}
                 >
                   {elem}
@@ -338,6 +348,7 @@ export const CustomCalendar = (pickerProps: any) => {
                     switchView === 'BY_MONTH' &&
                     '월'}
                 </span>
+
                 <span
                   style={{
                     position: 'absolute',
@@ -346,7 +357,7 @@ export const CustomCalendar = (pickerProps: any) => {
                     width: '37px',
                     borderRadius: '5px',
                     background: isCurrentDate
-                      ? theme.palette.pink![500]
+                      ? pinkPalette![500]
                       : 'transparent',
                   }}
                 />
@@ -389,6 +400,9 @@ export const CustomCalendar = (pickerProps: any) => {
       }}
       // day element (day and week type only)
       renderDay={(date: Dayjs) => renderCustomCalendarDay(date)}
+      onClose={() => {
+        setSelectedDate(tempSelectedDate);
+      }}
       {...pickerProps}
     />
   );

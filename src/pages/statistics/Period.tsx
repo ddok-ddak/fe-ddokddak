@@ -15,10 +15,10 @@ import {
 } from '@/store/common';
 import { statisticsResultState, statisticsStartHour } from '@/store/statistics';
 import { AppBar, Box, Grid, styled, Tab, Tabs } from '@mui/material';
-import type {} from '@mui/material/themeCssVarsAugmentation';
+import type { } from '@mui/material/themeCssVarsAugmentation';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { ManipulateType } from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -119,30 +119,14 @@ const Period = () => {
     statisticsResultState,
   );
 
-  const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
+  const { getWeekPeriodInputFormat, setNewDateRange, getPeriodString } =
+    useStatisticView();
 
   const handlePeriodChange = (
     e: SyntheticEvent,
     selectedDate: PeriodTypeForStat,
   ) => {
     setPeriodType(selectedDate);
-  };
-
-  const getPeriodString = (
-    period: PeriodTypeForStat,
-  ): ManipulateType | undefined => {
-    switch (period) {
-      case 'BY_DAY':
-        return 'day';
-      case 'BY_WEEK':
-        return 'week';
-      case 'BY_MONTH':
-        return 'month';
-      case 'BY_YEAR':
-        return 'year';
-      default:
-        break;
-    }
   };
 
   /**
@@ -252,11 +236,11 @@ const Period = () => {
         }}
       >
         <Chevron
-          callback={() =>
+          callback={() => {
             setNewDateRange(
               selectedDate[periodType].subtract(1, getPeriodString(periodType)),
-            )
-          }
+            );
+          }}
           direction="left"
         />
         {periodType === 'BY_DAY' && (

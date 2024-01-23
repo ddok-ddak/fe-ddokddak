@@ -1,40 +1,29 @@
 import { currentSelectedDate } from '@/store/common';
 import {
-  currentPeriodForView,
   PeriodTypeForStat,
-  currentSelectedDateForStat,
   currentPeriodForStat,
+  tempSelectedDateForStat,
 } from '@/store/statistics';
-import { Dayjs, ManipulateType } from 'dayjs';
-import { useRecoilState } from 'recoil';
+import { ManipulateType } from 'dayjs';
+import { useRecoilValue, useRecoilState } from 'recoil';
 
 export function useStatisticView() {
-
   /**
    * selected period type state
    */
-  const [periodType, setPeriodType] =
-    useRecoilState<PeriodTypeForStat>(currentPeriodForStat);
+  const periodType = useRecoilValue<PeriodTypeForStat>(currentPeriodForStat);
 
   /**
    * selected date for statistic view (all types)
    */
-  const [selectedDate, setSelectedDate] = useRecoilState(
-    // currentSelectedDateForStat,
-    currentSelectedDate,
-  );
+  const selectedDate = useRecoilValue(currentSelectedDate);
 
   /**
    * selected date (temporary for calendar selection) for statistic view (all types)
    */
-  const [tempSelectedDate, setTempSelectedDate] = useRecoilState<any>(
-    currentSelectedDateForStat,
+  const [tempSelectedDate, setTempSelectedDate] = useRecoilState(
+    tempSelectedDateForStat,
   );
-
-
-  const getPeriodType = (): PeriodTypeForStat => periodType;
-  const setNewPeriodType = (newPeriodType: PeriodTypeForStat) =>
-    setPeriodType(newPeriodType);
 
   /**
    * get period string
@@ -58,29 +47,6 @@ export function useStatisticView() {
   };
 
   /**
-   * month/year view state (month type only)
-   */
-  const [switchView, setSwitchView] =
-    useRecoilState<PeriodTypeForStat>(currentPeriodForView);
-  const getSwitchView = () => switchView;
-  const setNewSwitchView = () =>
-    setSwitchView(switchView === 'BY_MONTH' ? 'BY_YEAR' : 'BY_MONTH');
-
-
-
-  const getSelectedDate = () => selectedDate;
-
-  const setNewSelectedDate = (
-    periodType: PeriodTypeForStat,
-    newDate: Dayjs,
-  ) => {
-    setSelectedDate({
-      [periodType]: newDate,
-      ...selectedDate,
-    });
-  };
-
-  /**
    * get the date range format (week type only)
    * @param value date
    * @returns date format
@@ -96,25 +62,14 @@ export function useStatisticView() {
    */
   const setNewDateRange = (newValue: any) => {
     if (newValue) {
-      setSelectedDate({ ...selectedDate, [periodType]: newValue });
+      setTempSelectedDate({ ...tempSelectedDate, [periodType]: newValue });
     }
   };
 
   return {
-    // getPeriodType,
-    // setNewPeriodType,
-    // getPeriodString,
-
-    // getSelectedDate,
-    // setNewSelectedDate,
-
-    // getSwitchView,
-    // setNewSwitchView,
+    getPeriodString,
 
     getWeekPeriodInputFormat,
     setNewDateRange,
-
-    tempSelectedDate,
-    setTempSelectedDate,
   };
 }
