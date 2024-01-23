@@ -1,5 +1,5 @@
 import { currentFormType, stepButtonProps } from '@/store/common';
-import { resetPWMode } from '@/store/resetPW';
+import { resetPWMode, resetPWNextButtonState } from '@/store/resetPW';
 import { Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
