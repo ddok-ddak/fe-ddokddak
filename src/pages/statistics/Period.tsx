@@ -7,23 +7,18 @@ import Chevron from '@/components/common/Chevron';
 import { CustomCalendar } from '@/components/common/CustomCalendar';
 import DateInput from '@/components/date/DateInput';
 import { useStatisticView } from '@/hooks/statisticView';
-import { currentCalendarType, currentPeriod, currentSelectedDate, customCalendarType } from '@/store/common';
 import {
-  statisticsResultState,
-  statisticsStartHour
-} from '@/store/statistics';
-import {
-  AppBar,
-  Box,
-  Grid,
-  styled,
-  Tab,
-  Tabs
-} from '@mui/material';
+  currentCalendarType,
+  currentPeriod,
+  currentSelectedDate,
+  customCalendarType,
+} from '@/store/common';
+import { statisticsResultState, statisticsStartHour } from '@/store/statistics';
+import { AppBar, Box, Grid, styled, Tab, Tabs } from '@mui/material';
 import type { } from '@mui/material/themeCssVarsAugmentation';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { ManipulateType } from 'dayjs';
+import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -113,42 +108,26 @@ const StyledTab = styled((props: StyledTabProps) => (
 });
 
 const Period = () => {
-
   const currDate = new Date().toISOString().slice(0, 10);
   const startHour = useRecoilValue(statisticsStartHour);
-  const [selectedDate, setSelectedDate] = useRecoilState<any>(currentSelectedDate);
-  const [periodType, setPeriodType] =
-    useRecoilState<any>(currentPeriod);
-    const setCalendarType = useSetRecoilState<customCalendarType>(currentCalendarType);
-
+  const selectedDate = useRecoilValue<any>(currentSelectedDate);
+  const [periodType, setPeriodType] = useRecoilState<any>(currentPeriod);
+  const setCalendarType =
+    useSetRecoilState<customCalendarType>(currentCalendarType);
 
   const setStatisticsResult = useSetRecoilState<StatisticsDetail[]>(
     statisticsResultState,
   );
 
-  const { getWeekPeriodInputFormat, setNewDateRange } 
-    = useStatisticView();
+  const { getWeekPeriodInputFormat, setNewDateRange, getPeriodString } =
+    useStatisticView();
 
-  const handlePeriodChange = (e: SyntheticEvent, selectedDate: PeriodTypeForStat) => {
+  const handlePeriodChange = (
+    e: SyntheticEvent,
+    selectedDate: PeriodTypeForStat,
+  ) => {
     setPeriodType(selectedDate);
   };
-
-  const getPeriodString = (period: PeriodTypeForStat): ManipulateType | undefined => {
-    switch (period) {
-      case 'BY_DAY':
-        return 'day';
-      case 'BY_WEEK':
-        return 'week';
-      case 'BY_MONTH':
-        return 'month';
-      case 'BY_YEAR':
-        return 'year';
-      default:
-        break;
-    }
-  };
-
-
 
   /**
    * get data with selected date
@@ -160,11 +139,6 @@ const Period = () => {
     });
     setStatisticsResult(response.result);
   };
-
-
-  useEffect(() => {
-    setCalendarType('STAT');
-  }, []);
 
   useEffect(() => {
     let startDate = selectedDate[periodType];
@@ -193,6 +167,10 @@ const Period = () => {
     });
   }, [selectedDate, periodType]);
 
+  useEffect(() => {
+    setCalendarType('STAT');
+  }, []);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       {/* 날짜 선택 타입 시작 */}
@@ -215,9 +193,7 @@ const Period = () => {
         >
           <StyledTabs
             value={periodType}
-            onChange={(event: SyntheticEvent, selectedDate: currentPeriodForStat) => {
-              setPeriodType(selectedDate);
-            }}
+            onChange={handlePeriodChange}
             aria-label="statistics-category tabs"
             indicatorColor="primary"
             textColor="primary"
@@ -260,11 +236,11 @@ const Period = () => {
         }}
       >
         <Chevron
-          callback={() =>
+          callback={() => {
             setNewDateRange(
               selectedDate[periodType].subtract(1, getPeriodString(periodType)),
-            )
-          }
+            );
+          }}
           direction="left"
         />
         {periodType === 'BY_DAY' && (
@@ -299,9 +275,9 @@ const Period = () => {
             {CustomCalendar({
               value: selectedDate[periodType].locale('ko'),
               inputFormat: 'YYYY년 MM월',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={'85px'} />
-              ),
+              renderInput: (params: any) => {
+                return <DateInput params={params} width={'85px'} />;
+              },
               onChange: setNewDateRange,
               views: ['month', 'year'],
               openTo: 'month',

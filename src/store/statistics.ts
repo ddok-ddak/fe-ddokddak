@@ -29,8 +29,22 @@ export const statisticsResultState = atom({
  * current date range for each type of statistics
  */
 const currDate = dayjs(new Date().toISOString().slice(0, 10));
+
 export const currentSelectedDateForStat = atom({
   key: 'CurrentSelectedDateForStat',
+  default: {
+    BY_DAY: currDate,
+    BY_WEEK: currDate,
+    BY_MONTH: currDate,
+    BY_YEAR: currDate,
+  },
+});
+
+/**
+ * temporary selected period
+ */
+export const tempSelectedDateForStat = atom({
+  key: 'TempSelectedDateForStat',
   default: {
     BY_DAY: currDate,
     BY_WEEK: currDate,
@@ -47,7 +61,6 @@ export const statisticsStartHour = atom({
   default: '04:00:00',
 });
 
-
 /**
  * CALENDAR
  */
@@ -63,12 +76,13 @@ export interface IPeriodTypeForStat extends IPeriodType {
 
 export type PeriodTypeForStat = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
 
-export const periodForStatListValue: IPeriodTypeForStat [] = [
+export const periodForStatListValue: IPeriodTypeForStat[] = [
   { title: '하루', id: 'BY_DAY', subTitle: '오늘' },
   { title: '일주일', id: 'BY_WEEK', subTitle: '이번주' },
   { title: '한 달', id: 'BY_MONTH', subTitle: '이번달' },
   { title: '일 년', id: 'BY_YEAR', subTitle: '이번해' },
 ];
+
 export const periodForStatList = atom<IPeriodType[]>({
   key: 'PeriodForStatList',
   default: periodForStatListValue,
@@ -82,7 +96,6 @@ export const currentPeriodForStat = atom<PeriodTypeForStat>({
 /**
  * VIEW
  */
-
 
 export type PeriodTypeForView = 'BY_MONTH' | 'BY_YEAR';
 export interface IPeriodTypeForView {
