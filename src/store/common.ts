@@ -20,6 +20,7 @@ import {
 } from './statistics';
 import { setModeNextButtonState } from './auth';
 import { deleteCategoryButtonState } from './category';
+import { signInNextButtonState } from './signIn';
 
 /* ============ STEP FORM (SignUp Pages / PW Reset Pages / Record Edit Page) ============ */
 export interface INextButtonState {
@@ -56,6 +57,8 @@ export const stepButtonProps = selector({
     if (type === 'SIGNUP') {
       return get(signInUpNextButtonState);
     } else if (type === 'LOGIN') {
+      return get(signInNextButtonState);
+    } else if (type === 'RESETPW') {
       return get(resetPWNextButtonState);
     } else if (type === 'RECORD') {
       return get(recordEditNextButtonState);
@@ -72,6 +75,8 @@ export const stepButtonProps = selector({
     if (type === 'SIGNUP') {
       set(signInUpNextButtonState, newValue);
     } else if (type === 'LOGIN') {
+      set(signInNextButtonState, newValue);
+    } else if (type === 'RESETPW') {
       set(resetPWNextButtonState, newValue);
     } else if (type === 'RECORD') {
       set(recordEditNextButtonState, newValue);

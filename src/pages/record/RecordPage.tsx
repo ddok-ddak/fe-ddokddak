@@ -137,42 +137,44 @@ const RecordPage = () => {
         const activityRecords = response.result;
         let events: Event[] = [];
         let currentEvent: Event | null = null;
-
+        
         // 각 activity record에 대해 처리
-        activityRecords.forEach((item: any) => {
-          const startedAt = dayjs(item.startedAt.replace(' KST', '')).toDate();
-          const finishedAt = dayjs(
-            item.finishedAt.replace(' KST', ''),
-          ).toDate();
-
-          const event: Event = {
-            id: item.activityRecordId,
-            title: item.categoryName,
-            content: item.content,
-            start: startedAt,
-            end: finishedAt,
-            categoryId: item.categoryId,
-            color: item.categoryColor,
-          };
-
-          if (currentEvent) {
-            // 이전 이벤트가 존재하는 경우
-            if (
-              dayjs(event.start).isSame(currentEvent.end) &&
-              event.title === currentEvent.title
-            ) {
-              // 연속된 이벤트인 경우 이어서 표시
-              currentEvent.end = event.end;
+        if (activityRecords.length) {
+          activityRecords.forEach((item: any) => {
+            const startedAt = dayjs(item.startedAt.replace(' KST', '')).toDate();
+            const finishedAt = dayjs(
+              item.finishedAt.replace(' KST', ''),
+            ).toDate();
+  
+            const event: Event = {
+              id: item.activityRecordId,
+              title: item.categoryName,
+              content: item.content,
+              start: startedAt,
+              end: finishedAt,
+              categoryId: item.categoryId,
+              color: item.categoryColor,
+            };
+  
+            if (currentEvent) {
+              // 이전 이벤트가 존재하는 경우
+              if (
+                dayjs(event.start).isSame(currentEvent.end) &&
+                event.title === currentEvent.title
+              ) {
+                // 연속된 이벤트인 경우 이어서 표시
+                currentEvent.end = event.end;
+              } else {
+                // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
+                events.push(currentEvent);
+                currentEvent = event;
+              }
             } else {
-              // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
-              events.push(currentEvent);
+              // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
               currentEvent = event;
             }
-          } else {
-            // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
-            currentEvent = event;
-          }
-        });
+          });
+        }
 
         // 마지막 이벤트가 남아 있는 경우 events에 추가
         if (currentEvent !== null) {
@@ -203,6 +205,7 @@ const RecordPage = () => {
     const timeSlotTdList = calendarElem.querySelectorAll(
       'table tbody td tr td:first-of-type',
     );
+
     timeSlotTdList.forEach((td: HTMLElement, idx: number) => {
       if (!!(idx % 2)) {
         td.style.display = 'none';
@@ -237,6 +240,7 @@ const RecordPage = () => {
     //   }),
     //   isShowConfirmBtn: true,
     // });
+
   }, []);
 
   return (

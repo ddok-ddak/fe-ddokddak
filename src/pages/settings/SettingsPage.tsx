@@ -2,11 +2,12 @@
 import {
   Box,
   Button,
-  Container, List,
+  Container,
+  List,
   ListItemButton,
   ListItemText,
   ListSubheader,
-  Typography
+  Typography,
 } from '@mui/material';
 import React, { useEffect } from 'react';
 
@@ -18,21 +19,17 @@ import { stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
+import { useCookies } from 'react-cookie';
+import { signOut } from '@/api/auth';
 
 const SettingPage = () => {
   const navigation = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies([
+    'accessToken',
+    'refreshToken',
+  ]);
 
   const setStepIndex = useSetRecoilState(stepIndex);
-
-  const [open1, setOpen1] = React.useState(true);
-  const [open2, setOpen2] = React.useState(true);
-
-  const handleClick1 = () => {
-    setOpen1(!open1);
-  };
-  const handleClick2 = () => {
-    setOpen2(!open2);
-  };
 
   const getListSubHeader = (text: string) => {
     return (
@@ -44,7 +41,13 @@ const SettingPage = () => {
     );
   };
 
-  const getListItem = ({text, handler}: {text: string, handler?: () => {} | void}) => {
+  const getListItem = ({
+    text,
+    handler,
+  }: {
+    text: string;
+    handler?: () => {} | void;
+  }) => {
     return (
       <ListItemButton onClick={handler} sx={{ m: 0, pb: 0, pt: 0 }}>
         <ListIcon />
@@ -112,15 +115,36 @@ const SettingPage = () => {
           }}
         >
           {getListSubHeader('커스텀화')}
-          {getListItem({text: '모드 및 카테고리 설정', handler: () => navigation('/category')})}
+          {getListItem({
+            text: '모드 및 카테고리 설정',
+            handler: () => navigation('/category'),
+          })}
 
           {getListSubHeader('고객 센터')}
-          {getListItem({text: '도움말'})}
-          {getListItem({text: '문의하기'})}
+          {getListItem({ text: '도움말' })}
+          {getListItem({ text: '문의하기' })}
 
           {getListSubHeader('계정')}
-          {getListItem({text: '비밀번호 변경', handler:  () => navigation('/resetPW')})}
-          {getListItem({text: '로그아웃', handler:  () => navigation('/login')})}
+          {getListItem({
+            text: '비밀번호 변경',
+            handler: () => navigation('/resetPW'),
+          })}
+          {getListItem({
+            text: '로그아웃',
+            handler: async () => {
+              await signOut()
+                .then((response: any) => {
+                  // if (response.status === 'SUCCESS') {
+                  removeCookie('accessToken');
+                  removeCookie('refreshToken');
+                  navigation('/');
+                  // }
+                })
+                .catch((error) => {
+                  // TODO: show modal message
+                });
+            },
+          })}
         </List>
         <Button>
           <Typography

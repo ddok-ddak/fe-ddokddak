@@ -1,6 +1,7 @@
 import { Method } from 'axios';
 
 import CommonResponse, { getInstance } from '../http';
+import { Cookies } from 'react-cookie';
 
 export interface APIContract {
   method: Method;
@@ -9,11 +10,23 @@ export interface APIContract {
   body?: object;
 }
 
+const cookies = new Cookies();
+
+/**
+ * get authorization bearer token
+ * @returns header authorization token
+ */
+const getBearerToken = () => {
+  const token = cookies.get('accessToken');
+  return token ? { Authorization: `bearer ${token}` } : {};
+};
+
 export const callAPI = async <T = any>(
   { url, method, params, body }: APIContract,
   isLoading?: boolean,
 ): Promise<any> => {
-  let response: CommonResponse = {
+  
+  let response: any = {
     successOrNot: 'N',
     statusCode: '',
     data: {},
@@ -21,6 +34,7 @@ export const callAPI = async <T = any>(
 
   try {
     response = await getInstance(isLoading).request({
+      headers: getBearerToken(),
       url,
       method,
       params,

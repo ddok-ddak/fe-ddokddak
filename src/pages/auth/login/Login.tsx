@@ -1,70 +1,19 @@
-import Google from '@/components/auth/Google';
-import Kakao from '@/components/auth/Kakao';
 import Logo from '@/components/auth/Logo';
-import Naver from '@/components/auth/Naver';
 import { stepButtonProps, stepInstruction, currentFormType } from '@/store/common';
-import { signInUpStepInstruction } from '@/store/signUp';
 import { Box, Button, Container, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
 import InputForm, { InputItemType } from '../common/InputForm';
-// import { ReactElement, useEffect, useCallback, useState } from 'react';
-// import { Typography } from '@mui/material';
-// import React from 'react';
-// import type { ChangeEvent } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import * as U from '../../utils';
-// import { useAuth } from '../../contexts';
-// import { currentUserInfo } from '@/store/info';
-// import PortalAuth from '../../containers/portalAuth/portalAuth';
 
-// const [currentUserInfo, setCurrentUserInfo] = useRecoilState(currentUserInfo);
+import SocialLogin from './SocialLogin';
+import { checkPattern } from '@/hooks/checkPattern';
+import { signIn } from '@/api/auth';
 
-// type 88FormType = Record<'email' | 'password', string>;
-// const initialFormState = { email: '', password: '' };
-
-
+const { checkEmailValidity } = checkPattern();
 
 export default function Login() {
-  
-  // const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
-  
-  // console.log('mySelector', useRecoilValue(mySelector))
-
-  //     const [{ email, password }, setForm] =
-  //       useState<LoginFormType>(initialFormState);
-  //     const changed = useCallback(
-  //       (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
-  //         setForm((obj) => ({ ...obj, [key]: e.target.value }));
-  //       },
-  //       [],
-  //     );
-
-  //       const navigate = useNavigate();
-  //       const { login } = useAuth();
-
-  //       const loginAccount = useCallback(() => {
-  //         login(email, password, () => navigate('/record'));
-  //       }, [email, password, navigate, login]);
-
-  //     useEffect(() => {
-  //       U.readObjectP<LoginFormType>('user')
-  //         .then((user) => {
-  //           if (user) setForm(user);
-  //         })
-  //         .catch((e) => {});
-  //     }, []);
-  //     //   const Login = (props) => {
-  //     //   const [portalClicked, setPortalClicked] = useState(false);
-  //     //   const [loginClicked, setLoginClicked] = useState(true);
-  //     //   const handlePortal = () => {
-  //     //     setPortalClicked(!portalClicked);
-  //     //   };
-  //     //   const handleLoginClicked = () => {
-  //     //     setLoginClicked(!loginClicked);
-  //     //   };
   const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(
     stepButtonProps,
@@ -72,27 +21,18 @@ export default function Login() {
 
   const setInstruction = useSetRecoilState(stepInstruction)
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [helper1, setHelper1] = useState('');
+  const [isHelperError1, setIsHelperError1] = useState(true);
+
   const itemArray1: InputItemType[] = [
     {
       name: '이메일',
       placeholder: '이메일 주소를 입력해주세요.',
-      // type: 'id',
-      onChangeHandler: (
-        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-      ) => {
-        const value = event.target.value;
-        // setPassword(value);
-
-        const reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
-        // if (reg.test(value)) {
-        //   setHelper1('사용 가능한 비밀번호입니다.');
-        //   setIsHelperError1(() => false);
-        //   checkPasswordMatch(value, confirmPassword);
-        // } else {
-        //   setHelper1('영어, 숫자, 특수문자를 모두 포함한 8 ~ 15자리 이내로 입력해주세요.');
-        //   setIsHelperError1(() => true);
-        // }
-      },
+      type: 'id',
+      onChangeHandler: (event) => setEmail(() => event.target.value),
     },
   ];
 
@@ -101,24 +41,48 @@ export default function Login() {
       name: '비밀번호',
       placeholder: '비밀번호를 입력해주세요.',
       type: 'password',
-      onChangeHandler: (
-        event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-      ) => {
-        const value = event.target.value;
-        // setConfirmPassword(value);
-        // checkPasswordMatch(value, password);
-      },
+      onChangeHandler: (event) => setPassword(() => event.target.value),
     },
   ];
 
 
   useEffect(() => {
+    if (email === '') {
+      setHelper1('');
+    } else {
+      if (checkEmailValidity(email)) {
+        setHelper1('');
+        setIsHelperError1(() => false);
+      } else {
+        setHelper1('올바른 이메일 형태가 아닙니다.');
+        setIsHelperError1(() => true);
+      }
+    }
+  }, [email]);
+
+  useEffect(() => {
+    setNextButtonProps({
+      ...nextButtonProps,
+      isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
+      clickHandler: async () => {
+        await signIn({ email, password }).then(response => {
+          if (response.status === 'SUCCESS') {
+            console.log(response)
+          }
+        }).catch(error => {            
+          console.log(error)
+        });
+      },
+    });
+  }, [email, password]);
+
+  useEffect(() => {
     setStepType('LOGIN');
     setInstruction('');
     setNextButtonProps({
+      ...nextButtonProps,
       text: '로그인',
-      clickHandler: nextButtonProps.clickHandler,
-      isDisabled: nextButtonProps.isDisabled,
+      isDisabled: false,
     });
 
   }, []);
@@ -149,8 +113,8 @@ export default function Login() {
               <InputForm
                 key="id"
                 itemArray={itemArray1}
-                // isHelperError={'isHelperError1'}
-                // value={'password'}
+                helper={helper1}
+                isHelperError={isHelperError1}
               />
               <InputForm key="password" itemArray={itemArray2} />
             </>
@@ -180,7 +144,7 @@ export default function Login() {
             component={Link}
             to="/signUp"
           >
-            회원가입
+            {'회원가입'}
           </Button>
           <Box
             sx={{
@@ -188,7 +152,7 @@ export default function Login() {
               height: '13px',
               backgroundColor: 'text.secondary',
             }}
-          ></Box>
+          />
           <Button
             sx={{ color: 'text.primary' }}
             variant="text"
@@ -203,7 +167,7 @@ export default function Login() {
               height: '13px',
               backgroundColor: 'text.secondary',
             }}
-          ></Box>
+          />
           <Button
             sx={{ color: 'text.primary' }}
             variant="text"
@@ -223,15 +187,9 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          <Button>
-            <Kakao />
-          </Button>
-          <Button>
-            <Naver />
-          </Button>
-          <Button>
-            <Google />
-          </Button>
+          <SocialLogin registrationId={'kakao'} />
+          <SocialLogin registrationId={'naver'} />
+          <SocialLogin registrationId={'google'} />
         </Box>
         <Button>
           <Typography

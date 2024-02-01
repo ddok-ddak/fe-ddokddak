@@ -6,6 +6,9 @@ import {
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import InputForm, { InputItemType } from '../common/InputForm';
+import { checkPattern } from '@/hooks/checkPattern';
+
+const { checkPasswordValidity } = checkPattern();
 
 const SetPW = (props: any) => {
   const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
@@ -58,8 +61,7 @@ const SetPW = (props: any) => {
         const value = event.target.value;
         setPassword(value);
 
-        const reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
-        if (reg.test(value)) {
+        if (checkPasswordValidity(value)) {
           setHelper1('사용 가능한 비밀번호입니다.');
           setIsHelperError1(() => false);
           checkPasswordMatch(value, confirmPassword);

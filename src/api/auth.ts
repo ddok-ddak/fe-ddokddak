@@ -14,7 +14,7 @@ export const checkDuplicatedEmail = async (email: string) => {
     url: '/api/v1/members/duplicatedEmail',
     method: 'GET',
     params: {
-      email
+      email,
     },
   });
 
@@ -31,8 +31,8 @@ export const checkDuplicatedNickname = async (nickname: string) => {
     url: '/api/v1/members/duplicateNickname',
     method: 'GET',
     params: {
-      nickname
-    }
+      nickname,
+    },
   });
 
   return response as CommonResponse;
@@ -40,7 +40,7 @@ export const checkDuplicatedNickname = async (nickname: string) => {
 
 /**
  * user sign up
- * @param request: UserData 
+ * @param request: UserData
  * @returns response
  */
 export const addUser = async (request: UserData) => {
@@ -55,7 +55,37 @@ export const addUser = async (request: UserData) => {
 
 /************************  SIGN IN  ************************/
 
+/**
+ * user sign in
+ * @param request: sign in user data
+ * @returns response
+ */
 
+export const signIn = async (request: any) => {
+  const response = await callAPI({
+    url: '/api/v1/auth/signin',
+    method: 'POST',
+    body: request,
+  });
+
+  return response as CommonResponse;
+};
+
+/************************  SIGN OUT  ************************/
+
+/**
+ * user sign in
+ * @param request: sign in user data
+ * @returns response
+ */
+export const signOut = async () => {
+  const response = await callAPI({
+    url: '/api/v1/auth/signout',
+    method: 'POST',
+  });
+
+  return response as CommonResponse;
+};
 /************************ USER INFO ************************/
 
 export const getInfo = async () => {
