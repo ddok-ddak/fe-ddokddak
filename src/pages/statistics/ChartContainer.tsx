@@ -278,9 +278,7 @@ const ChartContainer = () => {
           return rawTime % 60 ? -40 : -25;
         },
         color: (context: any) =>
-          context.dataIndex === clickedIndex
-            ? pink700
-            : paletteGrey[400],
+          context.dataIndex === clickedIndex ? pink700 : paletteGrey[400],
         labels: {
           value: {
             formatter: (val: number) => {
@@ -376,79 +374,80 @@ const ChartContainer = () => {
    */
   const setCategoryDetailDataList = (dataArray: object[]) => (
     <>
-      {dataArray.map((data: any, idx) => (
-        <Box
-          key={idx}
-          sx={{
-            padding: '8px',
-            display: 'flex',
-            justifyContent: 'flex-start',
-            margin: '13px 12px',
-            alignItems: 'flex-end',
-          }}
-        >
-          <Circle
-            color={data.categoryColor}
-            size={40}
-            onClick={() => {
-              const subCategoryData = data.children;
-              const periodTypeTitle = periodTypeList!.filter(
-                (type) => type.id === periodType,
-              )[0].subTitle;
-              if (subCategoryData) {
-                setCategoryDetailData(subCategoryData);
-                setTotalSumTitle(
-                  addPostposition(`${periodTypeTitle} ${data.categoryName}`),
-                );
-              } else {
-                setCategoryDetailData(statisticsResult);
-                setTotalSumTitle(addPostposition(periodTypeTitle));
-              }
-            }}
-          />
+      {dataArray.length &&
+        dataArray.map((data: any, idx) => (
           <Box
+            key={idx}
             sx={{
-              flex: '1 1 100%',
-              margin: '0px 10px 3px 10px',
+              padding: '8px',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              margin: '13px 12px',
+              alignItems: 'flex-end',
             }}
           >
-            <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-              {data.categoryName}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress
-                  variant="determinate"
-                  value={(data.timeSum * 100) / (categorySum || 100)}
-                  sx={{
-                    height: 10,
-                    '&.MuiLinearProgress-root': {
-                      backgroundColor: `${paletteGrey[100]} !important`,
-                      borderRadius: 5,
-                    },
-                    '& > .MuiLinearProgress-bar': {
-                      backgroundColor: data.categoryColor,
-                      borderRadius: 5,
-                    },
-                  }}
-                />
+            <Circle
+              color={data.categoryColor}
+              size={40}
+              onClick={() => {
+                const subCategoryData = data.children;
+                const periodTypeTitle = periodTypeList!.filter(
+                  (type) => type.id === periodType,
+                )[0].subTitle;
+                if (subCategoryData) {
+                  setCategoryDetailData(subCategoryData);
+                  setTotalSumTitle(
+                    addPostposition(`${periodTypeTitle} ${data.categoryName}`),
+                  );
+                } else {
+                  setCategoryDetailData(statisticsResult);
+                  setTotalSumTitle(addPostposition(periodTypeTitle));
+                }
+              }}
+            />
+            <Box
+              sx={{
+                flex: '1 1 100%',
+                margin: '0px 10px 3px 10px',
+              }}
+            >
+              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                {data.categoryName}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={(data.timeSum * 100) / (categorySum || 100)}
+                    sx={{
+                      height: 10,
+                      '&.MuiLinearProgress-root': {
+                        backgroundColor: `${paletteGrey[100]} !important`,
+                        borderRadius: 5,
+                      },
+                      '& > .MuiLinearProgress-bar': {
+                        backgroundColor: data.categoryColor,
+                        borderRadius: 5,
+                      },
+                    }}
+                  />
+                </Box>
               </Box>
             </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                flex: '0 0 20%',
+                margin: '0px 10px 3px 10px',
+                fontSize: '16px',
+              }}
+            >
+              {setCategoryDetailDataTime(data.timeSum)}
+            </Box>
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              flex: '0 0 20%',
-              margin: '0px 10px 3px 10px',
-              fontSize: '16px',
-            }}
-          >
-            {setCategoryDetailDataTime(data.timeSum)}
-          </Box>
-        </Box>
-      ))}
+        ))}
     </>
   );
 
@@ -457,11 +456,12 @@ const ChartContainer = () => {
   }, []);
 
   useEffect(() => {
-    const timeSum =
-      statisticsResult?.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.timeSum,
-        0,
-      ) | 0;
+    const timeSum = statisticsResult
+      ? statisticsResult.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.timeSum,
+          0,
+        )
+      : 0;
     setTotalSum(() => timeSum);
     setCategorySum(() => timeSum);
 
@@ -470,6 +470,7 @@ const ChartContainer = () => {
         periodTypeList!.filter((type) => type.id === periodType)[0].subTitle,
       ),
     );
+
     setCategoryDetailData(statisticsResult.filter((data) => data.timeSum > 0));
     setIsFirstPage(true);
   }, [statisticsResult, periodType]);
@@ -550,7 +551,9 @@ const ChartContainer = () => {
                   alignItems: 'center',
                 }}
               >
-                <DonutIcon iconColor={isFirstPage ? pink700 : paletteGrey[500]} />
+                <DonutIcon
+                  iconColor={isFirstPage ? pink700 : paletteGrey[500]}
+                />
               </Box>
               <Box
                 onClick={() => {
@@ -568,7 +571,9 @@ const ChartContainer = () => {
                   }
                 }}
                 sx={{
-                  border: `1px solid ${isFirstPage ? paletteGrey[500] : pink700}`,
+                  border: `1px solid ${
+                    isFirstPage ? paletteGrey[500] : pink700
+                  }`,
                   borderLeft: 'none',
                   borderRadius: '0 3px 3px 0',
                   flex: '1 1 50%',

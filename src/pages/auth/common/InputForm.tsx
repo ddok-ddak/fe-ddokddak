@@ -19,7 +19,7 @@ export type InputItemType = {
   duplicateCheckerHandler?: () => {},
   verifyCodeRequestButton?: ReactJSXElement,
   verifyCodeRequestHandler?: () => void,
-  onChangeHandler?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => Promise<true | undefined | void> | void,
+  onChangeHandler?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => Promise<boolean | undefined | void> | boolean | undefined | void,
   type?: string,
   value?: string
 }

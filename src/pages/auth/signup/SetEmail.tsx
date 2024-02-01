@@ -6,6 +6,9 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { stepButtonProps, stepInstruction } from '@/store/common';
 import InputForm, { InputItemType } from '../common/InputForm';
+import { checkPattern } from '@/hooks/checkPattern';
+
+const { checkEmailValidity } = checkPattern();
 
 const SetEmail = (props: any) => {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
@@ -30,9 +33,7 @@ const SetEmail = (props: any) => {
       return true;
     }
 
-    const isMailValidPattern =
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-    if (isMailValidPattern) {
+    if (checkEmailValidity(value)) {
       setDisableDuplicateChkBtn(false);
       setHelper('');
     } else {
