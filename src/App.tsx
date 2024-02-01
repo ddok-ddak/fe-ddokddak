@@ -22,35 +22,66 @@ import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
 import ResetPWStep from './pages/auth/resetPW/ResetPWSteps';
 import AccountSetting from './pages/settings/AccountSetting';
 import PopupMessage from './components/common/PopupMessage';
+import LoginRedirect from './pages/auth/login/LoginRedirect';
+import { CookiesProvider } from 'react-cookie';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-          <Box sx={{height: '94vh'}}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signUp" element={<SignUp />} />
-              <Route path="/findID" element={<FindID />} />
+        <CookiesProvider>
+          <Box
+            sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
+          >
+            <Box sx={{ height: '94vh' }}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signin/redirect" element={<LoginRedirect />} />
+                <Route path="/signUp" element={<SignUp />} />
+                <Route path="/findID" element={<FindID />} />
 
-              <Route path="/resetPW" element={<ResetPWStep />} />
-              <Route path="/resetPWMode" element={<ResetPWMode />} />
+                <Route path="/resetPW" element={<ResetPWStep />} />
+                <Route path="/resetPWMode" element={<ResetPWMode />} />
 
-              <Route path="/record" element={<><RecordPage /><BottomNav /></>} />
-              <Route path="/statistics" element={<><StatisticsPage /><BottomNav /></>} />
-              <Route path="/settings" element={<><SettingsPage /><BottomNav /></>} />
-              <Route path="/settings/account" element={<AccountSetting />} />
+                <Route
+                  path="/record"
+                  element={
+                    <>
+                      <RecordPage />
+                      <BottomNav />
+                    </>
+                  }
+                />
+                <Route
+                  path="/statistics"
+                  element={
+                    <>
+                      <StatisticsPage />
+                      <BottomNav />
+                    </>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <>
+                      <SettingsPage />
+                      <BottomNav />
+                    </>
+                  }
+                />
+                <Route path="/settings/account" element={<AccountSetting />} />
 
-              <Route path="/record/edit" element={<EditRecordPage />} />
-              <Route path="/category" element={<CategoryPage />} />
-              <Route path="/category/edit" element={<EditCategoryPage />} />
-            </Routes>
+                <Route path="/record/edit" element={<EditRecordPage />} />
+                <Route path="/category" element={<CategoryPage />} />
+                <Route path="/category/edit" element={<EditCategoryPage />} />
+              </Routes>
+            </Box>
           </Box>
-        </Box>
-        <PopupMessage />
-        <Modal />
+          <PopupMessage />
+          <Modal />
+        </CookiesProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
