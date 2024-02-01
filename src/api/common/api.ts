@@ -1,20 +1,16 @@
 import { Method } from 'axios';
 
 import CommonResponse, { getInstance } from '../http';
-import { Cookies } from 'react-cookie';
 
 export interface APIContract {
-  headers?: any;
   method: Method;
   url: string;
   params?: object;
   body?: object;
 }
 
-const cookies = new Cookies();
-
 export const callAPI = async <T = any>(
-  { headers, url, method, params, body }: APIContract,
+  { url, method, params, body }: APIContract,
   isLoading?: boolean,
 ): Promise<any> => {
   let response: CommonResponse = {
@@ -24,16 +20,12 @@ export const callAPI = async <T = any>(
   };
 
   try {
-    const request = {
-      headers: {
-        Authorization: `bearer ${cookies.get('accessToken')}`,
-      },
+    response = await getInstance(isLoading).request({
       url,
       method,
       params,
       data: body,
-    };
-    response = await getInstance(isLoading).request(request);
+    });
   } catch (error) {
     response.data = error;
   }

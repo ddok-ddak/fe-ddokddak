@@ -1,4 +1,4 @@
-const KakaoIcon = () => {
+const Naver = () => {
   return (
     <svg
       width="46"
@@ -16,4 +16,4 @@ const KakaoIcon = () => {
   );
 };
 
-export default KakaoIcon;
+export default Naver;

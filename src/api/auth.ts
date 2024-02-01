@@ -55,35 +55,6 @@ export const addUser = async (request: UserData) => {
 
 /************************  SIGN IN  ************************/
 
-/**
- * user sign in
- * @param request: UserData 
- * @returns response
- */
-export const signIn = async (request: UserData) => {
-  const response = await callAPI({
-    url: '/api/v1/auth/signin',
-    method: 'POST',
-    body: request,
-  });
-
-  return response as CommonResponse;
-};
-
-/**
- * user social sign in
- * @param registrationId (google / naver / kakao)
- * @returns response
- */
-export const socialSignIn = async (registrationId: string) => {
-  const response = await callAPI({
-    url: `/api/oauth2/authorization/${registrationId}`,
-    method: 'GET',
-  });
-
-  return response as CommonResponse;
-};
-
 
 /************************ USER INFO ************************/
 

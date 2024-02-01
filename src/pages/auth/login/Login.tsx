@@ -1,17 +1,15 @@
+import Google from '@/components/auth/Google';
+import Kakao from '@/components/auth/Kakao';
 import Logo from '@/components/auth/Logo';
-import {
-  stepButtonProps,
-  stepInstruction,
-  currentFormType,
-} from '@/store/common';
+import Naver from '@/components/auth/Naver';
+import { stepButtonProps, stepInstruction, currentFormType } from '@/store/common';
+import { signInUpStepInstruction } from '@/store/signUp';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
 import InputForm, { InputItemType } from '../common/InputForm';
-import SocialLogin from './SocialLogin';
-
 // import { ReactElement, useEffect, useCallback, useState } from 'react';
 // import { Typography } from '@mui/material';
 // import React from 'react';
@@ -27,9 +25,12 @@ import SocialLogin from './SocialLogin';
 // type 88FormType = Record<'email' | 'password', string>;
 // const initialFormState = { email: '', password: '' };
 
-export default function Login() {
-  // const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
 
+
+export default function Login() {
+  
+  // const setSignUpStepInstruction = useSetRecoilState(signInUpStepInstruction);
+  
   // console.log('mySelector', useRecoilValue(mySelector))
 
   //     const [{ email, password }, setForm] =
@@ -65,9 +66,11 @@ export default function Login() {
   //     //     setLoginClicked(!loginClicked);
   //     //   };
   const setStepType = useSetRecoilState(currentFormType);
-  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(
+    stepButtonProps,
+  );
 
-  const setInstruction = useSetRecoilState(stepInstruction);
+  const setInstruction = useSetRecoilState(stepInstruction)
 
   const itemArray1: InputItemType[] = [
     {
@@ -108,6 +111,7 @@ export default function Login() {
     },
   ];
 
+
   useEffect(() => {
     setStepType('LOGIN');
     setInstruction('');
@@ -116,7 +120,9 @@ export default function Login() {
       clickHandler: nextButtonProps.clickHandler,
       isDisabled: nextButtonProps.isDisabled,
     });
+
   }, []);
+
 
   return (
     <>
@@ -217,9 +223,15 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          <SocialLogin registrationId={'kakao'}/>
-          <SocialLogin registrationId={'naver'}/>
-          <SocialLogin registrationId={'google'}/>
+          <Button>
+            <Kakao />
+          </Button>
+          <Button>
+            <Naver />
+          </Button>
+          <Button>
+            <Google />
+          </Button>
         </Box>
         <Button>
           <Typography
@@ -239,9 +251,10 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          {'Copyright 2024 DDOK-DDAK All Right Reserved.'}
+          Copyright 2023 ddok-ddak All Right Reserved.
         </Typography>
       </Container>
     </>
   );
 }
+
