@@ -28,7 +28,6 @@ const DateInput = ({ params, width }: any) => {
         ),
       }}
       sx={{
-        dispaly: 'none',
         ' .MuiInputBase-root': { justifyContent: 'center', p: 0 },
         ' .MuiInputBase-input': {
           p: '16px 0',

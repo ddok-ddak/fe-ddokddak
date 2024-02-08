@@ -19,9 +19,7 @@ import { CustomCalendar } from '@/components/common/CustomCalendar';
 import DateInput from '@/components/date/DateInput';
 import { useStatisticView } from '@/hooks/statisticView';
 import {
-  currentPeriodForRecord,
   PeriodTypeForRecord,
-  currentSelectedDateForRecord,
   currentSelectedEvent,
   currentRecordPageType,
 } from '@/store/record';
@@ -37,11 +35,11 @@ import {
   stepButtonProps,
   currentFormType,
   FormType,
+  currentSelectedDate,
+  currentPeriod,
 } from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
 import { modalState } from '@/store/modal';
-import { currentUserInfo } from '@/store/info';
-import { UserData } from '@/store/userData';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -69,10 +67,8 @@ const RecordPage = () => {
 
   const setSelectedEvent = useSetRecoilState(currentSelectedEvent);
 
-  const selectedDate = useRecoilValue(currentSelectedDateForRecord);
-  const periodType = useRecoilValue<PeriodTypeForRecord>(
-    currentPeriodForRecord,
-  );
+  const selectedDate = useRecoilValue(currentSelectedDate);
+  const periodType = useRecoilValue<PeriodTypeForRecord>(currentPeriod);
 
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
@@ -92,11 +88,11 @@ const RecordPage = () => {
 
   const calendarRef = useRef<any>(null);
 
-  const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
+  const { getWeekPeriodInputFormat, setNewDateRange, getPeriodString } =
+    useStatisticView();
 
   const interval = '00:30:00';
 
-  const userInfo = useRecoilValue<UserData>(currentUserInfo);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
   /**
@@ -265,7 +261,7 @@ const RecordPage = () => {
             }}
           >
             <Chevron
-              callback={(e: any) => {
+              callback={() => {
                 const prevIcon: HTMLElement = document.querySelector(
                   '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-left',
                 )!;

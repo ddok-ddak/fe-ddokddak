@@ -1,8 +1,6 @@
-import { currentSelectedDate } from '@/store/common';
+import { currentPeriod, currentSelectedDate } from '@/store/common';
 import {
-  PeriodTypeForStat,
-  currentPeriodForStat,
-  tempSelectedDateForStat,
+  PeriodTypeForStat, tempSelectedDateForStat
 } from '@/store/statistics';
 import { ManipulateType } from 'dayjs';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -11,12 +9,12 @@ export function useStatisticView() {
   /**
    * selected period type state
    */
-  const periodType = useRecoilValue<PeriodTypeForStat>(currentPeriodForStat);
+  const periodType = useRecoilValue<PeriodTypeForStat>(currentPeriod);
 
   /**
    * selected date for statistic view (all types)
    */
-  const selectedDate = useRecoilValue(currentSelectedDate);
+  const [selectedDate, setSelectedDate] = useRecoilState(currentSelectedDate);
 
   /**
    * selected date (temporary for calendar selection) for statistic view (all types)
@@ -62,6 +60,16 @@ export function useStatisticView() {
    */
   const setNewDateRange = (newValue: any) => {
     if (newValue) {
+      setSelectedDate({ ...selectedDate, [periodType]: newValue });
+    }
+  };
+
+  /**
+   * set data search range with newly selected date
+   * @param newValue newly selected date
+   */
+  const setTempNewDateRange = (newValue: any) => {
+    if (newValue) {
       setTempSelectedDate({ ...tempSelectedDate, [periodType]: newValue });
     }
   };
@@ -70,6 +78,8 @@ export function useStatisticView() {
     getPeriodString,
 
     getWeekPeriodInputFormat,
+
     setNewDateRange,
+    setTempNewDateRange,
   };
 }

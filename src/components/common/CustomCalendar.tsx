@@ -38,18 +38,12 @@ export const CustomCalendar = (pickerProps: any) => {
 
   const setSelectedDate = useSetRecoilState<any>(currentSelectedDate);
 
-  // const tempSelectedDate = useRecoilValue<any>(
-  //   tempSelectedDateForStat,
-  // );
-
-  const [tempSelectedDate, setTempSelectedDate] = useRecoilState<any>(
-    tempSelectedDateForStat,
-  );
+  const tempSelectedDate = useRecoilValue<any>(tempSelectedDateForStat);
 
   const [switchView, setSwitchView] =
     useRecoilState<PeriodTypeForView>(currentPeriodForView);
 
-  const { setNewDateRange } = useStatisticView();
+  const { setNewDateRange, setTempNewDateRange } = useStatisticView();
 
   /**
    * render custom calendar day elements (day, week type only)
@@ -106,7 +100,7 @@ export const CustomCalendar = (pickerProps: any) => {
     return (
       <Paper
         onClick={() => {
-          setNewDateRange(elementDate);
+          setTempNewDateRange(elementDate);
         }}
         key={elementDate}
         sx={{
@@ -156,6 +150,7 @@ export const CustomCalendar = (pickerProps: any) => {
    */
   const renderToolbar = () => {
     const date = tempSelectedDate[periodType];
+    console.log(date)
     const month = date.month() + 1;
     const year =
       periodType === 'BY_YEAR' ||
@@ -189,7 +184,7 @@ export const CustomCalendar = (pickerProps: any) => {
                   const prev: HTMLElement = prevBtn.current!;
                   prev.querySelector('button')!.click();
                 }
-                setNewDateRange(prevPeriod);
+                setTempNewDateRange(prevPeriod);
               }}
               direction={'left'}
             />
@@ -251,7 +246,7 @@ export const CustomCalendar = (pickerProps: any) => {
                   const next: HTMLElement = nextBtn.current!;
                   next.querySelector('button')!.click();
                 }
-                setNewDateRange(nextPeriod);
+                setTempNewDateRange(nextPeriod);
               }}
               direction={'right'}
             />
@@ -321,7 +316,7 @@ export const CustomCalendar = (pickerProps: any) => {
                     switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
                       ? oldDate.year(elem)
                       : oldDate.month(elem - 1);
-                  setNewDateRange(newDate);
+                  setTempNewDateRange(newDate);
                 }}
                 sx={{
                   p: 0,

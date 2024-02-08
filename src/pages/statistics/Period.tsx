@@ -15,7 +15,7 @@ import {
 } from '@/store/common';
 import { statisticsResultState, statisticsStartHour } from '@/store/statistics';
 import { AppBar, Box, Grid, styled, Tab, Tabs } from '@mui/material';
-import type { } from '@mui/material/themeCssVarsAugmentation';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
@@ -119,8 +119,12 @@ const Period = () => {
     statisticsResultState,
   );
 
-  const { getWeekPeriodInputFormat, setNewDateRange, getPeriodString } =
-    useStatisticView();
+  const {
+    getWeekPeriodInputFormat,
+    setNewDateRange,
+    setTempNewDateRange,
+    getPeriodString,
+  } = useStatisticView();
 
   const handlePeriodChange = (
     e: SyntheticEvent,
@@ -251,7 +255,7 @@ const Period = () => {
               renderInput: (params: any) => (
                 <DateInput params={params} width={'110px'} />
               ),
-              onChange: setNewDateRange,
+              onChange: setTempNewDateRange,
             })}
           </>
         )}
@@ -260,7 +264,7 @@ const Period = () => {
             {CustomCalendar({
               value: selectedDate[periodType].locale('ko'),
               onChange: (newValue: any) =>
-                setNewDateRange(dayjs(newValue).startOf('week')),
+                setTempNewDateRange(dayjs(newValue).startOf('week')),
               inputFormat: getWeekPeriodInputFormat(
                 selectedDate[periodType].locale('ko'),
               ),
@@ -278,7 +282,7 @@ const Period = () => {
               renderInput: (params: any) => {
                 return <DateInput params={params} width={'85px'} />;
               },
-              onChange: setNewDateRange,
+              onChange: setTempNewDateRange,
               views: ['month', 'year'],
               openTo: 'month',
             })}
@@ -292,7 +296,7 @@ const Period = () => {
               renderInput: (params: any) => (
                 <DateInput params={params} width={'55px'} />
               ),
-              onChange: setNewDateRange,
+              onChange: setTempNewDateRange,
               views: ['year'],
               openTo: 'year',
               minDate: dayjs('2023-01-01'),
