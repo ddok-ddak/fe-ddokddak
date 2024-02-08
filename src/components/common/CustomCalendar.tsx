@@ -150,7 +150,6 @@ export const CustomCalendar = (pickerProps: any) => {
    */
   const renderToolbar = () => {
     const date = tempSelectedDate[periodType];
-    console.log(date)
     const month = date.month() + 1;
     const year =
       periodType === 'BY_YEAR' ||
