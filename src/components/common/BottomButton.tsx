@@ -1,15 +1,19 @@
-import { stepButtonProps } from '@/store/common';
+import { IButtonState, stepButtonProps } from '@/store/common';
 import { Button, Typography } from '@mui/material';
 import { useRecoilValue } from 'recoil';
 
 const BottomButton = ({
   btnStyleProps,
   textStyleProps,
+  buttonProps,
 }: {
   btnStyleProps: object;
   textStyleProps: object;
+  buttonProps?: IButtonState;
 }) => {
-  const nextButtonProps = useRecoilValue(stepButtonProps);
+  const tempButtonProps = useRecoilValue(stepButtonProps);
+  const nextButtonProps = buttonProps || tempButtonProps;
+
   const combinedStyleProps = Object.assign(
     {
       m: 0,

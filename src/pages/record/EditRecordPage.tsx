@@ -52,30 +52,8 @@ import Wrapper from '../auth/common/Wrapper';
 import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
 import { popupShowState } from '@/store/popupMessage';
-
-export interface MainCategoryProps {
-  categoryId: number;
-  name: string;
-  level?: number;
-  color: string;
-  highlightColor: string;
-  subCategories: SubCategoryProps[];
-}
-
-export interface SubCategoryProps {
-  categoryId?: any;
-  id?: any;
-  start: any;
-  end: any;
-  subCategories?: any[];
-  level?: any;
-  name?: any;
-  iconName?: any;
-  color?: any;
-  highlightColor?: any;
-  value?: any;
-  content?: any;
-}
+import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
+import { CategoryViewType, categoryViewMode } from '@/store/category';
 
 export interface SelectedRangeData {
   start: Date;
@@ -401,12 +379,9 @@ const EditRecordPage = (): ReactElement => {
    * get category data
    */
   const getAllCategories = async () => {
-    const response = await getCategories();
-    const result = response.result;
-    if (result) {
+    await getCategories().then(response => {
+      const result = response.result;
       setCategories(result);
-
-      // Main Category Data Set
       if (recordType === 'UPDATE') {
         result.forEach((category: MainCategoryProps) => {
           const subCategories: SubCategoryProps[] = category.subCategories;
@@ -416,7 +391,6 @@ const EditRecordPage = (): ReactElement => {
               Number(selectedEvent.categoryId)
             ) {
               setMainCategory(category);
-
               setSelectedCategoryIdx(category.categoryId - 1);
               setSelectedSubCategoryIdx(subCategory.categoryId);
               return true;
@@ -424,9 +398,9 @@ const EditRecordPage = (): ReactElement => {
           });
         });
       }
-    } else {
-      alert('Error');
-    }
+    }).catch(error => {
+      // alert(error);
+    });
   };
 
   /**

@@ -92,7 +92,7 @@ const pink700 = palette.pink![700];
 const paletteGrey = palette.grey!;
 
 const ChartContainer = () => {
-  const statisticsResult = useRecoilValue(statisticsResultState);
+  let statisticsResult = useRecoilValue(statisticsResultState);
   const [categoryDetailData, setCategoryDetailData] =
     useState(statisticsResult);
 
@@ -453,10 +453,11 @@ const ChartContainer = () => {
 
   useEffect(() => {
     setCalendarType('STAT');
+    statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
 
   useEffect(() => {
-    const timeSum = statisticsResult
+    const timeSum = statisticsResult.length
       ? statisticsResult.reduce(
           (accumulator, currentValue) => accumulator + currentValue.timeSum,
           0,

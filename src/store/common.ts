@@ -50,7 +50,13 @@ export const currentFormType = atom<FormType>({
   default: 'SIGNUP',
 });
 
-export const stepButtonProps = selector({
+export interface IButtonState {
+  isDisabled: boolean,
+  clickHandler: () => void,
+  text: string,
+}
+
+export const stepButtonProps = selector<IButtonState>({
   key: 'StepButtonProps',
   get: ({ get }) => {
     const type = get(currentFormType);

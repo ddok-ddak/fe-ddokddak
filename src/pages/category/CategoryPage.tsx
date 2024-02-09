@@ -9,13 +9,15 @@ import {
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Circle from '../../components/common/Circle';
 import FolderTop from '../../components/common/FolderTop';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import {
+  CategoryViewType,
+  categoryViewMode,
   selectedMainCategoryState,
   selectedSubCategoryState,
 } from '../../store/category';
@@ -96,13 +98,13 @@ const CategoryPage = () => {
   const setSelectedSubCategory = useSetRecoilState<SubCategoryProps>(
     selectedSubCategoryState,
   );
-  const [categories, setCategories] = useState<MainCategoryProps[]>([]);
 
   const setUserInfo = useSetRecoilState<UserData>(currentUserInfo);
-
-  const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
-
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const categoryMode = useRecoilValue<CategoryViewType>(categoryViewMode);
+
+  const [categories, setCategories] = useState<MainCategoryProps[]>([]);
+  const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
 
   /**
    * get user info
@@ -194,71 +196,72 @@ const CategoryPage = () => {
     >
       <Spacer y={20} />
 
-      <Container>
-        <Typography
-          sx={{
-            fontSize: '14px',
-            fontWeight: '600',
-            m: '10px 0',
-          }}
-        >
-          {'현재 모드'}
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-          }}
-        >
-          {UserModeList.map((mode, idx) => {
-            const type = mode.type;
-            return (
-              <RadioGroup key={idx}>
-                <Circle
-                  label={`${mode.name} 모드`}
-                  labelSize='13px'
-                  color='pink.300'
-                  size={63}
-                  iconSize={41}
-                  iconName={mode.id}
-                />
-                <Radio
-                  size="small"
-                  checked={currentUserMode?.type === type}
-                  color="default"
-                  value={type}
-                  onClick={() => {
-                    setCurrentUserMode(mode);
-                    setWarningModal(mode);
-                  }}
-                  sx={{
-                    span: {
-                      position: 'absolute',
-                      top: '0px',
-                    },
-                    '& .MuiSvgIcon-root ': {
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '15px',
-                      height: '15px',
-                    },
-                    '& .MuiSvgIcon-root:first-of-type ': {
-                      color: 'grey.700',
-                    },
-                    '& .MuiSvgIcon-root:last-of-type ': {
-                      color: 'pink.700',
-                    },
-                  }}
-                />
-              </RadioGroup>
-            );
-          })}
-        </Box>
-      </Container>
-
-      <Spacer y={27} />
+      <Box sx={{ display: categoryMode === 'MODEVISIBLE' ? '' : 'none' }}>
+        <Container>
+          <Typography
+            sx={{
+              fontSize: '14px',
+              fontWeight: '600',
+              m: '10px 0',
+            }}
+          >
+            {'현재 모드'}
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            {UserModeList.map((mode, idx) => {
+              const type = mode.type;
+              return (
+                <RadioGroup key={idx}>
+                  <Circle
+                    label={`${mode.name} 모드`}
+                    labelSize="13px"
+                    color="pink.300"
+                    size={63}
+                    iconSize={41}
+                    iconName={mode.id}
+                  />
+                  <Radio
+                    size="small"
+                    checked={currentUserMode?.type === type}
+                    color="default"
+                    value={type}
+                    onClick={() => {
+                      setCurrentUserMode(mode);
+                      setWarningModal(mode);
+                    }}
+                    sx={{
+                      span: {
+                        position: 'absolute',
+                        top: '0px',
+                      },
+                      '& .MuiSvgIcon-root ': {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '15px',
+                        height: '15px',
+                      },
+                      '& .MuiSvgIcon-root:first-of-type ': {
+                        color: 'grey.700',
+                      },
+                      '& .MuiSvgIcon-root:last-of-type ': {
+                        color: 'pink.700',
+                      },
+                    }}
+                  />
+                </RadioGroup>
+              );
+            })}
+          </Box>
+        </Container>
+        <Spacer y={27} />
+      </Box>
 
       <Divider
         sx={{

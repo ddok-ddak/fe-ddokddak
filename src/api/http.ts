@@ -1,17 +1,45 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { Cookies } from 'react-cookie';
+
+export const ACCESS_TOKEN = 'accessToken';
+export const REFRESH_TOKEN = 'refreshToken';
+
 const cookie = new Cookies();
 
 /**
- * set bearer authorization token to cookie
- * @param accessToken bearer authorization token
+ * return cookie option
+ * @returns cookie option for token
  */
-export const setTokenCookie = (accessToken: any) => {
-  if (accessToken) {
-    cookie.set('accessToken', accessToken);
-    cookie.set('refreshToken', accessToken);
+const getTokenCookieOption = () => {
+  return {
+    path: '/',
+    expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // expires after 1 hour
+    // domain: 'https://dodonenow.com',
+    // secure: true,
+    // httpOnly: false,
+    // sameSite: 'none',
+    // partitioned: false,
+  };
+};
+
+/**
+ * set bearer authorization token to cookie
+ * @param token bearer authorization token
+ */
+export const setTokenCookie = (token: any) => {
+  if (token) {
+    cookie.set(ACCESS_TOKEN, token, getTokenCookieOption());
+    cookie.set(REFRESH_TOKEN, token, getTokenCookieOption());
   }
-}
+};
+
+/**
+ * remove bearer authorization token from cookie
+ */
+export const removeTokenCookie = () => {
+  cookie.remove(ACCESS_TOKEN, getTokenCookieOption());
+  cookie.remove(REFRESH_TOKEN, getTokenCookieOption());
+};
 
 export default interface CommonResponse<T = any> {
   status: string;
@@ -35,12 +63,15 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     async (
       config: InternalAxiosRequestConfig,
     ): Promise<InternalAxiosRequestConfig> => {
-
-      const token = cookie.get('accessToken');
-      if (config.headers && token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+      
+      // set bearer authorization token to the header
+      if (config.headers) {
+        const accessToken = cookie.get(ACCESS_TOKEN);
+        console.log('accessToken', accessToken)
+        if (accessToken) {
+          config.headers['Authorization'] = accessToken;
+        }
       }
-
       return config;
     },
     (error: any): Promise<any> => {
@@ -53,16 +84,19 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
    */
   instance.interceptors.response.use(
     async (response: any): Promise<any> => {
-      const data = response.data;
-      console.log('response', response)
-      if (data && data.result && data.result.authorization) {
-        setTokenCookie(data.result.authorization.replace('Bearer ', ''));
-        window.location.href = '/signin/redirect';
+      const result = response.data.result;
+      if (result && result.accessToken) {
+        window.location.href = `/signin/redirect?accessToken=${result.accessToken}`;
       }
-
       return response.data;
     },
     async (error: any): Promise<any> => {
+      // invalid token error (expired token)
+      if (error.response.status === 401) {
+        removeTokenCookie();
+        window.location.href = '/login';
+      }
+
       const unknownError: CommonResponse = {
         status: 'FAIL',
         statusCode: 'UNKNOWN.ERROR',

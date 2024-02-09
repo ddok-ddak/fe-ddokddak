@@ -32,14 +32,15 @@ import '../../styles/custom-record-styles.css';
 import {
   customCalendarType,
   currentCalendarType,
-  stepButtonProps,
   currentFormType,
   FormType,
   currentSelectedDate,
   currentPeriod,
 } from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
-import { modalState } from '@/store/modal';
+import { modalButtonState, modalState, modalValue } from '@/store/modal';
+import { currentUserInfo } from '@/store/info';
+import { setTemplate } from '@/api/auth';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -69,7 +70,6 @@ const RecordPage = () => {
 
   const selectedDate = useRecoilValue(currentSelectedDate);
   const periodType = useRecoilValue<PeriodTypeForRecord>(currentPeriod);
-
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
   const setCalendarType =
@@ -78,6 +78,8 @@ const RecordPage = () => {
   const setCurrentFormType = useSetRecoilState<FormType>(currentFormType);
 
   const setRecordType = useSetRecoilState(currentRecordPageType);
+
+  const selectedValue = useRecoilValue(modalValue);
 
   const startHour = useRecoilValue(statisticsStartHour);
   const endHour = `${
@@ -88,12 +90,12 @@ const RecordPage = () => {
 
   const calendarRef = useRef<any>(null);
 
-  const { getWeekPeriodInputFormat, setNewDateRange, getPeriodString } =
-    useStatisticView();
+  const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
 
   const interval = '00:30:00';
 
-  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
+  const [nextButtonProps, setNextButtonProps] =
+    useRecoilState(modalButtonState);
 
   /**
    * route to record create page of dragged time
@@ -137,15 +139,17 @@ const RecordPage = () => {
         const activityRecords = response.result;
         let events: Event[] = [];
         let currentEvent: Event | null = null;
-        
+
         // 각 activity record에 대해 처리
         if (activityRecords.length) {
           activityRecords.forEach((item: any) => {
-            const startedAt = dayjs(item.startedAt.replace(' KST', '')).toDate();
+            const startedAt = dayjs(
+              item.startedAt.replace(' KST', ''),
+            ).toDate();
             const finishedAt = dayjs(
               item.finishedAt.replace(' KST', ''),
             ).toDate();
-  
+
             const event: Event = {
               id: item.activityRecordId,
               title: item.categoryName,
@@ -155,7 +159,7 @@ const RecordPage = () => {
               categoryId: item.categoryId,
               color: item.categoryColor,
             };
-  
+
             if (currentEvent) {
               // 이전 이벤트가 존재하는 경우
               if (
@@ -223,24 +227,16 @@ const RecordPage = () => {
     setNextButtonProps({
       ...nextButtonProps,
       text: '시작하기!',
-      clickHandler: () => {
-        setModalInfo({
-          ...modalInfo,
-          open: false,
+      clickHandler: async () => {
+        console.log('clicked!!');
+        await setTemplate(selectedValue.type).then(() => {
+          setModalInfo({
+            ...modalInfo,
+            open: false,
+          });
         });
       },
     });
-
-    // setModalInfo({
-    //   open: true,
-    //   title: `${userInfo.nickname}님 환영합니다!`,
-    //   msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
-    //   optionList: UserModeList.map((userMode) => {
-    //     return { id: userMode.id, type: userMode.type, name: userMode.name };
-    //   }),
-    //   isShowConfirmBtn: true,
-    // });
-
   }, []);
 
   return (
