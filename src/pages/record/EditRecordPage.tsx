@@ -401,12 +401,9 @@ const EditRecordPage = (): ReactElement => {
    * get category data
    */
   const getAllCategories = async () => {
-    const response = await getCategories();
-    const result = response.result;
-    if (result) {
+    await getCategories().then(response => {
+      const result = response.result;
       setCategories(result);
-
-      // Main Category Data Set
       if (recordType === 'UPDATE') {
         result.forEach((category: MainCategoryProps) => {
           const subCategories: SubCategoryProps[] = category.subCategories;
@@ -416,7 +413,6 @@ const EditRecordPage = (): ReactElement => {
               Number(selectedEvent.categoryId)
             ) {
               setMainCategory(category);
-
               setSelectedCategoryIdx(category.categoryId - 1);
               setSelectedSubCategoryIdx(subCategory.categoryId);
               return true;
@@ -424,9 +420,9 @@ const EditRecordPage = (): ReactElement => {
           });
         });
       }
-    } else {
-      alert('Error');
-    }
+    }).catch(error => {
+      // alert(error);
+    });
   };
 
   /**

@@ -10,16 +10,23 @@ import {
 } from '@mui/material';
 import { useRecoilState } from 'recoil';
 
-import { modalState } from '@/store/modal';
+import { modalButtonState, modalState } from '@/store/modal';
 import BottomButton from '@/components/common/BottomButton';
 import Spacer from './Spacer';
-import { stepButtonProps } from '@/store/common';
+import { useEffect } from 'react';
 
 const Modal = () => {
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
-  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(modalButtonState);
 
   const handleClose = () => setModalInfo({ ...modalInfo, open: false });
+
+  useEffect(() => {
+    setNextButtonProps({
+      ...nextButtonProps,
+      clickHandler: handleClose,
+    });
+  }, []);
 
   return (
     <MuiModal
@@ -158,6 +165,7 @@ const Modal = () => {
             <BottomButton
               btnStyleProps={{ height: '30px !important', margin: '10px 8px' }}
               textStyleProps={{ fontSize: '13px' }}
+              buttonProps={nextButtonProps}
             />
           </Container>
         ) : (

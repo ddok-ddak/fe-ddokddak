@@ -9,7 +9,7 @@ import {
   ListSubheader,
   Typography,
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -17,20 +17,22 @@ import ListIcon from '@/components/settings/ListIcon';
 import UserAvatar from '@/components/settings/UserAvatar';
 import { stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
-import { useCookies } from 'react-cookie';
 import { signOut } from '@/api/auth';
+import CommonResponse, { removeTokenCookie } from '@/api/http';
+import { modalState } from '@/store/modal';
 
 const SettingPage = () => {
   const navigation = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
-
   const setStepIndex = useSetRecoilState(stepIndex);
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
+  /**
+   * get list sub header
+   * @param text test
+   * @returns list sub header
+   */
   const getListSubHeader = (text: string) => {
     return (
       <ListSubheader
@@ -41,6 +43,11 @@ const SettingPage = () => {
     );
   };
 
+  /**
+   * get list item
+   * @param param
+   * @returns list item
+   */
   const getListItem = ({
     text,
     handler,
@@ -133,15 +140,20 @@ const SettingPage = () => {
             text: '로그아웃',
             handler: async () => {
               await signOut()
-                .then((response: any) => {
-                  // if (response.status === 'SUCCESS') {
-                  removeCookie('accessToken');
-                  removeCookie('refreshToken');
-                  navigation('/');
-                  // }
+                .then((response: CommonResponse) => {
+                  if (response.status === 'SUCCESS') {
+                    removeTokenCookie();
+                    navigation('/');
+                  }
                 })
-                .catch((error) => {
-                  // TODO: show modal message
+                .catch(() => {
+                  setModalInfo({
+                    ...modalInfo,
+                    title: '서버 오류',
+                    msg: '오류가 발생했습니다. 다시 시도 해주세요.',
+                    open: true,
+                    isShowConfirmBtn: true,
+                  });
                 });
             },
           })}

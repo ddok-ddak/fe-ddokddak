@@ -22,6 +22,7 @@ import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
 import ResetPWStep from './pages/auth/resetPW/ResetPWSteps';
 import AccountSetting from './pages/settings/AccountSetting';
 import PopupMessage from './components/common/PopupMessage';
+import LoginRedirect from './pages/auth/login/LoginRedirect';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/signin/redirect" element={<LoginRedirect />} />
               <Route path="/signUp" element={<SignUp />} />
               <Route path="/findID" element={<FindID />} />
 
