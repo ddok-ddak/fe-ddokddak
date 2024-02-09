@@ -1,4 +1,4 @@
-const Naver = () => {
+const GoogleIcon = () => {
   return (
     <svg
       width="46"
@@ -28,4 +28,4 @@ const Naver = () => {
   );
 };
 
-export default Naver;
+export default GoogleIcon;

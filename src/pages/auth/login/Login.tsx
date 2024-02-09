@@ -1,5 +1,9 @@
 import Logo from '@/components/auth/Logo';
-import { stepButtonProps, stepInstruction, currentFormType } from '@/store/common';
+import {
+  stepButtonProps,
+  stepInstruction,
+  currentFormType,
+} from '@/store/common';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,16 +14,16 @@ import InputForm, { InputItemType } from '../common/InputForm';
 import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
 import { signIn } from '@/api/auth';
+import { modalState } from '@/store/modal';
 
 const { checkEmailValidity } = checkPattern();
 
 export default function Login() {
   const setStepType = useSetRecoilState(currentFormType);
-  const [nextButtonProps, setNextButtonProps] = useRecoilState(
-    stepButtonProps,
-  );
+  const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
-  const setInstruction = useSetRecoilState(stepInstruction)
+  const setInstruction = useSetRecoilState(stepInstruction);
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -45,7 +49,6 @@ export default function Login() {
     },
   ];
 
-
   useEffect(() => {
     if (email === '') {
       setHelper1('');
@@ -65,13 +68,27 @@ export default function Login() {
       ...nextButtonProps,
       isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
       clickHandler: async () => {
-        await signIn({ email, password }).then(response => {
-          if (response.status === 'SUCCESS') {
-            console.log(response)
-          }
-        }).catch(error => {            
-          console.log(error)
-        });
+        await signIn({ email, password })
+          .then((response) => {
+            if (response.status !== 'SUCCESS') {
+              setModalInfo({
+                ...modalInfo,
+                title: '로그인 오류',
+                msg: '이메일 혹은 비밀번호를 다시 확인 해주세요.',
+                open: true,
+                isShowConfirmBtn: true,
+              });
+            }
+          })
+          .catch((error) => {
+            setModalInfo({
+              ...modalInfo,
+              title: '서버 오류',
+              msg: '오류가 발생했습니다. 다시 시도 해주세요.',
+              open: true,
+              isShowConfirmBtn: true,
+            });
+          });
       },
     });
   }, [email, password]);
@@ -84,9 +101,7 @@ export default function Login() {
       text: '로그인',
       isDisabled: false,
     });
-
   }, []);
-
 
   return (
     <>
@@ -209,10 +224,9 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          Copyright 2023 ddok-ddak All Right Reserved.
+          Copyright 2023 DDOK-DDAK All Right Reserved.
         </Typography>
       </Container>
     </>
   );
 }
-

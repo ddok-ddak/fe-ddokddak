@@ -5,9 +5,8 @@ import { Box, Container, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import { useRecoilValue } from 'recoil';
 
-const FormWrapper = ({children}: {children: ReactNode}) => {
+const FormWrapper = ({ children }: { children: ReactNode }) => {
   const instruction = useRecoilValue(stepInstruction);
-  
   return (
     <Container
       sx={{
@@ -17,7 +16,7 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
         height: '100%',
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 47vh', }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 47vh' }}>
         <Typography
           sx={{
             color: 'grey.700',
@@ -28,11 +27,12 @@ const FormWrapper = ({children}: {children: ReactNode}) => {
         >
           {instruction}
         </Typography>
-        <form>
-          {children}
-        </form>
+        <form>{children}</form>
       </Box>
-      <BottomButton btnStyleProps={{ flex: '0 0 6vh' }} textStyleProps={{}}/>
+      <BottomButton
+        btnStyleProps={{ flex: '0 0 6vh' }}
+        textStyleProps={{}}
+      />
       <Spacer y={140} />
     </Container>
   );

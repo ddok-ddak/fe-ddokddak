@@ -1,4 +1,3 @@
-import { SubCategoryProps } from '../pages/category/CategoryPage';
 import { callAPI } from './common/api';
 import CommonResponse from './http';
 
