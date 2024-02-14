@@ -27,25 +27,27 @@ import { currentUserInfo } from '@/store/info';
 import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
 import { modalAnswer } from '@/constants/message';
-import { UserData, UserTemplateType } from '@/api/auth';
+import { ModeProps, UserData, UserTemplateType } from '@/api/auth';
 import { useModalCommon } from '@/hooks/modalCommon';
 
 export interface MainCategoryProps {
-  highlightColor?: string | undefined;
   categoryId: number;
   name: string;
   level?: number;
   color: string;
+  highlightColor?: string | undefined;
   subCategories: SubCategoryProps[];
 }
 
 export interface SubCategoryProps {
-  mainCategoryId?: number;
   categoryId?: number;
-  name: string;
-  iconFile: iconFileProps;
   color?: string;
   highlightColor?: string;
+  iconFile?: iconFileProps;
+  level?: number;
+  mainCategoryId?: number;
+  name?: string;
+  subCategories?: any[];
 }
 
 export interface iconFileProps {
@@ -55,8 +57,7 @@ export interface iconFileProps {
   originalFilename?: string;
   path?: string;
 }
-// 사용자 모드
-export interface ModeProps {
+interface ModePropsForModal extends ModeProps {
   id: string;
   type: UserTemplateType;
   name: string;
@@ -64,7 +65,7 @@ export interface ModeProps {
   modalMsg: string;
 }
 
-export const UserModeList: ModeProps[] = [
+export const UserModeListForModal: ModePropsForModal[] = [
   {
     id: 'unemployed',
     type: 'UNEMPLOYED',
@@ -103,19 +104,17 @@ const CategoryPage = () => {
     selectedSubCategoryState,
   );
 
-  const setUserInfo = useSetRecoilState<UserData>(currentUserInfo);
   const setModalInfo = useSetRecoilState(modalState);
   const categoryMode = useRecoilValue<CategoryViewType>(categoryViewMode);
+  const userInfo = useRecoilValue<UserData>(currentUserInfo);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
   const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
 
-  const getUserInfo = () => {
-    const data: UserData = { email: '', nickname: '', templateType: 'STUDENT' };
-    setUserInfo(data);
+  const getUserInfo = async () => {
     setCurrentUserMode(
-      UserModeList.filter((userMode: ModeProps) => {
-        return userMode.type === data.templateType;
+      UserModeListForModal.filter((userMode: ModeProps) => {
+        return userMode.type === userInfo.templateType;
       })[0],
     );
   };
@@ -124,15 +123,21 @@ const CategoryPage = () => {
    * get category list
    */
   const getAllCategories = async () => {
-    const response = await getCategories();
-    if (response.status === 'SUCCESS') {
-      setCategories(response.result);
-    } else {
-      alert('Error');
-    }
+    await getCategories().then((response) => {
+      if (response.status === 'SUCCESS') {
+        setCategories(response.result);
+      }
+    });
   };
 
+  /**
+   * get category icon
+   * @param sub
+   * @returns
+   */
   const getCategoryIcon = (sub: SubCategoryProps) => {
+    const iconFile = sub.iconFile;
+    const iconName = iconFile.path + (iconFile.filename?.split('.')[0] || '');
     return (
       <Circle
         label={sub.name}
@@ -152,18 +157,13 @@ const CategoryPage = () => {
             },
           });
         }}
-        iconSize={40}
-        iconName={sub.iconFile.filename?.split('.')[0] || ''}
+        iconSize={32}
+        iconName={iconName}
       />
     );
   };
 
-  useEffect(() => {
-    getUserInfo();
-    getAllCategories();
-  }, []);
-
-  const setWarningModal = (mode: ModeProps) => {
+  const setWarningModal = (mode: ModePropsForModal) => {
     setModalInfo({
       open: true,
       title: mode?.modalTitle || '',
@@ -175,6 +175,11 @@ const CategoryPage = () => {
     });
   };
 
+  useEffect(() => {
+    getUserInfo();
+    getAllCategories();
+  }, []);
+
   return (
     <Wrapper
       headerComp={
@@ -183,7 +188,12 @@ const CategoryPage = () => {
     >
       <Spacer y={20} />
 
-      <Box sx={{ display: categoryMode === 'MODEVISIBLE' ? '' : 'none' }}>
+      <Box
+        sx={{
+          display: categoryMode === 'MODEVISIBLE' ? '' : 'none',
+          width: '100%',
+        }}
+      >
         <Container>
           <Typography
             sx={{
@@ -201,7 +211,7 @@ const CategoryPage = () => {
               justifyContent: 'space-evenly',
             }}
           >
-            {UserModeList.map((mode, idx) => {
+            {UserModeListForModal.map((mode, idx) => {
               const type = mode.type;
               return (
                 <RadioGroup key={idx}>
@@ -220,7 +230,9 @@ const CategoryPage = () => {
                     value={type}
                     onClick={() => {
                       setCurrentUserMode(mode);
-                      setWarningModal(mode);
+                      if (mode.type !== userInfo.templateType) {
+                        setWarningModal(mode);
+                      }
                     }}
                     sx={{
                       span: {

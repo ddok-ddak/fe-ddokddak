@@ -3,6 +3,7 @@ import { atom } from 'recoil';
 import dayjs from 'dayjs';
 import { INextButtonState } from './common';
 import { buttonText } from '@/constants/message';
+import { SubCategoryProps } from '@/pages/category/CategoryPage';
 
 // export const selectedTimeRangeState = atom({
 //   key: 'selectedTimeRangeState',
@@ -37,10 +38,6 @@ export const selectedDaysState = atom<number[]>({
   default: [],
 });
 
-type SubCategoryProps = {
-  name: string;
-  color: string;
-};
 
 type Category = {
   name: string;

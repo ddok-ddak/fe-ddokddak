@@ -26,8 +26,34 @@ import {
 } from '@/store/common';
 import { buttonText, modalAnswer } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
-import { modalState } from '@/store/modal';
 import { useModalCommon } from '@/hooks/modalCommon';
+import { modalState } from '@/store/modal';
+
+const getCircle = ({
+  selected,
+  color,
+  borderColor,
+  onClick,
+  iconName,
+}: {
+  selected: boolean;
+  color: string;
+  borderColor: string | undefined;
+  onClick: () => void;
+  iconName: string;
+}) => {
+  return (
+    <Circle
+      selected={selected}
+      color={color}
+      borderColor={borderColor}
+      size={40}
+      onClick={onClick}
+      iconSize={40}
+      iconName={iconName}
+    />
+  );
+};
 
 const EditCategoryPage = () => {
   const { closeModal } = useModalCommon();
@@ -165,19 +191,18 @@ const EditCategoryPage = () => {
       return categories.map((category) => {
         const subCategories = category.subCategories;
         return subCategories.map((icon, idx) => {
+          const iconFile = icon.iconFile!;
+          const iconName =
+            iconFile.path + (iconFile.filename?.split('.')[0] || '');
           return (
-            <Box sx={{ m: 1 }} key={idx}>
-              <Circle
-                selected={categoryId === icon.categoryId}
-                color={selectedMainCategory.color}
-                borderColor={selectedMainCategory.highlightColor}
-                size={40}
-                onClick={() => {
-                  setSelectedIcon(icon);
-                }}
-                iconSize={40}
-                iconName={icon.iconFile.filename?.split('.')[0] || ''}
-              />
+            <Box sx={{ m: 1 }} key={`${iconName} ${idx}`}>
+              {getCircle({
+                selected: categoryId === icon.categoryId,
+                color: selectedMainCategory.color,
+                borderColor: selectedMainCategory.highlightColor,
+                onClick: () => setSelectedIcon(icon),
+                iconName,
+              })}
             </Box>
           );
         });

@@ -53,6 +53,7 @@ import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
+import { CategoryViewType, categoryViewMode } from '@/store/category';
 
 export interface SelectedRangeData {
   start: Date;
@@ -104,9 +105,9 @@ const EditRecordPage = (): ReactElement => {
   const setPopupText = useSetRecoilState(popupMessageText);
   const setIsPopupShow = useSetRecoilState(popupShowState);
   const setIsSuccessPopup = useSetRecoilState(popupSuccessState);
+  const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
-
   const [mainCategory, setMainCategory] = useState<MainCategoryProps>();
 
   // 수정중인 이벤트
@@ -491,8 +492,8 @@ const EditRecordPage = (): ReactElement => {
               Number(selectedEvent.categoryId)
             ) {
               setMainCategory(category);
-              setSelectedCategoryIdx(category.categoryId - 1);
-              setSelectedSubCategoryIdx(subCategory.categoryId);
+              setSelectedCategoryIdx(category.categoryId);
+              setSelectedSubCategoryIdx(subCategory.categoryId || 0);
               return true;
             }
           });
@@ -537,6 +538,7 @@ const EditRecordPage = (): ReactElement => {
         setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
       });
   }
+
   /**
    * update event record
    * @param startedAt start time
@@ -759,6 +761,10 @@ const EditRecordPage = (): ReactElement => {
             variant="text"
             component={Link}
             to="/category"
+            onClick={() => {
+              setCategoryMode('MODWHIDDEN');
+              navigate('/category');
+            }}
             sx={{ color: 'grey.500', paddingTop: '17px' }}
           >
             카테고리 설정
@@ -778,16 +784,17 @@ const EditRecordPage = (): ReactElement => {
           }}
         >
           {categories.length &&
-            categories.map((category: MainCategoryProps, idx) => {
-              const isSelected = idx === selectedCategoryIdx;
+            categories.map((category: MainCategoryProps) => {
+              const categoryId = category.categoryId;
+              const isSelected = categoryId === selectedCategoryIdx;
               return (
                 <StyledChip
-                  key={category.categoryId}
+                  key={categoryId}
                   label={category.name}
                   variant={isSelected ? 'filled' : 'outlined'}
                   onClick={() => {
+                    setSelectedCategoryIdx(categoryId);
                     setSelectedSubCategoryIdx(() => 0);
-                    setSelectedCategoryIdx(idx);
                   }}
                   props={{
                     isSelected,
@@ -808,28 +815,34 @@ const EditRecordPage = (): ReactElement => {
             paddingBottom: '30px',
           }}
         >
-          {categories[selectedCategoryIdx]?.subCategories.map(
-            (sub: SubCategoryProps) => {
-              const subSelected = selectedSubCategoryIdx === sub.categoryId;
+          {categories
+            .filter(
+              (category) => category.categoryId === selectedCategoryIdx,
+            )[0]
+            ?.subCategories.map((sub: SubCategoryProps, idx: number) => {
+              const subCategoryId = sub.categoryId;
+              const subSelected = selectedSubCategoryIdx
+                ? selectedSubCategoryIdx === subCategoryId
+                : !idx;
+              const filename = sub.iconFile!.filename ?? '';
               return (
                 <Circle
+                  selected={subSelected}
+                  color={sub.color}
+                  borderColor={subSelected ? sub.highlightColor : ''}
+                  size={40}
                   key={sub.name}
                   label={sub.name}
                   variant={subSelected ? 'filled' : 'outlined'}
-                  color={sub.color}
                   fontColor={subSelected ? sub.highlightColor : ''}
-                  borderColor={subSelected ? sub.highlightColor : ''}
-                  size={40}
-                  iconName={sub.iconName}
+                  iconName={filename.split('.')[0]}
                   iconSize={26}
-                  selected={subSelected}
                   onClick={() =>
-                    setSelectedSubCategoryIdx(() => sub.categoryId)
+                    setSelectedSubCategoryIdx(() => subCategoryId || 0)
                   }
                 />
               );
-            },
-          )}
+            })}
         </Container>
 
         <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />

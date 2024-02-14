@@ -7,6 +7,7 @@ import {
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
 import InputForm, { InputItemType } from '../common/InputForm';
@@ -16,6 +17,7 @@ import { checkPattern } from '@/hooks/checkPattern';
 import { signIn } from '@/api/auth';
 import Spacer from '@/components/common/Spacer';
 
+
 const { checkEmailValidity } = checkPattern();
 
 export default function Login() {
@@ -24,6 +26,7 @@ export default function Login() {
   const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
 
   const [email, setEmail] = useState('');
@@ -31,6 +34,7 @@ export default function Login() {
   const [helper1, setHelper1] = useState('');
   const [helper2, setHelper2] = useState('');
   const [isHelperError1, setIsHelperError1] = useState(false);
+
 
   const itemArray1: InputItemType[] = [
     {
@@ -89,6 +93,50 @@ export default function Login() {
       // isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
       isDisabled: false,
       clickHandler: loginButtonClickHandler,
+    });
+  }, [email, password]);
+
+  useEffect(() => {
+    if (email === '') {
+      setHelper1('');
+    } else {
+      if (checkEmailValidity(email)) {
+        setHelper1('');
+        setIsHelperError1(() => false);
+      } else {
+        setHelper1('올바른 이메일 형태가 아닙니다.');
+        setIsHelperError1(() => true);
+      }
+    }
+  }, [email]);
+
+  useEffect(() => {
+    setNextButtonProps({
+      ...nextButtonProps,
+      isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
+      clickHandler: async () => {
+        await signIn({ email, password })
+          .then((response) => {
+            if (response.status !== 'SUCCESS') {
+              setModalInfo({
+                ...modalInfo,
+                title: '로그인 오류',
+                msg: '이메일 혹은 비밀번호를 다시 확인 해주세요.',
+                open: true,
+                isShowConfirmBtn: true,
+              });
+            }
+          })
+          .catch((error) => {
+            setModalInfo({
+              ...modalInfo,
+              title: '서버 오류',
+              msg: '오류가 발생했습니다. 다시 시도 해주세요.',
+              open: true,
+              isShowConfirmBtn: true,
+            });
+          });
+      },
     });
   }, [email, password]);
 
@@ -179,6 +227,15 @@ export default function Login() {
               backgroundColor: 'text.secondary',
             }}
           />
+
+          <Button
+            sx={{ color: 'text.primary' }}
+            variant="text"
+            component={Link}
+            to="/findID"
+          >
+            아이디 찾기
+          </Button>
           <Box
             sx={{
               width: '1px',

@@ -1,6 +1,5 @@
-import { UserTemplateType, getInfo } from '@/api/auth';
+import { UserModeList, UserTemplateType, getInfo } from '@/api/auth';
 import { setTokenCookie } from '@/api/http';
-import { UserModeList } from '@/pages/category/CategoryPage';
 import { currentUserInfo } from '@/store/info';
 import { modalState } from '@/store/modal';
 import { useEffect } from 'react';
@@ -37,7 +36,6 @@ function LoginRedirect() {
       });
   };
 
-
   useEffect(() => {
     const accessToken = new URL(window.location.href).searchParams.get(
       'accessToken',
@@ -45,7 +43,6 @@ function LoginRedirect() {
     setTokenCookie(accessToken);
     navigate('/record', { replace: false });
     getUserInfo();
-
   }, []);
 
   return <></>;

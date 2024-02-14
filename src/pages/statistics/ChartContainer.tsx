@@ -374,7 +374,7 @@ const ChartContainer = () => {
    */
   const setCategoryDetailDataList = (dataArray: object[]) => (
     <>
-      {dataArray.length &&
+      {dataArray.length ??
         dataArray.map((data: any, idx) => (
           <Box
             key={idx}
@@ -404,6 +404,8 @@ const ChartContainer = () => {
                   setTotalSumTitle(addPostposition(periodTypeTitle));
                 }
               }}
+              iconSize={20}
+              iconName={''}
             />
             <Box
               sx={{

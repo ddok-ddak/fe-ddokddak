@@ -9,7 +9,7 @@ import {
   ListSubheader,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -17,14 +17,16 @@ import ListIcon from '@/components/settings/ListIcon';
 import UserAvatar from '@/components/settings/UserAvatar';
 import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
 import { deleteUser, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
-import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
+import { modalAnswer } from '@/constants/message';
+import { currentUserInfo } from '@/store/info';
+import { UserModeListForModal } from '../category/CategoryPage';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -35,7 +37,9 @@ const SettingPage = () => {
   
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
-  
+  const userInfo = useRecoilValue(currentUserInfo);
+  const [userNickname, setUserNickname] = useState('');
+
   /**
    * get list sub header
    * @param text test
@@ -110,7 +114,13 @@ const SettingPage = () => {
   useEffect(() => {
     setNavPage(2);
     setStepIndex(0);
-  });
+    setUserNickname(() => {
+      const templateType = UserModeListForModal.filter(
+        (mode) => mode.type === userInfo.templateType,
+      )[0].name;
+      return `# ${templateType} ${userInfo.nickname} 님`;
+    });
+  }, []);
 
   return (
     <Container
@@ -146,13 +156,13 @@ const SettingPage = () => {
               align="left"
               sx={{ fontSize: '16px', fontWeight: '600' }}
             >
-              {'#직장인 수달님'}
+              {userNickname}
             </Typography>
             <Typography
               align="left"
               sx={{ fontSize: '14px', fontWeight: '400' }}
             >
-              {'dodone@gmail.com'}
+              {userInfo.email}
             </Typography>
           </Box>
           <>

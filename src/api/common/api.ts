@@ -1,5 +1,4 @@
 import { Method } from 'axios';
-
 import { getInstance } from '../http';
 
 export interface APIContract {
@@ -8,6 +7,7 @@ export interface APIContract {
   params?: object;
   body?: object;
 }
+
 
 export const callAPI = async <T = any>(
   { url, method, params, body }: APIContract,

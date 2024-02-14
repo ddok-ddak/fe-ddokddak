@@ -8,6 +8,34 @@ import CommonResponse from './http';
  * WORKER 직장인
  */
 export type UserTemplateType = 'NONE' | 'UNEMPLOYED' | 'STUDENT' | 'WORKER';
+
+
+// 사용자 모드
+export interface ModeProps {
+  id: string;
+  type: UserTemplateType;
+  name: string;
+}
+
+export const UserModeList: ModeProps[] = [
+  {
+    id: 'unemployed',
+    type: 'UNEMPLOYED',
+    name: '일반인',
+  },
+  {
+    id: 'worker',
+    type: 'WORKER',
+    name: '직장인',
+  },
+  {
+    id: 'student',
+    type: 'STUDENT',
+    name: '학생',
+  },
+];
+
+
 export interface UserData {
   email: string;
   nickname: string;
@@ -193,7 +221,7 @@ export const setTemplate = async (templateType: UserTemplateType) => {
 export const updateTemplate = async (templateType: UserTemplateType) => {
   const response = await callAPI({
     url: '/api/v1/members/custom/category-template',
-    method: 'PUT',
+    method: 'PATCH',
     body: { templateType },
   });
 
