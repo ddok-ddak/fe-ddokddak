@@ -26,8 +26,8 @@ import Wrapper from '../auth/common/Wrapper';
 import { currentUserInfo } from '@/store/info';
 import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
-import { UserData, UserTemplateType } from '@/store/userData';
 import { modalAnswer } from '@/constants/message';
+import { UserData, UserTemplateType } from '@/api/auth';
 
 export interface MainCategoryProps {
   highlightColor?: string | undefined;
@@ -65,8 +65,8 @@ export interface ModeProps {
 
 export const UserModeList: ModeProps[] = [
   {
-    id: 'normal',
-    type: 'NORMAL',
+    id: 'unemployed',
+    type: 'UNEMPLOYED',
     name: '일반인',
     modalTitle: '일반인 모드 선택 시 기존 데이터가 삭제됩니다.',
     modalMsg:
@@ -105,18 +105,6 @@ const CategoryPage = () => {
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
   const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
-
-  /**
-   * get user info
-   */
-  // const getUserInfo = async () => {
-  //   const response = await getInfo();
-  //   if (response.status === 'SUCCESS') {11 5
-  //     setUserInfo(response.result);
-  //   } else {
-  //     alert('Error');
-  //   }
-  // };
 
   const getUserInfo = () => {
     const data: UserData = { email: '', nickname: '', templateType: 'STUDENT' };

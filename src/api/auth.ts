@@ -3,11 +3,11 @@ import CommonResponse from './http';
 
 /**
  * 사용자 모드
- * NORMAL 일반인
+ * UNEMPLOYED 일반인
  * STUDENT 학생
  * WORKER 직장인
  */
-export type UserTemplateType = 'NONE' | 'NORMAL' | 'STUDENT' | 'WORKER';
+export type UserTemplateType = 'NONE' | 'UNEMPLOYED' | 'STUDENT' | 'WORKER';
 export interface UserData {
   email: string;
   nickname: string;

@@ -201,6 +201,20 @@ const RecordPage = () => {
   }));
 
   useEffect(() => {
+    setNextButtonProps({
+      ...nextButtonProps,
+      clickHandler: async () => {
+        await setTemplate(selectedValue.type).then(() => {
+          setModalInfo({
+            ...modalInfo,
+            open: false,
+          });
+        });
+      },
+    });
+  }, [selectedValue])
+
+  useEffect(() => {
     const initialInfo = { start: new Date() };
     getAllRecords(initialInfo);
 
@@ -223,19 +237,6 @@ const RecordPage = () => {
 
     // set type for next button (for template mode setting modal)
     setCurrentFormType('SETTEMPLATE');
-
-    setNextButtonProps({
-      ...nextButtonProps,
-      text: '시작하기!',
-      clickHandler: async () => {
-        await setTemplate(selectedValue.id).then(() => {
-          setModalInfo({
-            ...modalInfo,
-            open: false,
-          });
-        });
-      },
-    });
   }, []);
 
   return (

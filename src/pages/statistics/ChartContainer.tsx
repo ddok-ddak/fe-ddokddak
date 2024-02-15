@@ -453,7 +453,6 @@ const ChartContainer = () => {
 
   useEffect(() => {
     setCalendarType('STAT');
-    statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
 
   useEffect(() => {
@@ -472,7 +471,11 @@ const ChartContainer = () => {
       ),
     );
 
-    setCategoryDetailData(statisticsResult.filter((data) => data.timeSum > 0));
+    setCategoryDetailData(
+      statisticsResult.length
+        ? statisticsResult.filter((data) => data.timeSum > 0)
+        : [],
+    );
     setIsFirstPage(true);
   }, [statisticsResult, periodType]);
 

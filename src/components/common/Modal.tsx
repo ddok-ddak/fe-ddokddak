@@ -116,7 +116,7 @@ const Modal = () => {
                         control={
                           <Radio
                             onChange={() => {
-                              setSelectedValue(option);
+                              setSelectedValue(() => option);
                               setNextButtonProps({
                                 ...nextButtonProps,
                                 isDisabled: false,

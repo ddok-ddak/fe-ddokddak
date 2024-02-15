@@ -14,7 +14,7 @@ const getTokenCookieOption = () => {
   return {
     path: '/',
     expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // expires after 1 hour
-    domain: 'https://dodonenow.com',
+    // domain: 'https://dodonenow.com',
     // secure: true,
     // httpOnly: false,
     // sameSite: 'none',

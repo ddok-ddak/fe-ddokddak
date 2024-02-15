@@ -1,4 +1,4 @@
-import { getInfo } from '@/api/auth';
+import { UserTemplateType, getInfo } from '@/api/auth';
 import { setTokenCookie } from '@/api/http';
 import { UserModeList } from '@/pages/category/CategoryPage';
 import { currentUserInfo } from '@/store/info';
@@ -15,7 +15,7 @@ function LoginRedirect() {
 
   const getUserInfo = async () => {
     await getInfo()
-      .then((response) => {
+      .then((response: any) => {
         const info = response.result;
         setUserInfo(info);
         if (info.templateType === 'NONE') {
@@ -24,7 +24,7 @@ function LoginRedirect() {
             title: `${info.nickname}님 환영합니다!`,
             msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
             optionList: UserModeList.map(
-              (userMode: { id: any; type: any; name: any }) => {
+              (userMode: { id: string; type: UserTemplateType; name: string }) => {
                 return {
                   id: userMode.id,
                   type: userMode.type,
