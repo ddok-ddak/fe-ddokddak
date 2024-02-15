@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { Cookies } from 'react-cookie';
 
-export const ACCESS_TOKEN = 'accessToken';
-export const REFRESH_TOKEN = 'refreshToken';
+export const ACCESS_TOKEN = 'access_token';
+export const REFRESH_TOKEN = 'refresh_token';
 
 const cookie = new Cookies();
 
@@ -14,7 +14,7 @@ const getTokenCookieOption = () => {
   return {
     path: '/',
     expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // expires after 1 hour
-    // domain: 'https://dodonenow.com',
+    domain: 'https://dodonenow.com',
     // secure: true,
     // httpOnly: false,
     // sameSite: 'none',
@@ -67,9 +67,8 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
       // set bearer authorization token to the header
       if (config.headers) {
         const accessToken = cookie.get(ACCESS_TOKEN);
-        console.log('accessToken', accessToken)
         if (accessToken) {
-          config.headers['Authorization'] = accessToken;
+          config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
       }
       return config;

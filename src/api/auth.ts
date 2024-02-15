@@ -104,6 +104,7 @@ export const signOut = async () => {
 
   return response as CommonResponse;
 };
+
 /************************ USER INFO ************************/
 
 export const getInfo = async () => {
@@ -115,13 +116,25 @@ export const getInfo = async () => {
   return response as CommonResponse;
 };
 
-/************************ SET USER MODE (TEMPLATE) ************************/
+/************************ SET USER MODE TEMPLATE (first time) ************************/
 
 export const setTemplate = async (templateType: UserTemplateType) => {
+  console.log(templateType)
   const response = await callAPI({
     url: '/api/v1/members/custom/category-template',
     method: 'POST',
-    // method: 'PUT',
+    body: { templateType },
+  });
+
+  return response as CommonResponse;
+};
+
+/************************ SET USER MODE TEMPLATE (update) ************************/
+
+export const updateTemplate = async (templateType: UserTemplateType) => {
+  const response = await callAPI({
+    url: '/api/v1/members/custom/category-template',
+    method: 'PUT',
     body: { templateType },
   });
 

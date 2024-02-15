@@ -228,8 +228,7 @@ const RecordPage = () => {
       ...nextButtonProps,
       text: '시작하기!',
       clickHandler: async () => {
-        console.log('clicked!!');
-        await setTemplate(selectedValue.type).then(() => {
+        await setTemplate(selectedValue.id).then(() => {
           setModalInfo({
             ...modalInfo,
             open: false,

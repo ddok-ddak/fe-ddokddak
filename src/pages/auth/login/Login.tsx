@@ -224,7 +224,7 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          Copyright 2023 DDOK-DDAK All Right Reserved.
+          Copyright 2024 DDOK-DDAK All Right Reserved.
         </Typography>
       </Container>
     </>
