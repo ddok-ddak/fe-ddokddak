@@ -1,5 +1,5 @@
+import { UserData } from '@/api/auth';
 import { atom } from 'recoil';
-import { UserData } from './userData';
 
 export const currentUserInfo = atom<UserData>({
   key: 'currentUserInfo',
@@ -9,7 +9,7 @@ export const currentUserInfo = atom<UserData>({
     role: '',
     status: '',
     authProviderType: '',
-    templateType: null,
+    templateType: 'NONE',
     startDay: '',
     startTime: '',
   },

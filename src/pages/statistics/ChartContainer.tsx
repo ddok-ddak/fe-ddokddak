@@ -472,7 +472,11 @@ const ChartContainer = () => {
       ),
     );
 
-    setCategoryDetailData(statisticsResult.filter((data) => data.timeSum > 0));
+    setCategoryDetailData(
+      statisticsResult.length
+        ? statisticsResult.filter((data) => data.timeSum > 0)
+        : [],
+    );
     setIsFirstPage(true);
   }, [statisticsResult, periodType]);
 

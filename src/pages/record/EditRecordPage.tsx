@@ -52,30 +52,8 @@ import Wrapper from '../auth/common/Wrapper';
 import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
 import { popupShowState } from '@/store/popupMessage';
-
-export interface MainCategoryProps {
-  categoryId: number;
-  name: string;
-  level?: number;
-  color: string;
-  highlightColor: string;
-  subCategories: SubCategoryProps[];
-}
-
-export interface SubCategoryProps {
-  categoryId?: any;
-  id?: any;
-  start: any;
-  end: any;
-  subCategories?: any[];
-  level?: any;
-  name?: any;
-  iconName?: any;
-  color?: any;
-  highlightColor?: any;
-  value?: any;
-  content?: any;
-}
+import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
+import { CategoryViewType, categoryViewMode } from '@/store/category';
 
 export interface SelectedRangeData {
   start: Date;

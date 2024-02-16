@@ -1,11 +1,27 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { Cookies } from 'react-cookie';
 
-export const ACCESS_TOKEN = 'accessToken';
-export const REFRESH_TOKEN = 'refreshToken';
+export const ACCESS_TOKEN = 'access_token';
+export const REFRESH_TOKEN = 'refresh_token';
 
 const cookie = new Cookies();
 
+const getTokenCookieOption = () => {
+  return {
+    path: '/',
+    expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // expires after 1 hour
+    // domain: 'https://dodonenow.com',
+    // secure: true,
+    // httpOnly: false,
+    // sameSite: 'none',
+    // partitioned: false,
+  };
+};
+
+/**
+ * return cookie option
+ * @returns cookie option for token
+ */
 const getTokenCookieOption = () => {
   return {
     path: '/',
@@ -61,13 +77,12 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     ): Promise<InternalAxiosRequestConfig> => {
       
       // set bearer authorization token to the header
-      const accessToken = cookie.get(ACCESS_TOKEN);
       if (config.headers) {
+        const accessToken = cookie.get(ACCESS_TOKEN);
         if (accessToken) {
-          config.headers['Authorization'] = accessToken;
+          config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
       }
-
       return config;
     },
     (error: any): Promise<any> => {
@@ -81,9 +96,8 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
   instance.interceptors.response.use(
     async (response: any): Promise<any> => {
       const result = response.data.result;
-      if (result && result.authorization) {
-        setTokenCookie(result.authorization);
-        window.location.href = '/record';
+      if (result && result.accessToken) {
+        window.location.href = `/signin/redirect?accessToken=${result.accessToken}`;
       }
       return response.data;
     },

@@ -22,11 +22,13 @@ import SettingWrapper from '../auth/common/Wrapper';
 import { signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
+import { CategoryViewType, categoryViewMode } from '@/store/category';
 
 const SettingPage = () => {
   const navigation = useNavigate();
   const setStepIndex = useSetRecoilState(stepIndex);
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
 
   /**
    * get list sub header
@@ -124,7 +126,10 @@ const SettingPage = () => {
           {getListSubHeader('커스텀화')}
           {getListItem({
             text: '모드 및 카테고리 설정',
-            handler: () => navigation('/category'),
+            handler: () => {
+              setCategoryMode('MODEVISIBLE');
+              navigation('/category');
+            },
           })}
 
           {getListSubHeader('고객 센터')}

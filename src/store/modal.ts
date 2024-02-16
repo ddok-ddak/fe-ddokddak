@@ -36,3 +36,7 @@ export const modalButtonState = atom({
   },
 });
 
+export const modalValue = atom<any>({
+  key: 'ModalValue',
+  default: {},
+});

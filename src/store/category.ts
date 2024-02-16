@@ -22,3 +22,13 @@ export const deleteCategoryButtonState = atom({
     text: buttonText.delete,
   },
 });
+
+export type CategoryViewType =
+  | 'MODEVISIBLE'
+  | 'MODWHIDDEN';
+
+// selected Sub Category
+export const categoryViewMode = atom<CategoryViewType>({
+  key: 'categoryViewMode',
+  default: 'MODEVISIBLE',
+});

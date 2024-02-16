@@ -1,6 +1,24 @@
-import { UserData } from '@/store/userData';
 import { callAPI } from './common/api';
 import CommonResponse from './http';
+
+/**
+ * 사용자 모드
+ * UNEMPLOYED 일반인
+ * STUDENT 학생
+ * WORKER 직장인
+ */
+export type UserTemplateType = 'NONE' | 'UNEMPLOYED' | 'STUDENT' | 'WORKER';
+export interface UserData {
+  email: string;
+  nickname: string;
+  password?: string;
+  role?: string;
+  status?: string;
+  authProviderType?: string;
+  templateType?: UserTemplateType;
+  startDay?: string;
+  startTime?: string;
+}
 
 /************************ SIGN UP ************************/
 
@@ -86,12 +104,38 @@ export const signOut = async () => {
 
   return response as CommonResponse;
 };
+
 /************************ USER INFO ************************/
 
 export const getInfo = async () => {
   const response = await callAPI({
     url: '/api/v1/members/me',
     method: 'GET',
+  });
+
+  return response as CommonResponse;
+};
+
+/************************ SET USER MODE TEMPLATE (first time) ************************/
+
+export const setTemplate = async (templateType: UserTemplateType) => {
+  console.log(templateType)
+  const response = await callAPI({
+    url: '/api/v1/members/custom/category-template',
+    method: 'POST',
+    body: { templateType },
+  });
+
+  return response as CommonResponse;
+};
+
+/************************ SET USER MODE TEMPLATE (update) ************************/
+
+export const updateTemplate = async (templateType: UserTemplateType) => {
+  const response = await callAPI({
+    url: '/api/v1/members/custom/category-template',
+    method: 'PUT',
+    body: { templateType },
   });
 
   return response as CommonResponse;

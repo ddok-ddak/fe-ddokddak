@@ -9,13 +9,15 @@ import {
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Circle from '../../components/common/Circle';
 import FolderTop from '../../components/common/FolderTop';
 import Spacer from '../../components/common/Spacer';
 import CommonHeader from '../../components/layout/CommonHeader';
 import {
+  CategoryViewType,
+  categoryViewMode,
   selectedMainCategoryState,
   selectedSubCategoryState,
 } from '../../store/category';
@@ -24,8 +26,8 @@ import Wrapper from '../auth/common/Wrapper';
 import { currentUserInfo } from '@/store/info';
 import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
-import { UserData, UserTemplateType } from '@/store/userData';
 import { modalAnswer } from '@/constants/message';
+import { UserData, UserTemplateType } from '@/api/auth';
 
 export interface MainCategoryProps {
   highlightColor?: string | undefined;
@@ -63,8 +65,8 @@ export interface ModeProps {
 
 export const UserModeList: ModeProps[] = [
   {
-    id: 'normal',
-    type: 'NORMAL',
+    id: 'unemployed',
+    type: 'UNEMPLOYED',
     name: '일반인',
     modalTitle: '일반인 모드 선택 시 기존 데이터가 삭제됩니다.',
     modalMsg:
@@ -96,25 +98,13 @@ const CategoryPage = () => {
   const setSelectedSubCategory = useSetRecoilState<SubCategoryProps>(
     selectedSubCategoryState,
   );
-  const [categories, setCategories] = useState<MainCategoryProps[]>([]);
 
   const setUserInfo = useSetRecoilState<UserData>(currentUserInfo);
-
-  const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
-
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const categoryMode = useRecoilValue<CategoryViewType>(categoryViewMode);
 
-  /**
-   * get user info
-   */
-  // const getUserInfo = async () => {
-  //   const response = await getInfo();
-  //   if (response.status === 'SUCCESS') {11 5
-  //     setUserInfo(response.result);
-  //   } else {
-  //     alert('Error');
-  //   }
-  // };
+  const [categories, setCategories] = useState<MainCategoryProps[]>([]);
+  const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
 
   const getUserInfo = () => {
     const data: UserData = { email: '', nickname: '', templateType: 'STUDENT' };
@@ -194,71 +184,72 @@ const CategoryPage = () => {
     >
       <Spacer y={20} />
 
-      <Container>
-        <Typography
-          sx={{
-            fontSize: '14px',
-            fontWeight: '600',
-            m: '10px 0',
-          }}
-        >
-          {'현재 모드'}
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-          }}
-        >
-          {UserModeList.map((mode, idx) => {
-            const type = mode.type;
-            return (
-              <RadioGroup key={idx}>
-                <Circle
-                  label={`${mode.name} 모드`}
-                  labelSize='13px'
-                  color='pink.300'
-                  size={63}
-                  iconSize={41}
-                  iconName={mode.id}
-                />
-                <Radio
-                  size="small"
-                  checked={currentUserMode?.type === type}
-                  color="default"
-                  value={type}
-                  onClick={() => {
-                    setCurrentUserMode(mode);
-                    setWarningModal(mode);
-                  }}
-                  sx={{
-                    span: {
-                      position: 'absolute',
-                      top: '0px',
-                    },
-                    '& .MuiSvgIcon-root ': {
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '15px',
-                      height: '15px',
-                    },
-                    '& .MuiSvgIcon-root:first-of-type ': {
-                      color: 'grey.700',
-                    },
-                    '& .MuiSvgIcon-root:last-of-type ': {
-                      color: 'pink.700',
-                    },
-                  }}
-                />
-              </RadioGroup>
-            );
-          })}
-        </Box>
-      </Container>
-
-      <Spacer y={27} />
+      <Box sx={{ display: categoryMode === 'MODEVISIBLE' ? '' : 'none' }}>
+        <Container>
+          <Typography
+            sx={{
+              fontSize: '14px',
+              fontWeight: '600',
+              m: '10px 0',
+            }}
+          >
+            {'현재 모드'}
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            {UserModeList.map((mode, idx) => {
+              const type = mode.type;
+              return (
+                <RadioGroup key={idx}>
+                  <Circle
+                    label={`${mode.name} 모드`}
+                    labelSize="13px"
+                    color="pink.300"
+                    size={63}
+                    iconSize={41}
+                    iconName={mode.id}
+                  />
+                  <Radio
+                    size="small"
+                    checked={currentUserMode?.type === type}
+                    color="default"
+                    value={type}
+                    onClick={() => {
+                      setCurrentUserMode(mode);
+                      setWarningModal(mode);
+                    }}
+                    sx={{
+                      span: {
+                        position: 'absolute',
+                        top: '0px',
+                      },
+                      '& .MuiSvgIcon-root ': {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '15px',
+                        height: '15px',
+                      },
+                      '& .MuiSvgIcon-root:first-of-type ': {
+                        color: 'grey.700',
+                      },
+                      '& .MuiSvgIcon-root:last-of-type ': {
+                        color: 'pink.700',
+                      },
+                    }}
+                  />
+                </RadioGroup>
+              );
+            })}
+          </Box>
+        </Container>
+        <Spacer y={27} />
+      </Box>
 
       <Divider
         sx={{
