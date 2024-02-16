@@ -9,7 +9,6 @@ import { useSetRecoilState } from 'recoil';
 
 function LoginRedirect() {
   const navigate = useNavigate();
-
   const setUserInfo = useSetRecoilState(currentUserInfo);
   const setModalInfo = useSetRecoilState(modalState);
 
@@ -38,6 +37,7 @@ function LoginRedirect() {
       });
   };
 
+
   useEffect(() => {
     const accessToken = new URL(window.location.href).searchParams.get(
       'accessToken',
@@ -45,6 +45,7 @@ function LoginRedirect() {
     setTokenCookie(accessToken);
     navigate('/record', { replace: false });
     getUserInfo();
+
   }, []);
 
   return <></>;

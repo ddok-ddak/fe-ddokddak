@@ -11,6 +11,7 @@ const BottomButton = ({
   textStyleProps: object;
   buttonProps?: IButtonState;
 }) => {
+  
   const stepType = useRecoilValue(currentFormType);
   const tempButtonProps = useRecoilValue(stepButtonProps);
   const nextButtonProps = buttonProps || tempButtonProps;

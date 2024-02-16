@@ -9,7 +9,6 @@ import {
   RadioGroup,
 } from '@mui/material';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-
 import { modalButtonState, modalState, modalValue } from '@/store/modal';
 import BottomButton from '@/components/common/BottomButton';
 import Spacer from './Spacer';
@@ -20,7 +19,6 @@ const Modal = () => {
   const [nextButtonProps, setNextButtonProps] =
     useRecoilState(modalButtonState);
   const setSelectedValue = useSetRecoilState(modalValue);
-
   const handleClose = () => setModalInfo({ ...modalInfo, open: false });
 
   useEffect(() => {

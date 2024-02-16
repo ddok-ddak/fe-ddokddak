@@ -6,6 +6,18 @@ export const REFRESH_TOKEN = 'refresh_token';
 
 const cookie = new Cookies();
 
+const getTokenCookieOption = () => {
+  return {
+    path: '/',
+    expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000), // expires after 1 hour
+    // domain: 'https://dodonenow.com',
+    // secure: true,
+    // httpOnly: false,
+    // sameSite: 'none',
+    // partitioned: false,
+  };
+};
+
 /**
  * return cookie option
  * @returns cookie option for token

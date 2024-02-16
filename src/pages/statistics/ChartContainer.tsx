@@ -453,6 +453,7 @@ const ChartContainer = () => {
 
   useEffect(() => {
     setCalendarType('STAT');
+    statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
 
   useEffect(() => {

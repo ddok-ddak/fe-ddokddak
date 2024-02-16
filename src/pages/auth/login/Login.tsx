@@ -15,6 +15,7 @@ import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
 import { signIn } from '@/api/auth';
 import Spacer from '@/components/common/Spacer';
+import { modalState } from '@/store/modal';
 
 const { checkEmailValidity } = checkPattern();
 
@@ -24,6 +25,7 @@ export default function Login() {
   const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
+
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
