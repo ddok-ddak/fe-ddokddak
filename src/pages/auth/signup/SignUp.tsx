@@ -1,10 +1,10 @@
 import { Box, LinearProgress, LinearProgressProps } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import React from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useEffect } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { useSignUpStepForm } from '@/hooks/signUpSteps';
-import { stepIndex } from '@/store/common';
+import { currentFormType, stepIndex } from '@/store/common';
 import SetPW from './SetPW';
 import FormWrapper from '../common/FormWrapper';
 import VerifyCode from '../common/VerifyCode';
@@ -18,6 +18,11 @@ import { buttonText } from '@/constants/message';
 
 const SignUp = () => {
   const currentStepIndex = useRecoilValue(stepIndex);
+  const setStepType = useSetRecoilState(currentFormType);
+
+  useEffect(() => {
+    setStepType('SIGNUP');
+  }, []);
 
   /**
    * custom hook for sign up form

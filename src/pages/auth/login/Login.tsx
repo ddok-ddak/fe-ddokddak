@@ -6,7 +6,7 @@ import {
 } from '@/store/common';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
 import InputForm, { InputItemType } from '../common/InputForm';
@@ -14,22 +14,22 @@ import InputForm, { InputItemType } from '../common/InputForm';
 import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
 import { signIn } from '@/api/auth';
-import { modalState } from '@/store/modal';
+import Spacer from '@/components/common/Spacer';
 
 const { checkEmailValidity } = checkPattern();
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
-
   const setInstruction = useSetRecoilState(stepInstruction);
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [helper1, setHelper1] = useState('');
-  const [isHelperError1, setIsHelperError1] = useState(true);
+  const [helper2, setHelper2] = useState('');
+  const [isHelperError1, setIsHelperError1] = useState(false);
 
   const itemArray1: InputItemType[] = [
     {
@@ -49,6 +49,20 @@ export default function Login() {
     },
   ];
 
+  /**
+   * handle login button click event
+   */
+  const loginButtonClickHandler = async () =>
+    await signIn({ email, password })
+      .then((response) => {
+        if (response.status !== 'SUCCESS') {
+          setHelper2('이메일 또는 비밀번호가 일치하지 않습니다.');
+        }
+      })
+      .catch(() => {
+        setHelper2('오류가 발생했습니다. 다시 시도 해주세요.');
+      });
+
   useEffect(() => {
     if (email === '') {
       setHelper1('');
@@ -64,32 +78,15 @@ export default function Login() {
   }, [email]);
 
   useEffect(() => {
+    setHelper2('');
+  }, [password]);
+
+  useEffect(() => {
+    setHelper2('');
     setNextButtonProps({
       ...nextButtonProps,
       isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
-      clickHandler: async () => {
-        await signIn({ email, password })
-          .then((response) => {
-            if (response.status !== 'SUCCESS') {
-              setModalInfo({
-                ...modalInfo,
-                title: '로그인 오류',
-                msg: '이메일 혹은 비밀번호를 다시 확인 해주세요.',
-                open: true,
-                isShowConfirmBtn: true,
-              });
-            }
-          })
-          .catch((error) => {
-            setModalInfo({
-              ...modalInfo,
-              title: '서버 오류',
-              msg: '오류가 발생했습니다. 다시 시도 해주세요.',
-              open: true,
-              isShowConfirmBtn: true,
-            });
-          });
-      },
+      clickHandler: loginButtonClickHandler,
     });
   }, [email, password]);
 
@@ -99,7 +96,6 @@ export default function Login() {
     setNextButtonProps({
       ...nextButtonProps,
       text: '로그인',
-      isDisabled: false,
     });
   }, []);
 
@@ -109,7 +105,11 @@ export default function Login() {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          pb: 0,
+          p: 0,
+          m: 0,
+          width: '100%',
+          height: '497px',
+          flex: '1 1 497px',
         }}
       >
         <FormWrapper
@@ -120,7 +120,9 @@ export default function Login() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  p: '30px 0 73px 0',
+                  height: '194px',
+                  p: '0px',
+                  m: '0px',
                 }}
               >
                 <Logo />
@@ -129,9 +131,14 @@ export default function Login() {
                 key="id"
                 itemArray={itemArray1}
                 helper={helper1}
-                isHelperError={isHelperError1}
+                isHelperError={true}
               />
-              <InputForm key="password" itemArray={itemArray2} />
+              <InputForm
+                key="password"
+                itemArray={itemArray2}
+                helper={helper2}
+                isHelperError={true}
+              />
             </>
           }
         />
@@ -139,9 +146,11 @@ export default function Login() {
       <Container
         sx={{
           display: 'flex',
+          flex: '1 0 auto',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          height: '315px',
         }}
       >
         <Box
@@ -149,7 +158,7 @@ export default function Login() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            padding: '15px 8px',
+            padding: '10px 8px 0px 8px',
             fontSize: '12px',
           }}
         >
@@ -168,14 +177,6 @@ export default function Login() {
               backgroundColor: 'text.secondary',
             }}
           />
-          <Button
-            sx={{ color: 'text.primary' }}
-            variant="text"
-            component={Link}
-            to="/findID"
-          >
-            아이디 찾기
-          </Button>
           <Box
             sx={{
               width: '1px',
@@ -192,6 +193,7 @@ export default function Login() {
             비밀번호 재설정
           </Button>
         </Box>
+
         <Box
           sx={{
             display: 'flex',
@@ -206,7 +208,14 @@ export default function Login() {
           <SocialLogin registrationId={'naver'} />
           <SocialLogin registrationId={'google'} />
         </Box>
-        <Button>
+
+        <Spacer y={70} />
+
+        <Button
+          onClick={() => {
+            navigate('/record');
+          }}
+        >
           <Typography
             align="center"
             sx={{
@@ -218,6 +227,9 @@ export default function Login() {
             {'둘러보기 >'}
           </Typography>
         </Button>
+
+        <Spacer y={50} />
+
         <Typography
           align="center"
           sx={{

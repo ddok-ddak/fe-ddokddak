@@ -1,4 +1,4 @@
-import { IButtonState, stepButtonProps } from '@/store/common';
+import { IButtonState, currentFormType, stepButtonProps } from '@/store/common';
 import { Button, Typography } from '@mui/material';
 import { useRecoilValue } from 'recoil';
 
@@ -11,6 +11,7 @@ const BottomButton = ({
   textStyleProps: object;
   buttonProps?: IButtonState;
 }) => {
+  const stepType = useRecoilValue(currentFormType);
   const tempButtonProps = useRecoilValue(stepButtonProps);
   const nextButtonProps = buttonProps || tempButtonProps;
 
@@ -23,12 +24,14 @@ const BottomButton = ({
       borderRadius: '5px',
       boxShadow: 'none',
       color: 'common.white',
-      '&:Mui-disabled': {
-        backgroundColor: 'primary.dark',
+      '&.Mui-disabled': {
+        backgroundColor: stepType === 'LOGIN' ? 'pink.300' : 'grey.300',
+        color: 'common.white'
       },
     },
     btnStyleProps,
   );
+
   return (
     <Button
       variant="contained"
