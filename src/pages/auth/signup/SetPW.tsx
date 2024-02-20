@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import InputForm, { InputItemType } from '../common/InputForm';
 import { checkPattern } from '@/hooks/checkPattern';
+import { buttonText } from '@/constants/message';
 
 const { checkPasswordValidity } = checkPattern();
 
@@ -94,7 +95,7 @@ const SetPW = (props: any) => {
   useEffect(() => {
     setSignUpStepInstruction('비밀번호를 입력해주세요.');
     setSignUpNextButtonProps({
-      text: '다음',
+      text: buttonText.next,
       clickHandler: props.handleNextButton,
       isDisabled: true,
     });

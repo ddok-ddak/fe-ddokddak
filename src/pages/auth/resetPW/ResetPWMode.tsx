@@ -1,10 +1,10 @@
+import { buttonText } from '@/constants/message';
 import { currentFormType, stepButtonProps } from '@/store/common';
-import { resetPWMode, resetPWNextButtonState } from '@/store/resetPW';
+import { resetPWMode } from '@/store/resetPW';
 import { Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-
 const ResetPWMode = (props: any) => {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const [pWChgMode, setPWChgMode] = useRecoilState(resetPWMode);
@@ -49,7 +49,7 @@ const ResetPWMode = (props: any) => {
     setStepType('RESETPW');
     setNextButtonProps({
       ...nextButtonProps,
-      text: '다음',
+      text: buttonText.next,
       isDisabled: false,
       clickHandler: props.handleNextButton,
     });

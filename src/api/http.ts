@@ -63,7 +63,6 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     async (
       config: InternalAxiosRequestConfig,
     ): Promise<InternalAxiosRequestConfig> => {
-      
       // set bearer authorization token to the header
       if (config.headers) {
         const accessToken = cookie.get(ACCESS_TOKEN);
