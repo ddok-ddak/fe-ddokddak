@@ -103,8 +103,16 @@ export const theme = createTheme({
       blue: '#4F75FF',
     },
     popup: {
-      background: '#D1F1E4',
-      icon: '#16B978',
+      success: {
+        background: '#D1F1E4',
+        icon: '#16B978',
+        color: greyPalette[700],
+      },
+      error: {
+        background: '#FF9E9E',
+        icon: '#FF4444',    
+        color: greyPalette[600],
+      },
     },
   },
   components: {
