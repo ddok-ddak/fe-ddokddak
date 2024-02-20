@@ -1,3 +1,4 @@
+import { buttonText } from '@/constants/message';
 import { stepButtonProps, stepInstruction } from '@/store/common';
 import { theme } from '@/styles';
 import {
@@ -105,7 +106,7 @@ const CheckTermsAndConditions = (props: any) => {
     setInstruction('서비스를 이용하기 위해 약관에 동의 해주세요.');
     setNextButtonProps({
       ...nextButtonProps,
-      text: '다음',
+      text: buttonText.next,
       isDisabled: true,
       clickHandler: props.handleNextButton,
     });

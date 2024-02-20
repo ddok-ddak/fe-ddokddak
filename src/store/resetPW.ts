@@ -1,6 +1,4 @@
-import ResetPW from '@/pages/auth/resetPW/ResetPW';
-import ResetPWMode from '@/pages/auth/resetPW/ResetPWMode';
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import { buttonText } from '@/constants/message';
 import { ReactElement } from 'react';
 import { atom } from 'recoil';
 
@@ -16,36 +14,12 @@ export const resetPWStepPages = atom<ReactElement[]>({
 });
 
 
-// // sign up user data
-//  interface ISignUpDataState {
-//   email: string,
-//   nickname: string,
-//   password: string,
-// }
-
-//  const signUpDataState = atom({
-//   key: 'signUpData',
-//   default: {
-//     email: '',
-//     nickname: '',
-//     password: '',
-//   },
-//   dangerouslyAllowMutability: false
-// });
-
-// // sign up next button props
-//  interface ISignInUpNextButtonState {
-//   isDisabled: boolean,
-//   clickHandler: () => void,
-//   text: string
-// }
-
 export const resetPWNextButtonState = atom({
   key: 'ResetPWNextButton',
   default: {
     isDisabled: true,
     clickHandler: () => {},
-    text: '다음',
+    text: buttonText.next,
   },
 });
 

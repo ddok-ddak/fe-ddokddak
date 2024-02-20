@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { INextButtonState } from './common';
+import { buttonText } from '@/constants/message';
 
 // sign up step current index
 export const signUpStep = atom({
@@ -30,14 +31,13 @@ export const signInUpNextButtonState = atom<INextButtonState>({
   default: {
     isDisabled: true,
     clickHandler: () => {},
-    text: '다음'
+    text: buttonText.next,
   }
 });
 
-
 export const signInUpStepInstruction = atom<string>({
   key: 'signInUpStepInstruction',
-  default: '다음',
+  default: buttonText.next,
 });
 
 // sign up custom hook
