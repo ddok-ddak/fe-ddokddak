@@ -5,23 +5,23 @@ import Spacer from '@/components/common/Spacer';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { theme } from '@/styles';
 import { popupMessageText } from '@/store/common';
-import { useState } from 'react';
-import { popupShowState } from '@/store/popupMessage';
-
+import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 
 const PopupMessage = () => {
-
   const popupText = useRecoilValue(popupMessageText);
 
   const [isPopupShow, setIsPopupShow] = useRecoilState(popupShowState);
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const isSuccessPopup = useRecoilValue(popupSuccessState);
 
-  const { background, icon } = theme.palette.popup;
+  const { background, icon, color } = theme.palette.popup[isSuccessPopup ? 'success' : 'error'];
 
   return (
     <Popover
       id={isPopupShow ? 'virtual-element-popover' : undefined}
-      anchorEl={anchorEl}
+      anchorEl={(element: Element) => {
+        // console.log(element);
+        return element;
+      }}
       open={isPopupShow}
       onClose={() => {
         setIsPopupShow(false);
@@ -71,7 +71,7 @@ const PopupMessage = () => {
                   <rect
                     width="11.5714"
                     height="11.5714"
-                    fill="white"
+                    fill="#FFFFFF"
                     transform="translate(3.21387 3.21387)"
                   />
                 </clipPath>
@@ -85,6 +85,7 @@ const PopupMessage = () => {
               color: 'grey.700',
               lineHeight: '24px',
               fontSize: '13px',
+              color,
             }}
           >
             {popupText}

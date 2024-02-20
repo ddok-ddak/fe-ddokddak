@@ -25,7 +25,7 @@ import {
   stepButtonProps,
 } from '@/store/common';
 import { buttonText } from '@/constants/message';
-import { popupShowState } from '@/store/popupMessage';
+import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 
 const EditCategoryPage = () => {
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
@@ -33,6 +33,7 @@ const EditCategoryPage = () => {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
   const setIsPopupShow = useSetRecoilState(popupShowState);
+  const setIsSuccessPopup = useSetRecoilState(popupSuccessState);
   const setPopupText = useSetRecoilState(popupMessageText);
   const setPopupMessageType = useSetRecoilState(currentPopupMessageType);
 
@@ -166,6 +167,7 @@ const EditCategoryPage = () => {
       isDisabled: false,
       clickHandler: handleDelete,
     });
+    setIsSuccessPopup(true);
   }, []);
 
   return (

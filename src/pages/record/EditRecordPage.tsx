@@ -51,9 +51,8 @@ import FlexBox from '@/components/common/FlexBox';
 import Wrapper from '../auth/common/Wrapper';
 import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
-import { popupShowState } from '@/store/popupMessage';
+import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
-import { CategoryViewType, categoryViewMode } from '@/store/category';
 
 export interface SelectedRangeData {
   start: Date;
@@ -97,11 +96,14 @@ const EditRecordPage = (): ReactElement => {
   const navigate = useNavigate();
   const currentDay = new Date().getDay();
 
+  const recordType = useRecoilValue(currentRecordPageType);
+
   const setStepType = useSetRecoilState<FormType>(currentFormType);
   const setNextButtonProps = useSetRecoilState(stepButtonProps);
   const setPopupMessageType = useSetRecoilState(currentPopupMessageType);
   const setPopupText = useSetRecoilState(popupMessageText);
   const setIsPopupShow = useSetRecoilState(popupShowState);
+  const setIsSuccessPopup = useSetRecoilState(popupSuccessState);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
 
@@ -118,13 +120,15 @@ const EditRecordPage = (): ReactElement => {
   const [recoilCategoryValue, setRecoilCategoryValue] =
     useRecoilState(recoilCategory);
   const setRecoilSubCategoryValue = useSetRecoilState(recoilSubCategory);
-  const recordType = useRecoilValue(currentRecordPageType);
 
   const [content, setContent] = useState<string>('');
 
   const [isTimePickerOpen, setIsTimePickerOpen] = useState<boolean>(false);
 
   const [tempTime, setTempTime] = useState<Dayjs>(dayjs(selectedEvent.start));
+  const [isValidNewTime, setIsValidNewTime] = useState<boolean>(true);
+  const [popupMsg, setPopupMsg] = useState<string>('');
+
   const [eventTimeType, setEventTimeType] = useState<string>('start');
 
   /**
@@ -139,12 +143,12 @@ const EditRecordPage = (): ReactElement => {
 
     switch (type) {
       case 'hour':
-        selectedTime = tempTime.hour();
+        selectedTime = tempTime.locale('en').format('h');
         optionList = Array(12)
           .fill(undefined)
           .map((_, index) => index + 1);
         optionList.forEach((option: number, index: number) => {
-          if (option === selectedTime) {
+          if (Number(selectedTime) === option) {
             toSwipeIndex = index;
             return true;
           }
@@ -172,7 +176,7 @@ const EditRecordPage = (): ReactElement => {
         loopAdditionalSlides={type === 'hour' ? 4 : 0}
         noSwiping={true}
         onSwiper={(swiper) => {
-          swiper.slideToLoop(toSwipeIndex - (type === 'hour' ? 0 : 0));
+          swiper.slideToLoop(toSwipeIndex);
         }}
         style={{
           width: type === 'minute' ? '25%' : '40%',
@@ -235,11 +239,48 @@ const EditRecordPage = (): ReactElement => {
                     newTime = tempTime.subtract(12, 'hour');
                   }
                 } else if (type === 'hour') {
-                  newTime = tempTime.hour(value);
+                  const meridiem = tempTime.locale('en').format('A');
+                  newTime = tempTime.hour(
+                    meridiem === 'AM' ? value : value + 12,
+                  );
                 } else if (type === 'minute') {
                   newTime = tempTime.minute(value);
                 }
+                let isValid = false;
+                let isEndTimeAfterStart: boolean = true;
+                let isStartTimeAfter4: boolean = true;
+                let isStartTimeBeforeEnd: boolean = false;
+                let isEndTimeBefore4: boolean = false;
+                let msg = '';
+                if (eventTimeType === 'start') {
+                  isEndTimeAfterStart = dayjs(selectedEvent.end).isAfter(
+                    newTime,
+                  );
+                  if (parseInt(dayjs(newTime).format('H')) < 4) {
+                    isEndTimeAfterStart = false;
+                    msg = '시작 시간은 4시 이후여야 합니다';
+                  } else if (!dayjs(selectedEvent.end).isAfter(newTime)) {
+                    isStartTimeAfter4 = false;
+                    msg = '시작 시간이 끝 시간보다 이전이어야 합니다.';
+                  }
+                  isValid = isEndTimeAfterStart && isStartTimeAfter4;
+                } else {
+                  if (parseInt(dayjs(newTime).format('H')) >= 4) {
+                    isStartTimeBeforeEnd = false;
+                    msg = '끝 시간은 4시 이전이어야 합니다.';
+                  } else if (!dayjs(selectedEvent.start).isBefore(newTime)) {
+                    isEndTimeBefore4 = false;
+                    msg = '끝 시간은 시작 시간 이후여야 합니다.';
+                  }
+                  isValid = isStartTimeBeforeEnd && isEndTimeBefore4;
+                }
                 setTempTime(newTime);
+                if (isValid) {
+                  setIsValidNewTime(true);
+                } else {
+                  setIsValidNewTime(false);
+                  setPopupMsg(msg);
+                }
               }}
             >
               <Box
@@ -343,12 +384,19 @@ const EditRecordPage = (): ReactElement => {
                       m: '15px 0 0 0',
                     }}
                     onClick={() => {
-                      setSelectedEvent(() => {
-                        return {
-                          ...selectedEvent,
-                          [eventTimeType]: new Date(formatDate(tempTime)),
-                        };
-                      });
+                      if (isValidNewTime) {
+                        setIsSuccessPopup(true);
+                        setSelectedEvent(() => {
+                          return {
+                            ...selectedEvent,
+                            [eventTimeType]: new Date(formatDate(tempTime)),
+                          };
+                        });
+                      } else {
+                        setIsSuccessPopup(false);
+                        setIsPopupShow(() => true);
+                        setPopupText(popupMsg);
+                      }
                       setIsTimePickerOpen(false);
                     }}
                   >
@@ -379,7 +427,7 @@ const EditRecordPage = (): ReactElement => {
    * get category data
    */
   const getAllCategories = async () => {
-    await getCategories().then(response => {
+    await getCategories().then((response) => {
       const result = response.result;
       setCategories(result);
       if (recordType === 'UPDATE') {
@@ -398,8 +446,6 @@ const EditRecordPage = (): ReactElement => {
           });
         });
       }
-    }).catch(error => {
-      // alert(error);
     });
   };
 
@@ -413,22 +459,33 @@ const EditRecordPage = (): ReactElement => {
     startedAt: string,
     finishedAt: string,
   ): Promise<any> {
-    try {
-      const response = await addRecord({
-        categoryId: selectedSubCategoryIdx,
-        startedAt,
-        finishedAt,
-        content,
-        timeUnit: 30,
+    await addRecord({
+      categoryId: selectedSubCategoryIdx,
+      startedAt,
+      finishedAt,
+      content,
+      timeUnit: 30,
+    })
+      .then((response) => {
+        console.log(response);
+        // TODO: category 선택 안했을시 팝업 띄우기
+        if (response.status === 'SUCCESS') {
+          setIsPopupShow(() => true);
+          setIsSuccessPopup(true);
+          setPopupText('기록 등록에 성공했습니다.');
+          setSelectedDays([]);
+          navigate('/record');
+        } else {
+          setIsSuccessPopup(false);
+          setPopupText('기록 등록에 실패했습니다.');
+        }
+      })
+      .catch(() => {
+        setIsPopupShow(() => true);
+        setIsSuccessPopup(false);
+        setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
       });
-      const result = response.result;
-      return result;
-    } catch (err) {
-      console.error(err);
-      throw new Error(`${err}`);
-    }
   }
-
   /**
    * update event record
    * @param startedAt start time
@@ -447,10 +504,19 @@ const EditRecordPage = (): ReactElement => {
         finishedAt,
         content,
       });
-      return response.result;
+      setIsPopupShow(() => true);
+      if (response.status === 'SUCCESS') {
+        setIsSuccessPopup(true);
+        setPopupText('기록 수정에 성공했습니다.');
+        setSelectedDays([]);
+        navigate('/record');
+      } else {
+        setIsSuccessPopup(false);
+        setPopupText('기록 수정에 실패했습니다.');
+      }
     } catch (err) {
-      console.error(err);
-      throw new Error(`${err}`);
+      setIsSuccessPopup(false);
+      setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
     }
   }
 
@@ -462,7 +528,6 @@ const EditRecordPage = (): ReactElement => {
     const currentSelectedDay = dayjs(selectedEvent.start).day();
     const firstSelectedDay = selectedDays[0];
 
-    let result;
     for (const dayIndex of selectedDays) {
       const diff = dayIndex - firstSelectedDay;
       const startedAtOfDay = formatDate(new Date(addDays(start, diff)));
@@ -470,28 +535,17 @@ const EditRecordPage = (): ReactElement => {
 
       // update currently being edited event
       if (recordType === 'UPDATE' && currentSelectedDay === dayIndex) {
-        result = await updateEventRecord(startedAtOfDay, finishedAtOfDay);
+        await updateEventRecord(startedAtOfDay, finishedAtOfDay);
       } else {
-        result = await createEventRecord(startedAtOfDay, finishedAtOfDay);
+        await createEventRecord(startedAtOfDay, finishedAtOfDay);
       }
     }
-
-    if (result) {
-      setIsPopupShow(() => true);
-      setPopupText(
-        recordType === 'UPDATE'
-          ? '기록 수정에 성공했습니다.'
-          : '기록 등록에 성공했습니다.',
-      );
-    }
-    setSelectedDays([]);
-    navigate('/record');
   }
 
   /**
    * delete record
    */
-  const deleteEventReord = async () => {
+  const deleteEventRecord = async () => {
     const eventId = selectedEvent.id;
     const result = await deleteRecord(eventId);
     let popupText = '';
@@ -561,7 +615,7 @@ const EditRecordPage = (): ReactElement => {
       return {
         isDisabled: false,
         text: buttonText.delete,
-        clickHandler: deleteEventReord,
+        clickHandler: deleteEventRecord,
       };
     });
 
