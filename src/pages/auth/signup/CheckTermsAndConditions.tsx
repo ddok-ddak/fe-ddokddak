@@ -55,9 +55,11 @@ const CheckTermsAndConditions = (props: any) => {
   const [checked, setChecked] = useState([false, false, false, false, false]);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
 
+  const checkedLength = checked.length;
+
   const handleCheckboxToggle = (idx: number) => () => {
     const currentIndex = idx;
-    const newChecked: boolean[] = [...checked];
+    let newChecked: boolean[] = [...checked];
     let newValue = !newChecked[idx];
     let isRequiredCheck = false;
 
@@ -66,6 +68,14 @@ const CheckTermsAndConditions = (props: any) => {
       newChecked.fill(newValue);
     } else {
       newChecked[idx] = newValue;
+      const falseChecked = newChecked.reduce((prev: number[], curr: any, idx: number) => {
+        return idx ? (curr ? [...prev] : [...prev, curr]) : [];
+      }, []);
+      if (!falseChecked.length) {
+        newChecked[0] = true;
+      } else if (falseChecked.length < checkedLength) {
+        newChecked[0] = false;
+      }
     }
     setChecked(newChecked);
     isRequiredCheck = !(newChecked[1] && newChecked[2] && newChecked[3]);
