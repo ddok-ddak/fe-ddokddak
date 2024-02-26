@@ -232,6 +232,7 @@ const EditRecordPage = (): ReactElement => {
               onClick={(event: BaseSyntheticEvent) => {
                 const value = Number(event.target.innerText);
                 let newTime: Dayjs = tempTime;
+
                 if (type === 'period') {
                   if (selectedTime === 'AM') {
                     newTime = tempTime.add(12, 'hour');
@@ -246,40 +247,66 @@ const EditRecordPage = (): ReactElement => {
                 } else if (type === 'minute') {
                   newTime = tempTime.minute(value);
                 }
-                let isValid = false;
-                let isEndTimeAfterStart: boolean = true;
-                let isStartTimeAfter4: boolean = true;
-                let isStartTimeBeforeEnd: boolean = false;
-                let isEndTimeBefore4: boolean = false;
-                let msg = '';
+
+                // 시작시간 04:00 ~ 03:30
+                // 04:00 ~ 23:30 : 당일
+                // 00:00 ~ 03:30 : 익일
+
+                // 끝시간 04:30 ~ 04:00
+                // 04:30 ~ 23:30 : 당일
+                // 00:00 ~ 04:00 : 익일
+
+                // 당일 + 당일 : 가능, 비교 필요
+                // 당일 + 익일 : 가능, 비교 불필요
+                // 익일 + 익일 : 가능, 비교 필요
+                // 익일 + 당일 : 불가능
+
+                let startTime;
+                let endTime;
+
                 if (eventTimeType === 'start') {
-                  isEndTimeAfterStart = dayjs(selectedEvent.end).isAfter(
-                    newTime,
-                  );
-                  if (parseInt(dayjs(newTime).format('H')) < 4) {
-                    isEndTimeAfterStart = false;
-                    msg = '시작 시간은 4시 이후여야 합니다';
-                  } else if (!dayjs(selectedEvent.end).isAfter(newTime)) {
-                    isStartTimeAfter4 = false;
-                    msg = '시작 시간이 끝 시간보다 이전이어야 합니다.';
-                  }
-                  isValid = isEndTimeAfterStart && isStartTimeAfter4;
+                  startTime = newTime;
+                  endTime = dayjs(selectedEvent.end);
                 } else {
-                  if (parseInt(dayjs(newTime).format('H')) >= 4) {
-                    isStartTimeBeforeEnd = false;
-                    msg = '끝 시간은 4시 이전이어야 합니다.';
-                  } else if (!dayjs(selectedEvent.start).isBefore(newTime)) {
-                    isEndTimeBefore4 = false;
-                    msg = '끝 시간은 시작 시간 이후여야 합니다.';
-                  }
-                  isValid = isStartTimeBeforeEnd && isEndTimeBefore4;
+                  startTime = dayjs(selectedEvent.start);
+                  endTime = newTime;
                 }
-                setTempTime(newTime);
+
+                let startTimeF = Number(startTime.locale('en').format('Hmm'));
+                let endTimeF = Number(endTime.locale('en').format('Hmm'));
+
+                let isStartNextDay = false;
+                let isEndNextDay = false;
+
+                if (startTimeF >= 0 && startTimeF <= 330) {
+                  // 시작시간 금일 여부
+                  isStartNextDay = true;
+                  startTime = startTime.add(1, 'day');
+                }
+                if (endTimeF >= 0 && endTimeF <= 400) {
+                  // 끝시간 금일 여부
+                  isEndNextDay = true;
+                  endTime = endTime.add(1, 'day');
+                }
+
+                let isValid = true;
+                if (
+                  (!isStartNextDay && !isEndNextDay) ||
+                  (isStartNextDay && isEndNextDay)
+                ) {
+                  isValid = endTime.isAfter(startTime);
+                } else if (!isStartNextDay && isEndNextDay) {
+                  isValid = true;
+                } else if (isStartNextDay && !isEndNextDay) {
+                  isValid = false;
+                }
+
+                setTempTime(eventTimeType === 'start' ? startTime : endTime);
                 if (isValid) {
                   setIsValidNewTime(true);
                 } else {
                   setIsValidNewTime(false);
-                  setPopupMsg(msg);
+                  setPopupMsg('유효하지 않은 시간 설정입니다.');
                 }
               }}
             >
@@ -467,7 +494,7 @@ const EditRecordPage = (): ReactElement => {
       timeUnit: 30,
     })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         // TODO: category 선택 안했을시 팝업 띄우기
         if (response.status === 'SUCCESS') {
           setIsPopupShow(() => true);
