@@ -157,12 +157,12 @@ const EditRecordPage = (): ReactElement => {
       case 'minute':
         selectedTime = tempTime.minute();
         optionList = ['00', '30', ' ', ' ', ' ', ' ', ' ', ' '];
-        toSwipeIndex = selectedTime === 0 ? 0 : 1;
+        toSwipeIndex = selectedTime === 30 ? 1 : 0;
         break;
       case 'period':
         selectedTime = tempTime.locale('en').format('A');
-        optionList = ['AM', 'PM', ' ', ' ', ' ', ' ', ' ', ' '];
-        toSwipeIndex = selectedTime === 'AM' ? 0 : 1;
+        optionList = [' ', 'AM', 'PM', ' ', ' ', ' ', ' ', ' '];
+        toSwipeIndex = selectedTime === 'AM' ? 1 : 2;
         break;
     }
     return (
@@ -230,20 +230,18 @@ const EditRecordPage = (): ReactElement => {
                   type === 'hour' ? 'end' : type === 'minute' ? 'center' : '',
               }}
               onClick={(event: BaseSyntheticEvent) => {
-                const value = Number(event.target.innerText);
+                const currStartTime = dayjs(selectedEvent.start);
+                const currEndTime = dayjs(selectedEvent.end);
+
                 let newTime: Dayjs = tempTime;
+                const meridiem = tempTime.locale('en').format('A');
+                const value =
+                  Number(event.target.innerText) + (meridiem === 'AM' ? 0 : 12);
 
                 if (type === 'period') {
-                  if (selectedTime === 'AM') {
-                    newTime = tempTime.add(12, 'hour');
-                  } else {
-                    newTime = tempTime.subtract(12, 'hour');
-                  }
+                  newTime = tempTime.add(12, 'hour');
                 } else if (type === 'hour') {
-                  const meridiem = tempTime.locale('en').format('A');
-                  newTime = tempTime.hour(
-                    meridiem === 'AM' ? value : value + 12,
-                  );
+                  newTime = tempTime.hour(value);
                 } else if (type === 'minute') {
                   newTime = tempTime.minute(value);
                 }
@@ -266,10 +264,10 @@ const EditRecordPage = (): ReactElement => {
 
                 if (eventTimeType === 'start') {
                   startTime = newTime;
-                  endTime = dayjs(selectedEvent.end);
+                  endTime = currEndTime;
                 } else {
-                  startTime = dayjs(selectedEvent.start);
                   endTime = newTime;
+                  startTime = currStartTime;
                 }
 
                 let startTimeF = Number(startTime.locale('en').format('Hmm'));
@@ -278,15 +276,41 @@ const EditRecordPage = (): ReactElement => {
                 let isStartNextDay = false;
                 let isEndNextDay = false;
 
-                if (startTimeF >= 0 && startTimeF <= 330) {
-                  // 시작시간 금일 여부
+                if (0 < startTimeF && startTimeF <= 330) {
+                  // 시작시간 익일
                   isStartNextDay = true;
-                  startTime = startTime.add(1, 'day');
+                  startTime = currStartTime
+                    .add(1, 'day')
+                    .set('hour', startTime.get('hour'))
+                    .set('minute', startTime.get('minute'));
+                } else {
+                  // 시작시간 금일
+                  if (currStartTime.get('date') < startTime.get('date')) {
+                    startTime = currStartTime
+                      .set('hour', startTime.get('hour'))
+                      .set('minute', startTime.get('minute'));
+                  }
                 }
-                if (endTimeF >= 0 && endTimeF <= 400) {
-                  // 끝시간 금일 여부
+
+                if (0 < endTimeF && endTimeF <= 400) {
+                  // 끝시간 익일
                   isEndNextDay = true;
-                  endTime = endTime.add(1, 'day');
+                  endTime = currEndTime
+                    .add(
+                      endTime.get('date') - currStartTime.get('date') > 0
+                        ? 0
+                        : 1,
+                      'day',
+                    )
+                    .set('hour', endTime.get('hour'))
+                    .set('minute', endTime.get('minute'));
+                } else {
+                  // 끝시간 금일
+                  if (currEndTime.get('date') < endTime.get('date')) {
+                    endTime = currEndTime
+                      .set('hour', endTime.get('hour'))
+                      .set('minute', endTime.get('minute'));
+                  }
                 }
 
                 let isValid = true;
@@ -301,7 +325,8 @@ const EditRecordPage = (): ReactElement => {
                   isValid = false;
                 }
 
-                setTempTime(eventTimeType === 'start' ? startTime : endTime);
+                newTime = eventTimeType === 'start' ? startTime : endTime;
+                setTempTime(newTime);
                 if (isValid) {
                   setIsValidNewTime(true);
                 } else {
@@ -494,7 +519,6 @@ const EditRecordPage = (): ReactElement => {
       timeUnit: 30,
     })
       .then((response) => {
-        // console.log(response);
         // TODO: category 선택 안했을시 팝업 띄우기
         if (response.status === 'SUCCESS') {
           setIsPopupShow(() => true);
@@ -606,14 +630,14 @@ const EditRecordPage = (): ReactElement => {
 
   useEffect(() => {
     if (recordType === 'CREATE') {
-      // setSelectedSubCategoryIdx(0);
+      setSelectedSubCategoryIdx(0);
     }
   }, [selectedCategoryIdx]);
 
   // 선택한 메인카테고리, sub카테고리 recoil에 저장
   useEffect(() => {
     if (recordType === 'CREATE') {
-      // setSelectedSubCategoryIdx(0);
+      setSelectedSubCategoryIdx(0);
     }
     setRecoilCategoryValue(selectedCategoryIdx);
   }, [selectedCategoryIdx, setRecoilCategoryValue, recoilCategoryValue]);
