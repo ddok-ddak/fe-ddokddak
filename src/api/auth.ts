@@ -119,7 +119,6 @@ export const getInfo = async () => {
 /************************ SET USER MODE TEMPLATE (first time) ************************/
 
 export const setTemplate = async (templateType: UserTemplateType) => {
-  console.log(templateType)
   const response = await callAPI({
     url: '/api/v1/members/custom/category-template',
     method: 'POST',
