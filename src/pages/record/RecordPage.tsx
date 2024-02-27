@@ -39,7 +39,6 @@ import {
 } from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
 import { modalButtonState, modalState, modalValue } from '@/store/modal';
-import { currentUserInfo } from '@/store/info';
 import { setTemplate } from '@/api/auth';
 
 dayjs.extend(utc);
