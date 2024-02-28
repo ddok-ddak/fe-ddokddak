@@ -56,6 +56,8 @@ export const checkDuplicatedNickname = async (nickname: string) => {
   return response as CommonResponse;
 };
 
+/************************  SIGN UP  ************************/
+
 /**
  * user sign up
  * @param request: UserData
@@ -70,6 +72,23 @@ export const addUser = async (request: UserData) => {
 
   return response as CommonResponse;
 };
+
+/************************  DELETE ACCOUNT  ************************/
+
+/**
+ * user delete
+ * @param request: UserData
+ * @returns response
+ */
+export const deleteUser = async () => {
+  const response = await callAPI({
+    url: '/api/v1/auth/withdrawal',
+    method: 'POST',
+  });
+  console.log(response)
+  return response as CommonResponse;
+};
+
 
 /************************  SIGN IN  ************************/
 
