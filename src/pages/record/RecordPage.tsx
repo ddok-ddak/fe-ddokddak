@@ -38,8 +38,9 @@ import {
   currentPeriod,
 } from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
-import { modalButtonState, modalState, modalValue } from '@/store/modal';
+import { modalButtonState, modalValue } from '@/store/modal';
 import { setTemplate } from '@/api/auth';
+import { useModalCommon } from '@/hooks/modalCommon';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -69,7 +70,7 @@ const RecordPage = () => {
 
   const selectedDate = useRecoilValue(currentSelectedDate);
   const periodType = useRecoilValue<PeriodTypeForRecord>(currentPeriod);
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const { closeModal } = useModalCommon();
 
   const setCalendarType =
     useSetRecoilState<customCalendarType>(currentCalendarType);
@@ -203,15 +204,10 @@ const RecordPage = () => {
     setNextButtonProps({
       ...nextButtonProps,
       clickHandler: async () => {
-        await setTemplate(selectedValue.type).then(() => {
-          setModalInfo({
-            ...modalInfo,
-            open: false,
-          });
-        });
+        await setTemplate(selectedValue.type).then(closeModal);
       },
     });
-  }, [selectedValue])
+  }, [selectedValue]);
 
   useEffect(() => {
     const initialInfo = { start: new Date() };

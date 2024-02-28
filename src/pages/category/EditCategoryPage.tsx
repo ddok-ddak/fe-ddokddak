@@ -24,10 +24,15 @@ import {
   popupMessageText,
   stepButtonProps,
 } from '@/store/common';
-import { buttonText } from '@/constants/message';
+import { buttonText, modalAnswer } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
+import { modalState } from '@/store/modal';
+import { useModalCommon } from '@/hooks/modalCommon';
 
 const EditCategoryPage = () => {
+  const { closeModal } = useModalCommon();
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
@@ -53,69 +58,91 @@ const EditCategoryPage = () => {
    * handle save event
    */
   const handleSave = async () => {
-    const iconFile = selectedIcon.iconFile;
-    if (isInputNameEmpty || !iconFile.filename) {
-      return true;
-    }
-
-    let response;
-    let popupText: string = '';
-    if (mode === 'add') {
-      response = await addSubCategory({
-        mainCategoryId: selectedMainCategory.categoryId,
-        color: selectedMainCategory.color,
-        highlightColor: selectedMainCategory.highlightColor,
-        name: inputName,
-        iconId: iconFile.id,
-      });
-      popupText = '카테고리가 추가되었습니다.';
-    } else {
-      popupText = '카테고리가 수정되었습니다.';
-      const categoryId = selectedSubCategory.categoryId;
-      if (categoryId) {
-        const iconName = iconFile.filename;
-        const name = inputName;
-        if (
-          iconName === iconFile.filename &&
-          name === selectedSubCategory.name
-        ) {
-          navigation(-1);
+    setModalInfo({
+      open: true,
+      title: '카테고리 이름 및 아이콘을 수정하면 통계도 동일하게 반영됩니다.',
+      msg: '그래도 변경하시겠습니까?',
+      btn1Text: modalAnswer.no,
+      btn1ClickHandler: closeModal,
+      btn2Text: modalAnswer.yes,
+      btn2ClickHandler: async () => {
+        closeModal();
+        const iconFile = selectedIcon.iconFile;
+        if (isInputNameEmpty || !iconFile.filename) {
           return true;
         }
-        response = await updateSubCategory({
-          categoryId,
-          iconId: iconFile.id,
-          name,
-        });
-      }
-    }
 
-    if (response?.status === 'SUCCESS') {
-      navigation(-1);
-    } else {
-      popupText = '카테고리 설정에 실패했습니다.';
-    }
+        let response;
+        let popupText: string = '';
+        if (mode === 'add') {
+          response = await addSubCategory({
+            mainCategoryId: selectedMainCategory.categoryId,
+            color: selectedMainCategory.color,
+            highlightColor: selectedMainCategory.highlightColor,
+            name: inputName,
+            iconId: iconFile.id,
+          });
+          popupText = '카테고리가 추가되었습니다.';
+        } else {
+          popupText = '카테고리가 수정되었습니다.';
+          const categoryId = selectedSubCategory.categoryId;
+          if (categoryId) {
+            const iconName = iconFile.filename;
+            const name = inputName;
+            if (
+              iconName === iconFile.filename &&
+              name === selectedSubCategory.name
+            ) {
+              navigation(-1);
+              return true;
+            }
+            response = await updateSubCategory({
+              categoryId,
+              iconId: iconFile.id,
+              name,
+            });
+          }
+        }
 
-    setPopupMessageType('CATEGORY');
-    setIsPopupShow(() => true);
-    setPopupText(popupText);
+        if (response?.status === 'SUCCESS') {
+          navigation(-1);
+        } else {
+          popupText = '카테고리 설정에 실패했습니다.';
+        }
+
+        setPopupMessageType('CATEGORY');
+        setIsPopupShow(() => true);
+        setPopupText(popupText);
+      },
+    });
   };
 
   /**
    * handle delete event
    */
   const handleDelete = async () => {
-    let popupText;
-    const response = await deleteCategory(selectedSubCategory.categoryId!);
-    if (response.status === 'SUCCESS') {
-      popupText = '카테고리 삭제에 성공했습니다.';
-      navigation(-1);
-    } else {
-      popupText = '카테고리 삭제에 실패했습니다.';
-    }
-    setPopupMessageType('CATEGORY');
-    setIsPopupShow(() => true);
-    setPopupText(popupText);
+    setModalInfo({
+      open: true,
+      title: '모두 삭제를 원하십니까?',
+      msg: '총 00개의 기록이 있습니다.',
+      btn1Text: '모두 삭제',
+      btn1ClickHandler: closeModal,
+      btn2Text: '다른 카테고리로 이동',
+      btn2ClickHandler: async () => {
+        closeModal();
+        const response = await deleteCategory(selectedSubCategory.categoryId!);
+        let popupText;
+        if (response.status === 'SUCCESS') {
+          popupText = '카테고리 삭제에 성공했습니다.';
+          navigation(-1);
+        } else {
+          popupText = '카테고리 삭제에 실패했습니다.';
+        }
+        setPopupMessageType('CATEGORY');
+        setIsPopupShow(() => true);
+        setPopupText(popupText);
+      },
+    });
   };
 
   /**
