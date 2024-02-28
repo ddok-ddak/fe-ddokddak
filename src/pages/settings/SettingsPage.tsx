@@ -19,17 +19,22 @@ import { stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
-import { signOut } from '@/api/auth';
+import { deleteUser } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
+import { modalAnswer } from '@/constants/message';
+import { useModalCommon } from '@/hooks/modalCommon';
 
 const SettingPage = () => {
   const navigation = useNavigate();
+  
   const setStepIndex = useSetRecoilState(stepIndex);
+  const { showServerError, closeModal } = useModalCommon();
+  
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
-
+  
   /**
    * get list sub header
    * @param text test
@@ -65,6 +70,40 @@ const SettingPage = () => {
     );
   };
 
+  /**
+   * handle logout button click event
+   */
+  const logoutClickHandler = async () => {
+    await deleteUser()
+      .then((response: CommonResponse) => {
+        if (response.status === 'SUCCESS') {
+          closeModal();
+          removeTokenCookie();
+          navigation('/');
+        }
+      })
+      .catch(() => {
+        showServerError();
+      });
+  };
+
+  /**
+   * handle delete account click event
+   */
+  const deleteAccountClickHandler = async () => {
+    await deleteUser()
+      .then((response: CommonResponse) => {
+        if (response.status === 'SUCCESS') {
+          closeModal();
+          removeTokenCookie();
+          navigation('/');
+        }
+      })
+      .catch(() => {
+        showServerError();
+      });
+  };
+
   useEffect(() => {
     setStepIndex(0);
   });
@@ -83,6 +122,7 @@ const SettingPage = () => {
     >
       <SettingWrapper>
         <Button
+          sx={{ height: '15vh' }}
           onClick={() => navigation('/settings/account')}
           sx={{
             display: 'flex',
@@ -121,6 +161,7 @@ const SettingPage = () => {
         <List
           sx={{
             flex: 1,
+            height: '70vh',
           }}
         >
           {getListSubHeader('커스텀화')}
@@ -144,26 +185,36 @@ const SettingPage = () => {
           {getListItem({
             text: '로그아웃',
             handler: async () => {
-              await signOut()
-                .then((response: CommonResponse) => {
-                  if (response.status === 'SUCCESS') {
-                    removeTokenCookie();
-                    navigation('/');
-                  }
-                })
-                .catch(() => {
-                  setModalInfo({
-                    ...modalInfo,
-                    title: '서버 오류',
-                    msg: '오류가 발생했습니다. 다시 시도 해주세요.',
-                    open: true,
-                    isShowConfirmBtn: true,
-                  });
-                });
+              setModalInfo({
+                ...modalInfo,
+                open: true,
+                title: '로그아웃',
+                msg: '로그아웃 하시겠습니까?',
+                btn1Text: modalAnswer.no,
+                btn1ClickHandler: closeModal,
+                btn2Text: modalAnswer.yes,
+                btn2ClickHandler: logoutClickHandler,
+              });
+              return true;
             },
           })}
         </List>
-        <Button>
+        <Button
+          sx={{ height: '15vh' }}
+          onClick={async () => {
+            setModalInfo({
+              ...modalInfo,
+              open: true,
+              title: '탈퇴시 계정은 복구되지 않습니다.',
+              msg: '정말 탈퇴 하시겠습니까?',
+              btn1Text: modalAnswer.no,
+              btn1ClickHandler: closeModal,
+              btn2Text: modalAnswer.yes,
+              btn2ClickHandler: deleteAccountClickHandler,
+            });
+            return true;
+          }}
+        >
           <Typography
             sx={{
               fontSize: '12px',

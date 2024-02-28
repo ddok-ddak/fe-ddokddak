@@ -28,6 +28,7 @@ import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
 import { modalAnswer } from '@/constants/message';
 import { UserData, UserTemplateType } from '@/api/auth';
+import { useModalCommon } from '@/hooks/modalCommon';
 
 export interface MainCategoryProps {
   highlightColor?: string | undefined;
@@ -92,6 +93,9 @@ export const UserModeList: ModeProps[] = [
 
 const CategoryPage = () => {
   const navigation = useNavigate();
+
+  const { closeModal } = useModalCommon();
+
   const setSelectedMainCategory = useSetRecoilState<MainCategoryProps>(
     selectedMainCategoryState,
   );
@@ -165,14 +169,9 @@ const CategoryPage = () => {
       title: mode?.modalTitle || '',
       msg: mode?.modalMsg || '',
       btn1Text: modalAnswer.no,
-      btn1ClickHandler: () => {
-        setModalInfo({ ...modalInfo, open: false });
-      },
+      btn1ClickHandler: () => closeModal,
       btn2Text: modalAnswer.yes,
-      btn2ClickHandler: () => {
-        setModalInfo({ ...modalInfo, open: false });
-        // TODO: delete category and date, create new category, change user data template mode
-      },
+      btn2ClickHandler: () => closeModal,
     });
   };
 

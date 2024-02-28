@@ -8,30 +8,32 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalButtonState, modalState, modalValue } from '@/store/modal';
 import BottomButton from '@/components/common/BottomButton';
 import Spacer from './Spacer';
 import { useEffect } from 'react';
+import { useModalCommon } from '@/hooks/modalCommon';
 
 const Modal = () => {
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const { closeModal } = useModalCommon();
+
+  const modalInfo = useRecoilValue(modalState);
   const [nextButtonProps, setNextButtonProps] =
     useRecoilState(modalButtonState);
   const setSelectedValue = useSetRecoilState(modalValue);
-  const handleClose = () => setModalInfo({ ...modalInfo, open: false });
 
   useEffect(() => {
     setNextButtonProps({
       ...nextButtonProps,
-      clickHandler: handleClose,
+      clickHandler: closeModal,
     });
   }, []);
 
   return (
     <MuiModal
       open={modalInfo.open}
-      onClose={handleClose}
+      onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
