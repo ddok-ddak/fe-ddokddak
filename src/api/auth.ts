@@ -20,7 +20,7 @@ export interface UserData {
   startTime?: string;
 }
 
-/************************ SIGN UP ************************/
+/************************ SIGN UP PROCESS ************************/
 
 /**
  * check duplicated email
@@ -56,6 +56,48 @@ export const checkDuplicatedNickname = async (nickname: string) => {
   return response as CommonResponse;
 };
 
+/**
+ * verify code
+ * @param param
+ * @returns response
+ */
+export const requestCode = async (email: string) => {
+  const response = await callAPI({
+    url: '/api/v1/auth/email/code',
+    method: 'POST',
+    params: {
+      email,
+      authenticationType: 'JOIN',
+    },
+  });
+
+  return response as CommonResponse;
+};
+
+/**
+ * verify code
+ * @param param
+ * @returns response
+ */
+export const verifyCode = async ({
+  authenticationRequestId,
+  authenticationNumber,
+}: {
+  authenticationRequestId: number;
+  authenticationNumber: string;
+}) => {
+  const response = await callAPI({
+    url: '/api/v1/auth/email/verification',
+    method: 'GET',
+    params: {
+      authenticationRequestId: 0,
+      authenticationNumber: 'string',
+    },
+  });
+
+  return response as CommonResponse;
+};
+
 /************************  SIGN UP  ************************/
 
 /**
@@ -85,10 +127,9 @@ export const deleteUser = async () => {
     url: '/api/v1/auth/withdrawal',
     method: 'POST',
   });
-  console.log(response)
+  console.log(response);
   return response as CommonResponse;
 };
-
 
 /************************  SIGN IN  ************************/
 

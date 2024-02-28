@@ -9,6 +9,7 @@ import { modalState } from '@/store/modal';
 import InputForm, { InputItemType } from './InputForm';
 import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
+import { verifyCode } from '@/api/auth';
 
 const VerifyCode = (props: any) => {
   const { closeModal } = useModalCommon();
@@ -24,6 +25,7 @@ const VerifyCode = (props: any) => {
   const [requestCodeCount, setRequestCodeCount] = useState(0);
   const [verificationAttemptCount, setVerificationAttemptCount] = useState(0);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const [code, setCode] = useState('');
 
   const itemArray: InputItemType[] = [
     {
@@ -45,7 +47,7 @@ const VerifyCode = (props: any) => {
       ),
       verifyCodeRequestButton: (
         <Button
-          onClick={() => {
+          onClick={async () => {
             const requestCount = requestCodeCount;
             if (requestCount < 5) {
               setRequestCodeCount(requestCount + 1);
@@ -93,6 +95,7 @@ const VerifyCode = (props: any) => {
       ) => {
         const value = event.target.value;
         if (value.length) {
+          setCode(value);
           setIsNextButtonDisabled(false);
           setNextButtonProps({
             ...nextButtonProps,
@@ -107,7 +110,7 @@ const VerifyCode = (props: any) => {
     setInstruction('인증코드를 입력해주세요.');
     setNextButtonProps({
       text: '인증 완료',
-      clickHandler: () => {
+      clickHandler: async () => {
         setCurrentStepIndex(currentStepIndex + 1);
         if (verificationAttemptCount >= 5) {
           setModalInfo({
@@ -116,11 +119,7 @@ const VerifyCode = (props: any) => {
               '인증코드 입력 횟수(5회)를 초과했습니다. 다른 이메일로 시도하시겠습니까? ',
             msg: '그렇지 않은 경우 해당 이메일로는 24시간 후에 시도할 수 있습니다.',
             btn1Text: modalAnswer.no,
-            btn1ClickHandler: () => {
-              closeModal();
-              // TODO: block the email use for 24h
-              // TODO: reset email
-            },
+            btn1ClickHandler: closeModal,
             btn2Text: modalAnswer.yes,
             btn2ClickHandler: () => {
               closeModal();
@@ -134,16 +133,24 @@ const VerifyCode = (props: any) => {
 
         // TODO: check the code
         const response = true;
-        if (response) {
-          props.handleNextButton();
-        } else {
-          let newAttemptCount = verificationAttemptCount + 1;
-          setVerificationAttemptCount(newAttemptCount);
-          setHelper(
-            `인증코드가 일치하지 않습니다. 다시 한번 확인 후 입력해주세요. (${newAttemptCount} / 5 회)`,
-          );
-          setIsHelperError(() => true);
-        }
+        await verifyCode({
+          authenticationRequestId: 0,
+          authenticationNumber: code,
+        })
+          .then((response) => {
+            console.log(response);
+            if (response.status === 'SUCCESS') {
+              // props.handleNextButton(); //
+            } else {
+              let newAttemptCount = verificationAttemptCount + 1;
+              setVerificationAttemptCount(newAttemptCount);
+              setHelper(
+                `인증코드가 일치하지 않습니다. 다시 한번 확인 후 입력해주세요. (${newAttemptCount} / 5 회)`,
+              );
+              setIsHelperError(() => true);
+            }
+          })
+          .catch();
       },
       isDisabled: true,
     });
@@ -156,6 +163,7 @@ const VerifyCode = (props: any) => {
         itemArray={itemArray}
         helper={helper}
         isHelperError={isHelperError}
+        value={code}
       />
       <Box sx={{ position: 'relative', top: '15%' }}>
         <Typography

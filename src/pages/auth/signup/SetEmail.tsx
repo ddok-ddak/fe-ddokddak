@@ -1,4 +1,4 @@
-import { checkDuplicatedEmail } from '@/api/auth';
+import { checkDuplicatedEmail, requestCode } from '@/api/auth';
 import { signUpDataState } from '@/store/signUp';
 import { Button, InputAdornment } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -91,7 +91,16 @@ const SetEmail = (props: any) => {
     instruction('이메일을 입력해주세요.');
     setNextButtonProps({
       ...nextButtonProps,
-      clickHandler: props.handleNextButton,
+      clickHandler: async () => {
+        await requestCode(email).then((response: any) => {
+          console.log(response)
+          if (response.status === 'SUCCESS') {
+
+            props.handleNextButton();
+          } else {
+          }
+        });
+      },
       isDisabled: true,
     });
   }, []);
