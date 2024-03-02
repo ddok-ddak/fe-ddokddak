@@ -9,8 +9,8 @@ import { modalState } from '@/store/modal';
 import InputForm, { InputItemType } from './InputForm';
 import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
-import { verifyCode } from '@/api/auth';
-import { authenticationRequestId } from '@/store/signUp';
+import { requestCode, verifyCode } from '@/api/auth';
+import { authenticationRequestId, signUpDataState } from '@/store/signUp';
 
 const VerifyCode = (props: any) => {
   const { closeModal } = useModalCommon();
@@ -20,14 +20,14 @@ const VerifyCode = (props: any) => {
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(stepIndex);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
-
-  const requestId = useRecoilValue(authenticationRequestId);
+  const [requestId, setRequestId] = useRecoilState(authenticationRequestId);
 
   const [helper, setHelper] = useState('');
   const [isHelperError, setIsHelperError] = useState(true);
   const [requestCodeCount, setRequestCodeCount] = useState(0);
   const [verificationAttemptCount, setVerificationAttemptCount] = useState(0);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const signUpData = useRecoilValue(signUpDataState);
   const [code, setCode] = useState('');
 
   const itemArray: InputItemType[] = [
@@ -54,7 +54,11 @@ const VerifyCode = (props: any) => {
             const requestCount = requestCodeCount;
             if (requestCount < 5) {
               setRequestCodeCount(requestCount + 1);
-              // TODO: check verification code
+              await requestCode(signUpData.email).then((response: any) => {
+                if (response.status === 'SUCCESS') {
+                  setRequestId(response.result.id);
+                }
+              });
             } else {
               setModalInfo({
                 open: true,
@@ -90,9 +94,6 @@ const VerifyCode = (props: any) => {
           </Typography>
         </Button>
       ),
-      verifyCodeRequestHandler: () => {
-        // TODO: request code
-      },
       onChangeHandler: (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
       ) => {
@@ -131,7 +132,7 @@ const VerifyCode = (props: any) => {
             },
           });
           return true;
-        } 
+        }
 
         await verifyCode({
           authenticationRequestId: requestId,
