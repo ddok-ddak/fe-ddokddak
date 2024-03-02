@@ -93,11 +93,8 @@ const SetEmail = (props: any) => {
       ...nextButtonProps,
       clickHandler: async () => {
         await requestCode(email).then((response: any) => {
-          console.log(response)
           if (response.status === 'SUCCESS') {
-
             props.handleNextButton();
-          } else {
           }
         });
       },
