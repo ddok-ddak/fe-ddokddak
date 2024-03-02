@@ -1,7 +1,7 @@
 import { Box, Button, InputAdornment, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Modal from '@/components/common/Modal';
 import { stepButtonProps, stepIndex, stepInstruction } from '@/store/common';
@@ -10,15 +10,18 @@ import InputForm, { InputItemType } from './InputForm';
 import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
 import { verifyCode } from '@/api/auth';
+import { authenticationRequestId } from '@/store/signUp';
 
 const VerifyCode = (props: any) => {
   const { closeModal } = useModalCommon();
 
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const setModalInfo = useSetRecoilState(modalState);
 
   const [currentStepIndex, setCurrentStepIndex] = useRecoilState(stepIndex);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
+
+  const requestId = useRecoilValue(authenticationRequestId);
 
   const [helper, setHelper] = useState('');
   const [isHelperError, setIsHelperError] = useState(true);
@@ -61,9 +64,9 @@ const VerifyCode = (props: any) => {
                 btn1Text: modalAnswer.no,
                 btn1ClickHandler: closeModal,
                 btn2Text: modalAnswer.yes,
-                btn2ClickHandler: () => {
+                btn2ClickHandler: (event: any, reason: any) => {
                   setCurrentStepIndex(currentStepIndex - 1);
-                  closeModal();
+                  closeModal(event, reason);
                 },
               });
             }
@@ -111,7 +114,6 @@ const VerifyCode = (props: any) => {
     setNextButtonProps({
       text: '인증 완료',
       clickHandler: async () => {
-        setCurrentStepIndex(currentStepIndex + 1);
         if (verificationAttemptCount >= 5) {
           setModalInfo({
             open: true,
@@ -121,26 +123,24 @@ const VerifyCode = (props: any) => {
             btn1Text: modalAnswer.no,
             btn1ClickHandler: closeModal,
             btn2Text: modalAnswer.yes,
-            btn2ClickHandler: () => {
-              closeModal();
+            btn2ClickHandler: (event: any, reason: any) => {
+              closeModal(event, reason);
               setCurrentStepIndex(currentStepIndex - 1);
               // TODO: block the email use for 24h
               // TODO: reset email
             },
           });
           return true;
-        }
+        } 
 
-        // TODO: check the code
-        const response = true;
         await verifyCode({
-          authenticationRequestId: 0,
+          authenticationRequestId: requestId,
           authenticationNumber: code,
         })
           .then((response) => {
-            console.log(response);
             if (response.status === 'SUCCESS') {
-              // props.handleNextButton(); //
+              setCurrentStepIndex(currentStepIndex + 1);
+              props.handleNextButton();
             } else {
               let newAttemptCount = verificationAttemptCount + 1;
               setVerificationAttemptCount(newAttemptCount);

@@ -46,3 +46,8 @@ export const signUpStepNextButton = atom({
   default: () => {}
 });
 
+// verification code id
+export const authenticationRequestId = atom({
+  key: 'AuthenticationRequestId', 
+  default: 0,
+});
