@@ -25,7 +25,7 @@ import { signInNextButtonState } from './signIn';
 /* ============ STEP FORM (SignUp Pages / PW Reset Pages / Record Edit Page) ============ */
 export interface INextButtonState {
   isDisabled: boolean;
-  clickHandler: () => void;
+  clickHandler: any;
   text: string;
 }
 

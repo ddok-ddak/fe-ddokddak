@@ -19,7 +19,7 @@ import { stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
-import { deleteUser } from '@/api/auth';
+import { deleteUser, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
@@ -73,13 +73,15 @@ const SettingPage = () => {
   /**
    * handle logout button click event
    */
-  const logoutClickHandler = async () => {
-    await deleteUser()
+  const logoutClickHandler = async (event: any, reason: any) => {
+    await signOut()
       .then((response: CommonResponse) => {
         if (response.status === 'SUCCESS') {
-          closeModal();
+          closeModal(event, reason);
           removeTokenCookie();
           navigation('/');
+        } else {
+          closeModal(event, reason);
         }
       })
       .catch(() => {
@@ -90,11 +92,11 @@ const SettingPage = () => {
   /**
    * handle delete account click event
    */
-  const deleteAccountClickHandler = async () => {
+  const deleteAccountClickHandler = async (event: any, reason: any) => {
     await deleteUser()
       .then((response: CommonResponse) => {
         if (response.status === 'SUCCESS') {
-          closeModal();
+          closeModal(event, reason);
           removeTokenCookie();
           navigation('/');
         }
@@ -122,7 +124,6 @@ const SettingPage = () => {
     >
       <SettingWrapper>
         <Button
-          sx={{ height: '15vh' }}
           onClick={() => navigation('/settings/account')}
           sx={{
             display: 'flex',
@@ -190,6 +191,7 @@ const SettingPage = () => {
                 open: true,
                 title: '로그아웃',
                 msg: '로그아웃 하시겠습니까?',
+                optionList: null,
                 btn1Text: modalAnswer.no,
                 btn1ClickHandler: closeModal,
                 btn2Text: modalAnswer.yes,

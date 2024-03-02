@@ -1,5 +1,6 @@
 import { buttonText } from '@/constants/message';
 import { atom } from 'recoil';
+import { INextButtonState } from './common';
 
 // Common Modal
 export interface IModalState {
@@ -7,9 +8,9 @@ export interface IModalState {
   title: string;
   msg: string;
   btn1Text?: string;
-  btn1ClickHandler?: () => void;
+  btn1ClickHandler?: any;
   btn2Text?: string;
-  btn2ClickHandler?: () => void;
+  btn2ClickHandler?: any;
   optionList?: any;
   isShowConfirmBtn?: boolean;
 }
@@ -27,7 +28,7 @@ export const modalState = atom<IModalState>({
   },
 });
 
-export const modalButtonState = atom({
+export const modalButtonState = atom<INextButtonState>({
   key: 'ModalButtonState',
   default: {
     isDisabled: false,

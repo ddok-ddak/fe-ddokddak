@@ -203,8 +203,10 @@ const RecordPage = () => {
   useEffect(() => {
     setNextButtonProps({
       ...nextButtonProps,
-      clickHandler: async () => {
-        await setTemplate(selectedValue.type).then(closeModal);
+      clickHandler: async (event: any, reason: any) => {
+        await setTemplate(selectedValue.type).then(() => {
+          closeModal(event, reason);
+        });
       },
     });
   }, [selectedValue]);

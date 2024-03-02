@@ -9,7 +9,7 @@ import {
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Circle from '../../components/common/Circle';
 import FolderTop from '../../components/common/FolderTop';
@@ -104,7 +104,7 @@ const CategoryPage = () => {
   );
 
   const setUserInfo = useSetRecoilState<UserData>(currentUserInfo);
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const setModalInfo = useSetRecoilState(modalState);
   const categoryMode = useRecoilValue<CategoryViewType>(categoryViewMode);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
@@ -169,9 +169,9 @@ const CategoryPage = () => {
       title: mode?.modalTitle || '',
       msg: mode?.modalMsg || '',
       btn1Text: modalAnswer.no,
-      btn1ClickHandler: () => closeModal,
+      btn1ClickHandler: closeModal,
       btn2Text: modalAnswer.yes,
-      btn2ClickHandler: () => closeModal,
+      btn2ClickHandler: closeModal,
     });
   };
 
