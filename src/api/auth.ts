@@ -65,7 +65,7 @@ export const requestCode = async (email: string) => {
   const response = await callAPI({
     url: '/api/v1/auth/email/code',
     method: 'POST',
-    params: {
+    body: {
       email,
       authenticationType: 'JOIN',
     },
@@ -88,10 +88,10 @@ export const verifyCode = async ({
 }) => {
   const response = await callAPI({
     url: '/api/v1/auth/email/verification',
-    method: 'GET',
-    params: {
-      authenticationRequestId: 0,
-      authenticationNumber: 'string',
+    method: 'POST',
+    body: {
+      authenticationRequestId,
+      authenticationNumber,
     },
   });
 
