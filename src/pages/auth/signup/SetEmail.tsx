@@ -88,20 +88,23 @@ const SetEmail = (props: any) => {
   ];
 
   useEffect(() => {
-    setDisableDuplicateChkBtn(true);
-    instruction('이메일을 입력해주세요.');
     setNextButtonProps({
       ...nextButtonProps,
       clickHandler: async () => {
         await requestCode(email).then((response: any) => {
           if (response.status === 'SUCCESS') {
-            props.handleNextButton();
             setRequestId(response.result.id);
+            props.handleNextButton();
           }
         });
       },
       isDisabled: true,
     });
+  }, [email]);
+  
+  useEffect(() => {
+    setDisableDuplicateChkBtn(true);
+    instruction('이메일을 입력해주세요.');
   }, []);
 
   return (
