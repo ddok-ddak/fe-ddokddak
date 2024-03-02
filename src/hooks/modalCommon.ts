@@ -1,9 +1,13 @@
 import { modalState } from '@/store/modal';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState } from 'recoil';
 
 export function useModalCommon() {
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const resetModalInfo = useResetRecoilState(modalState);
 
+  /**
+   * show server error message
+   */
   function showServerError() {
     setModalInfo({
       ...modalInfo,
@@ -14,11 +18,18 @@ export function useModalCommon() {
     });
   }
 
-  function closeModal() {
-    setModalInfo({
-      ...modalInfo,
-      open: false,
-    });
+  /**
+   * close modal by resetting recoil state
+   * @param event click / touch event
+   * @param reason event type
+   * @returns 
+   */
+  function closeModal(event: any, reason: any) {
+    // prevent from closing by back drop click 
+    if (reason && reason === 'backdropClick') {
+      return true;
+    }
+    resetModalInfo();
   }
 
   return {

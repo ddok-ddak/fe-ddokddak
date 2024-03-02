@@ -31,7 +31,7 @@ import { useModalCommon } from '@/hooks/modalCommon';
 
 const EditCategoryPage = () => {
   const { closeModal } = useModalCommon();
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+  const setModalInfo = useSetRecoilState(modalState);
 
   const selectedMainCategory = useRecoilValue(selectedMainCategoryState);
   const selectedSubCategory = useRecoilValue(selectedSubCategoryState);
@@ -65,8 +65,8 @@ const EditCategoryPage = () => {
       btn1Text: modalAnswer.no,
       btn1ClickHandler: closeModal,
       btn2Text: modalAnswer.yes,
-      btn2ClickHandler: async () => {
-        closeModal();
+      btn2ClickHandler: async (event: any, reason: any) => {
+        closeModal(event, reason);
         const iconFile = selectedIcon.iconFile;
         if (isInputNameEmpty || !iconFile.filename) {
           return true;
@@ -128,8 +128,8 @@ const EditCategoryPage = () => {
       btn1Text: '모두 삭제',
       btn1ClickHandler: closeModal,
       btn2Text: '다른 카테고리로 이동',
-      btn2ClickHandler: async () => {
-        closeModal();
+      btn2ClickHandler: async (event: any, reason: any) => {
+        closeModal(event, reason);
         const response = await deleteCategory(selectedSubCategory.categoryId!);
         let popupText;
         if (response.status === 'SUCCESS') {
