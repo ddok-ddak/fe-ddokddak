@@ -1,5 +1,5 @@
 import { checkDuplicatedEmail, requestCode } from '@/api/auth';
-import { signUpDataState } from '@/store/signUp';
+import { authenticationRequestId, signUpDataState } from '@/store/signUp';
 import { Button, InputAdornment } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -14,13 +14,14 @@ const SetEmail = (props: any) => {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const instruction = useSetRecoilState(stepInstruction);
   const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
+  const setRequestId = useSetRecoilState(authenticationRequestId);
 
   const [email, setEmail] = useState(signUpData.email);
   const [disableDuplicateChkBtn, setDisableDuplicateChkBtn] = useState(true);
   const [helper, setHelper] = useState('');
   const [isHelperError, setIsHelperError] = useState(true);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
-
+  
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -95,6 +96,7 @@ const SetEmail = (props: any) => {
         await requestCode(email).then((response: any) => {
           if (response.status === 'SUCCESS') {
             props.handleNextButton();
+            setRequestId(response.result.id);
           }
         });
       },
