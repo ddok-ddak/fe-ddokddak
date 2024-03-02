@@ -15,7 +15,6 @@ import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
 import { signIn } from '@/api/auth';
 import Spacer from '@/components/common/Spacer';
-import { modalState } from '@/store/modal';
 
 const { checkEmailValidity } = checkPattern();
 
@@ -87,7 +86,8 @@ export default function Login() {
     setHelper2('');
     setNextButtonProps({
       ...nextButtonProps,
-      isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
+      // isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
+      isDisabled: false,
       clickHandler: loginButtonClickHandler,
     });
   }, [email, password]);

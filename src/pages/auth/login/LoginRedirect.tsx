@@ -17,7 +17,7 @@ function LoginRedirect() {
       .then((response: any) => {
         const info = response.result;
         setUserInfo(info);
-        if (info.templateType === 'NONE') {
+        // if (info.templateType === 'NONE') {
           setModalInfo({
             open: true,
             title: `${info.nickname}님 환영합니다!`,
@@ -33,7 +33,7 @@ function LoginRedirect() {
             ),
             isShowConfirmBtn: true,
           });
-        }
+        // }
       });
   };
 
