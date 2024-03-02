@@ -33,6 +33,11 @@ const Modal = () => {
   return (
     <MuiModal
       open={modalInfo.open}
+      disableScrollLock
+      disableAutoFocus
+      disableRestoreFocus
+      disableEscapeKeyDown
+      disableEnforceFocus
       onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -106,7 +111,7 @@ const Modal = () => {
                     p: 0,
                   }}
                 >
-                  {modalInfo.optionList?.map((option: any) => {
+                  {modalInfo.optionList?.map((option: any, idx: number) => {
                     const { id, name, type } = option;
                     return (
                       <FormControlLabel
@@ -115,6 +120,7 @@ const Modal = () => {
                         label={`${name} 모드`}
                         control={
                           <Radio
+                            checked={!idx}
                             onChange={() => {
                               setSelectedValue(() => option);
                               setNextButtonProps({
