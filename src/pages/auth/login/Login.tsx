@@ -86,8 +86,7 @@ export default function Login() {
     setHelper2('');
     setNextButtonProps({
       ...nextButtonProps,
-      // isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
-      isDisabled: false,
+      isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
       clickHandler: loginButtonClickHandler,
     });
   }, [email, password]);
