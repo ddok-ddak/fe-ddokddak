@@ -235,12 +235,18 @@ export const popupMessagePosition = selector({
     if (type === 'RESETPW') {
       return get(resetPWCompletePopupMessage);
     } else if (type === 'SETTEMPLATE') {
-      return 'ETC MESSAGE TEXT';
-      // return get(currentSelectedDateForStat);
+      return get(currentSelectedDateForStat);
     } else {
-      return 'ETC MESSAGE TEXT 2222';
+      return 'ETC MESSAGE';
     }
   },
+});
+
+
+/* ============ BOTTOM NAVIGATION ============ */
+export const bottomNavigation = atom({
+  key: 'BottomNavigation',
+  default: 0,
 });
 
 // export const popupMessageShowStatus = selector({
