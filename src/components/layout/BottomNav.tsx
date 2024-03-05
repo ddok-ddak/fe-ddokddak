@@ -1,9 +1,10 @@
+import { bottomNavigation } from '@/store/common';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 const BottomNav = () => {
-  const [value, setValue] = React.useState(0);
+  const [navPage, setNavPage] = useRecoilState(bottomNavigation);
 
   return (
     <BottomNavigation
@@ -15,9 +16,9 @@ const BottomNav = () => {
         width: '100vw',
       }}
       showLabels
-      value={value}
+      value={navPage}
       onChange={(event, newValue) => {
-        setValue(newValue);
+        setNavPage(newValue);
       }}
     >
       <BottomNavigationAction
