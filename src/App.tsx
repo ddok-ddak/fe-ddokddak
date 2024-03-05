@@ -31,7 +31,7 @@ function App() {
         <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
           <Box sx={{height: '94vh'}}>
             <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/" element={<Navigate to="/statistics" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signin/redirect" element={<LoginRedirect />} />
               <Route path="/signUp" element={<SignUp />} />
