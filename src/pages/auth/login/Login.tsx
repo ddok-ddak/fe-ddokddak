@@ -86,8 +86,7 @@ export default function Login() {
     setHelper2('');
     setNextButtonProps({
       ...nextButtonProps,
-      // isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
-      isDisabled: false,
+      isDisabled: !(!isHelperError1 && email !== '' && password !== ''),
       clickHandler: loginButtonClickHandler,
     });
   }, [email, password]);
@@ -107,11 +106,9 @@ export default function Login() {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          p: 0,
-          m: 0,
-          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
           height: '497px',
-          flex: '1 1 497px',
         }}
       >
         <FormWrapper
