@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DefaultIcon from '@/components/common/DefaultIcon';
 
 export interface CircleProps {
   size: number;
@@ -16,6 +17,31 @@ export interface CircleProps {
   variant?: 'filled' | 'outlined';
   children?: any;
 }
+
+const getIcon = (iconName: string, iconSize: number) => {
+  switch (iconName) {
+    case '':
+      return DefaultIcon(iconSize);
+    case 'add':
+      return (
+        <AddIcon
+          sx={{
+            color: 'common.white',
+            width: iconSize,
+            height: iconSize,
+          }}
+        />
+      );
+    default:
+      return (
+        <img
+          style={{ width: iconSize, height: iconSize }}
+          src={`./images/icons/category/base/${iconName}.png`}
+          alt={iconName}
+        />
+      );
+  }
+};
 
 const Circle = (props: CircleProps) => {
   const {
@@ -53,22 +79,9 @@ const Circle = (props: CircleProps) => {
           alignItems: 'center',
         }}
       >
-        {iconName === 'add' ? (
-          <AddIcon
-            sx={{
-              color: 'common.white',
-              width: iconSize,
-              height: iconSize,
-            }}
-          />
-        ) : (
-          <img
-            style={{ width: iconSize, height: iconSize }}
-            src={`./images/icons/category/base/${iconName}.png`}
-            alt={iconName}
-          />
-        )}
+        {getIcon(iconName, iconSize)}
       </Box>
+
       {label && (
         <Typography
           variant="subtitle2"

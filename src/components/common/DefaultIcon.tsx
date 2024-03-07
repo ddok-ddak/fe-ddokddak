@@ -1,4 +1,4 @@
-const TestIcon = (size: number) => {
+const DefaultIcon = (size: number) => {
   return (
     <svg
       width={size}
@@ -33,4 +33,4 @@ const TestIcon = (size: number) => {
   );
 };
 
-export default TestIcon;
+export default DefaultIcon;

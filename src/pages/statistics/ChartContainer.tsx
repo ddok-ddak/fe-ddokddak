@@ -26,6 +26,7 @@ import {
   customCalendarType,
 } from '@/store/common';
 import { theme } from '@/styles';
+import { iconConstants } from '@/constants/icons';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
@@ -374,82 +375,93 @@ const ChartContainer = () => {
    */
   const setCategoryDetailDataList = (dataArray: object[]) => (
     <>
-      {dataArray.length ??
-        dataArray.map((data: any, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              padding: '8px',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              margin: '13px 12px',
-              alignItems: 'flex-end',
-            }}
-          >
-            <Circle
-              color={data.categoryColor}
-              size={40}
-              onClick={() => {
-                const subCategoryData = data.children;
-                const periodTypeTitle = periodTypeList!.filter(
-                  (type) => type.id === periodType,
-                )[0].subTitle;
-                if (subCategoryData) {
-                  setCategoryDetailData(subCategoryData);
-                  setTotalSumTitle(
-                    addPostposition(`${periodTypeTitle} ${data.categoryName}`),
-                  );
-                } else {
-                  setCategoryDetailData(statisticsResult);
-                  setTotalSumTitle(addPostposition(periodTypeTitle));
-                }
-              }}
-              iconSize={20}
-              iconName={''}
-            />
+      {dataArray.length &&
+        dataArray.map((data: any, idx) => {
+          let categoryName = '';
+          Object.entries(iconConstants).forEach((elem: any) => {
+            if (elem[0] === data.categoryName) {
+              categoryName = elem[1];
+              return true;
+            }
+          });
+          return (
             <Box
+              key={idx}
               sx={{
-                flex: '1 1 100%',
-                margin: '0px 10px 3px 10px',
+                padding: '8px',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                margin: '13px 12px',
+                alignItems: 'flex-end',
               }}
             >
-              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                {data.categoryName}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ width: '100%', mr: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(data.timeSum * 100) / (categorySum || 100)}
-                    sx={{
-                      height: 10,
-                      '&.MuiLinearProgress-root': {
-                        backgroundColor: `${paletteGrey[100]} !important`,
-                        borderRadius: 5,
-                      },
-                      '& > .MuiLinearProgress-bar': {
-                        backgroundColor: data.categoryColor,
-                        borderRadius: 5,
-                      },
-                    }}
-                  />
+              <Circle
+                color={data.categoryColor}
+                size={40}
+                onClick={() => {
+                  const subCategoryData = data.children;
+                  const periodTypeTitle = periodTypeList!.filter(
+                    (type) => type.id === periodType,
+                  )[0].subTitle;
+                  if (subCategoryData) {
+                    setCategoryDetailData(subCategoryData);
+                    setTotalSumTitle(
+                      addPostposition(
+                        `${periodTypeTitle} ${data.categoryName}`,
+                      ),
+                    );
+                  } else {
+                    setCategoryDetailData(statisticsResult);
+                    setTotalSumTitle(addPostposition(periodTypeTitle));
+                  }
+                }}
+                iconSize={35}
+                iconName={categoryName}
+              />
+              <Box
+                sx={{
+                  flex: '1 1 100%',
+                  margin: '0px 10px 3px 10px',
+                }}
+              >
+                <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                  {data.categoryName}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ width: '100%', mr: 1 }}>
+                    <LinearProgress
+                      variant="determinate"
+                      value={(data.timeSum * 100) / (categorySum || 100)}
+                      sx={{
+                        height: 10,
+                        '&.MuiLinearProgress-root': {
+                          backgroundColor: `${paletteGrey[100]} !important`,
+                          borderRadius: 5,
+                        },
+                        '& > .MuiLinearProgress-bar': {
+                          backgroundColor: data.categoryColor,
+                          borderRadius: 5,
+                        },
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  flex: '0 0 20%',
+                  margin: '0px 10px 3px 10px',
+                  fontSize: '16px',
+                }}
+              >
+                {setCategoryDetailDataTime(data.timeSum)}
+              </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flex: '0 0 20%',
-                margin: '0px 10px 3px 10px',
-                fontSize: '16px',
-              }}
-            >
-              {setCategoryDetailDataTime(data.timeSum)}
-            </Box>
-          </Box>
-        ))}
+          );
+        })}
     </>
   );
 
