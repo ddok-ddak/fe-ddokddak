@@ -28,8 +28,15 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <Box sx={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-          <Box sx={{height: '94vh'}}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            width: '100vw',
+          }}
+        >
+          <Box sx={{ width: '100vw', height: '94vh' }}>
             <Routes>
               <Route path="/" element={<Navigate to="/statistics" />} />
               <Route path="/login" element={<Login />} />
@@ -40,9 +47,33 @@ function App() {
               <Route path="/resetPW" element={<ResetPWStep />} />
               <Route path="/resetPWMode" element={<ResetPWMode />} />
 
-              <Route path="/record" element={<><RecordPage /><BottomNav /></>} />
-              <Route path="/statistics" element={<><StatisticsPage /><BottomNav /></>} />
-              <Route path="/settings" element={<><SettingsPage /><BottomNav /></>} />
+              <Route
+                path="/record"
+                element={
+                  <>
+                    <RecordPage />
+                    <BottomNav />
+                  </>
+                }
+              />
+              <Route
+                path="/statistics"
+                element={
+                  <>
+                    <StatisticsPage />
+                    <BottomNav />
+                  </>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <>
+                    <SettingsPage />
+                    <BottomNav />
+                  </>
+                }
+              />
               <Route path="/settings/account" element={<AccountSetting />} />
 
               <Route path="/record/edit" element={<EditRecordPage />} />
