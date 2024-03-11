@@ -25,7 +25,6 @@ export default function Login() {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const setInstruction = useSetRecoilState(stepInstruction);
 
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [helper1, setHelper1] = useState('');
@@ -106,10 +105,7 @@ export default function Login() {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          p: 0,
-          m: 0,
-          width: '100%',
-          height: '497px',
+          width: '100vw',
           flex: '1 1 497px',
         }}
       >

@@ -50,6 +50,14 @@ const VerifyCode = (props: any) => {
       ),
       verifyCodeRequestButton: (
         <Button
+          sx={{
+            width: '120px',
+            justifyContent: 'center',
+            radius: '5px',
+            backgroundColor: 'grey.200',
+            margin: '0 0 0 5px',
+            padding: 0,
+          }}
           onClick={async () => {
             const requestCount = requestCodeCount;
             if (requestCount < 5) {
@@ -74,14 +82,6 @@ const VerifyCode = (props: any) => {
                 },
               });
             }
-          }}
-          sx={{
-            height: '29px',
-            width: '120px',
-            margin: '16px 0 8px 10px',
-            justifyContent: 'center',
-            radius: '5px',
-            backgroundColor: 'grey.200',
           }}
         >
           <Typography

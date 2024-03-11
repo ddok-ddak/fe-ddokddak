@@ -5,7 +5,7 @@ import { buttonText } from '@/constants/message';
 // sign up step current index
 export const signUpStep = atom({
   key: 'SignUpState',
-  default: 0,
+  default: 2,
 });
 
 // sign up user data
