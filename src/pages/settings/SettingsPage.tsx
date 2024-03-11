@@ -32,10 +32,10 @@ const SettingPage = () => {
 
   const setStepIndex = useSetRecoilState(stepIndex);
   const { showServerError, closeModal } = useModalCommon();
-  
+
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
-  
+
   /**
    * get list sub header
    * @param text test
@@ -75,36 +75,42 @@ const SettingPage = () => {
    * handle logout button click event
    */
   const logoutClickHandler = async (event: any, reason: any) => {
-    await signOut()
-      .then((response: CommonResponse) => {
-        if (response.status === 'SUCCESS') {
-          closeModal(event, reason);
-          removeTokenCookie();
-          navigation('/');
-        } else {
-          closeModal(event, reason);
-        }
-      })
-      .catch(() => {
-        showServerError();
-      });
+    closeModal(event, reason);
+    removeTokenCookie();
+    navigation('/');
+    // await signOut()
+    //   .then((response: CommonResponse) => {
+    //     if (response.status === 'SUCCESS') {
+    //       closeModal(event, reason);
+    //       removeTokenCookie();
+    //       navigation('/');
+    //     } else {
+    //       closeModal(event, reason);
+    //     }
+    //   })
+    //   .catch(() => {
+    //     showServerError();
+    //   });
   };
 
   /**
    * handle delete account click event
    */
   const deleteAccountClickHandler = async (event: any, reason: any) => {
-    await deleteUser()
-      .then((response: CommonResponse) => {
-        if (response.status === 'SUCCESS') {
-          closeModal(event, reason);
-          removeTokenCookie();
-          navigation('/');
-        }
-      })
-      .catch(() => {
-        showServerError();
-      });
+    removeTokenCookie();
+    closeModal(event, reason);
+    navigation('/');
+    // await deleteUser()
+    //   .then((response: CommonResponse) => {
+    //     if (response.status === 'SUCCESS') {
+    //       removeTokenCookie();
+    //       closeModal(event, reason);
+    //       navigation('/');
+    //     }
+    //   })
+    //   .catch(() => {
+    //     showServerError();
+    //   });
   };
 
   useEffect(() => {

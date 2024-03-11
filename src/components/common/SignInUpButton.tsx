@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 
 export interface SignInUpButtonProps {
   size: number;

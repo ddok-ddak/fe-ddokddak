@@ -26,6 +26,7 @@ import {
   customCalendarType,
 } from '@/store/common';
 import { theme } from '@/styles';
+import Spacer from '@/components/common/Spacer';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, ...registerables);
 
@@ -351,105 +352,161 @@ const ChartContainer = () => {
   const setCategoryDetailDataTime = (timeVal: number) => {
     const timeObject = timeFormatter(timeVal);
     return (
-      <>
-        <Typography sx={{ fontWeight: 'bold' }}>{timeObject.hour}</Typography>
-        <Typography>{timeObject.hourUnit}</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flex: '1 1 35%',
+          justifyContent: 'flex-end',
+          alignItems: 'baseline',
+        }}
+      >
+        <Typography
+          sx={{
+            display: 'block',
+            fontWeight: 'bold',
+            fontSize: '20px',
+            lineHeight: '18.75px',
+          }}
+        >
+          {timeObject.hour}
+        </Typography>
+        <Typography
+          sx={{
+            display: 'block',
+            fontSize: '16px',
+            lineHeight: '18.75px',
+          }}
+        >
+          {timeObject.hourUnit}
+        </Typography>
         {!!timeVal && !!timeObject.minute && (
           <>
-            <Typography sx={{ fontWeight: 'bold', marginLeft: '3px' }}>
+            <Typography
+              sx={{
+                fontWeight: 'bold',
+                fontSize: '20px',
+                marginLeft: '3px',
+                lineHeight: '18.75px',
+              }}
+            >
               {timeObject.minute}
             </Typography>
-            <Typography>{timeObject.minuteUnit}</Typography>
+            <Typography sx={{ fontSize: '16px', lineHeight: '18.75px' }}>
+              {timeObject.minuteUnit}
+            </Typography>
           </>
         )}
-      </>
+      </Box>
     );
   };
 
   /**
-   * returns detail data list of the seleted category
+   * returns detail data list of the selected category
    * 선택한 카테고리의 세부 항목을 반환한다.
    * @param dataArray
    * @returns reactElement
    */
-  const setCategoryDetailDataList = (dataArray: object[]) => (
-    <>
-      {dataArray.length &&
-        dataArray.map((data: any, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              padding: '8px',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              margin: '13px 12px',
-              alignItems: 'flex-end',
-            }}
-          >
-            <Circle
-              color={data.categoryColor}
-              size={40}
-              onClick={() => {
-                const subCategoryData = data.children;
-                const periodTypeTitle = periodTypeList!.filter(
-                  (type) => type.id === periodType,
-                )[0].subTitle;
-                if (subCategoryData) {
-                  setCategoryDetailData(subCategoryData);
-                  setTotalSumTitle(
-                    addPostposition(`${periodTypeTitle} ${data.categoryName}`),
-                  );
-                } else {
-                  setCategoryDetailData(statisticsResult);
-                  setTotalSumTitle(addPostposition(periodTypeTitle));
-                }
-              }}
-            />
-            <Box
-              sx={{
-                flex: '1 1 100%',
-                margin: '0px 10px 3px 10px',
-              }}
-            >
-              <Typography sx={{ fontSize: '16px', fontWeight: 'bold' }}>
-                {data.categoryName}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ width: '100%', mr: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(data.timeSum * 100) / (categorySum || 100)}
-                    sx={{
-                      height: 10,
-                      '&.MuiLinearProgress-root': {
-                        backgroundColor: `${paletteGrey[100]} !important`,
-                        borderRadius: 5,
-                      },
-                      '& > .MuiLinearProgress-bar': {
-                        backgroundColor: data.categoryColor,
-                        borderRadius: 5,
-                      },
-                    }}
-                  />
-                </Box>
-              </Box>
-            </Box>
+  const setCategoryDetailDataList = (dataArray: object[]) => {
+    console.log(dataArray)
+    return (
+      <>
+        {dataArray.length &&
+          dataArray.map((data: any, idx) => (
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flex: '0 0 20%',
-                margin: '0px 10px 3px 10px',
-                fontSize: '16px',
+                height: '9.5vh',
+                margin: '0 17px',
               }}
             >
-              {setCategoryDetailDataTime(data.timeSum)}
+              <Box
+                key={idx}
+                sx={{
+                  padding: '8px',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  flex: '1 1 60%',
+                  height: '100%',
+                  m: 0,
+                  p: 0,
+                }}
+              >
+                <Circle
+                  color={data.categoryColor}
+                  size={62}
+                  iconSize={40}
+                  iconName={''}
+                  onClick={() => {
+                    const subCategoryData = data.children;
+                    const periodTypeTitle = periodTypeList!.filter(
+                      (type) => type.id === periodType,
+                    )[0].subTitle;
+                    if (subCategoryData) {
+                      setCategoryDetailData(subCategoryData);
+                      setTotalSumTitle(
+                        addPostposition(
+                          `${periodTypeTitle} ${data.categoryName}`,
+                        ),
+                      );
+                    } else {
+                      setCategoryDetailData(statisticsResult);
+                      setTotalSumTitle(addPostposition(periodTypeTitle));
+                    }
+                  }}
+                />
+                <Box
+                  sx={{
+                    marginLeft: '12px',
+                    flex: '1 1 100%',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: '18.75px',
+                      fontWeight: 700,
+                      m: 0,
+                      p: 0,
+                    }}
+                  >
+                    {data.categoryName}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box sx={{ width: '100%', flex: '1 1 60%' }}>
+                      <LinearProgress
+                        variant="determinate"
+                        value={(data.timeSum * 100) / (categorySum || 100)}
+                        sx={{
+                          top: '3px',
+                          height: '11px',
+                          '&.MuiLinearProgress-root': {
+                            backgroundColor: `${paletteGrey[100]} !important`,
+                            borderRadius: 5,
+                          },
+                          '& > .MuiLinearProgress-bar': {
+                            backgroundColor: data.categoryColor,
+                            borderRadius: 5,
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Spacer x={10} />
+                    {setCategoryDetailDataTime(data.timeSum)}
+                  </Box>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        ))}
-    </>
-  );
+          ))}
+      </>
+    );
+  };
 
   useEffect(() => {
     setCalendarType('STAT');
