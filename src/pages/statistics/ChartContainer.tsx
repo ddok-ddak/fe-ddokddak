@@ -407,6 +407,7 @@ const ChartContainer = () => {
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => {
+
     return (
       <>
         {dataArray.length &&
@@ -441,7 +442,6 @@ const ChartContainer = () => {
                     const periodTypeTitle = periodTypeList!.filter(
                       (type) => type.id === periodType,
                     )[0].subTitle;
-
                     if (subCategoryData) {
                       setCategoryDetailData(subCategoryData);
                       setTotalSumTitle(
