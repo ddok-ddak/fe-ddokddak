@@ -36,6 +36,7 @@ import {
   FormType,
   currentSelectedDate,
   currentPeriod,
+  bottomNavigation,
 } from '@/store/common';
 import Wrapper from '../auth/common/Wrapper';
 import { modalButtonState, modalValue } from '@/store/modal';
@@ -65,22 +66,22 @@ const renderEventContent = (eventInfo: any) => {
 
 const RecordPage = () => {
   const navigation = useNavigate();
+  const { closeModal } = useModalCommon();
+
+  const setNavPage = useSetRecoilState(bottomNavigation);
 
   const setSelectedEvent = useSetRecoilState(currentSelectedEvent);
 
   const selectedDate = useRecoilValue(currentSelectedDate);
   const periodType = useRecoilValue<PeriodTypeForRecord>(currentPeriod);
-  const { closeModal } = useModalCommon();
 
   const setCalendarType =
     useSetRecoilState<customCalendarType>(currentCalendarType);
 
   const setCurrentFormType = useSetRecoilState<FormType>(currentFormType);
-
   const setRecordType = useSetRecoilState(currentRecordPageType);
 
   const selectedValue = useRecoilValue(modalValue);
-
   const startHour = useRecoilValue(statisticsStartHour);
   const endHour = `${
     Number(startHour.substring(0, 2)) + 24
@@ -212,6 +213,8 @@ const RecordPage = () => {
   }, [selectedValue]);
 
   useEffect(() => {
+    setNavPage(0);
+
     const initialInfo = { start: new Date() };
     getAllRecords(initialInfo);
 

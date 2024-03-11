@@ -15,7 +15,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import ListIcon from '@/components/settings/ListIcon';
 import UserAvatar from '@/components/settings/UserAvatar';
-import { stepIndex } from '@/store/common';
+import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
@@ -28,6 +28,7 @@ import { useModalCommon } from '@/hooks/modalCommon';
 
 const SettingPage = () => {
   const navigation = useNavigate();
+  const setNavPage = useSetRecoilState(bottomNavigation);
 
   const setStepIndex = useSetRecoilState(stepIndex);
   const { showServerError, closeModal } = useModalCommon();
@@ -113,6 +114,7 @@ const SettingPage = () => {
   };
 
   useEffect(() => {
+    setNavPage(2);
     setStepIndex(0);
   });
 
