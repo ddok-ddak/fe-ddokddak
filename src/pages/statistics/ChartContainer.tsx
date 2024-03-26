@@ -407,7 +407,6 @@ const ChartContainer = () => {
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => {
-    console.log(dataArray)
     return (
       <>
         {dataArray.length &&
@@ -718,7 +717,6 @@ const ChartContainer = () => {
           </Carousel>
         )}
       </Box>
-
       {setCategoryDetailDataList(
         totalSum ? categoryDetailData : statisticsResult,
       )}
