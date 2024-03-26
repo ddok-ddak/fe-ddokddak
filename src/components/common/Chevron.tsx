@@ -3,6 +3,7 @@ const Chevron = ({ callback, direction }: any): JSX.Element => (
     className="fc"
     style={{
       justifyContent: 'center',
+      flex: '0 0 20px',
     }}
   >
     <div

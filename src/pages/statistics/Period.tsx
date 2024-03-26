@@ -233,6 +233,7 @@ const Period = () => {
       <Grid
         container
         sx={{
+          display: 'flex',
           direction: 'column',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -249,16 +250,14 @@ const Period = () => {
           }}
           direction="left"
         />
-        <Box
-          sx={{height: '100%'}}
-        >
+        <Box sx={{ flex: '1 1 85%' }}>
           {periodType === 'BY_DAY' && (
             <>
               {CustomCalendar({
                 value: selectedDate[periodType].locale('ko'),
                 inputFormat: 'MM월 DD일 dddd',
                 renderInput: (params: any) => (
-                  <DateInput params={params} width={'110px'} />
+                  <DateInput params={params} width={'120px'} />
                 ),
                 onChange: setTempNewDateRange,
               })}
@@ -274,7 +273,7 @@ const Period = () => {
                   selectedDate[periodType].locale('ko'),
                 ),
                 renderInput: (params: any) => (
-                  <DateInput params={params} width={'240px'} />
+                  <DateInput params={params} width={'255px'} />
                 ),
               })}
             </>
@@ -285,7 +284,7 @@ const Period = () => {
                 value: selectedDate[periodType].locale('ko'),
                 inputFormat: 'YYYY년 MM월',
                 renderInput: (params: any) => {
-                  return <DateInput params={params} width={'85px'} />;
+                  return <DateInput params={params} width={'90px'} />;
                 },
                 onChange: setTempNewDateRange,
                 views: ['month', 'year'],
@@ -310,7 +309,6 @@ const Period = () => {
             </>
           )}
         </Box>
-
         <Chevron
           callback={() =>
             setNewDateRange(

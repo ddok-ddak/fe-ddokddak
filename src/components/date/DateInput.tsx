@@ -28,17 +28,28 @@ const DateInput = ({ params, width }: any) => {
         ),
       }}
       sx={{
-        ' .MuiInputBase-root': { justifyContent: 'center', p: 0 },
+        width: '100%',
+        ' .MuiInputBase-root': {
+          display: 'flex',
+          justifyContent: 'center',
+          p: 0,
+        },
         ' .MuiInputBase-input': {
+          flex: `1 1 ${width}`,
           p: '16px 0',
           overflow: 'auto',
           color: 'grey.600',
           fontWeight: '600',
-          fontSize: '14px',
+          fontSize: '1em',
         },
-        ' .MuiInputAdornment-root': { flex: '0 0 auto', pb: '1px' },
-        '& input': {
-          width,
+        ' .MuiInputAdornment-root': {
+          flex: '0 0 auto',
+          pb: '1px',
+        },
+        ' input': {
+          flex: '1 1 0px',
+          textAlign: 'center',
+          height: '100%',
           pl: 0,
         },
         '& fieldset': { border: 'none' },
