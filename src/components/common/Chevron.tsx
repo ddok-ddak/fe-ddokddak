@@ -1,6 +1,19 @@
 const Chevron = ({ callback, direction }: any): JSX.Element => (
-  <div className="fc">
-    <div className="fc-toolbar-chunk">
+  <div
+    className="fc"
+    style={{
+      justifyContent: 'center',
+      flex: '0 0 20px',
+    }}
+  >
+    <div
+      className="fc-toolbar-chunk"
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <button
         className="fc-prev-button fc-button fc-button-primary"
         onClick={callback}

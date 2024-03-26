@@ -233,10 +233,13 @@ const Period = () => {
       <Grid
         container
         sx={{
+          display: 'flex',
           direction: 'column',
           alignItems: 'center',
           justifyContent: 'space-between',
-          p: '8px 17px',
+          p: '0 17px',
+          margin: 0,
+          height: '50px',
         }}
       >
         <Chevron
@@ -247,63 +250,65 @@ const Period = () => {
           }}
           direction="left"
         />
-        {periodType === 'BY_DAY' && (
-          <>
-            {CustomCalendar({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'MM월 DD일 dddd',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={'110px'} />
-              ),
-              onChange: setTempNewDateRange,
-            })}
-          </>
-        )}
-        {periodType === 'BY_WEEK' && (
-          <>
-            {CustomCalendar({
-              value: selectedDate[periodType].locale('ko'),
-              onChange: (newValue: any) =>
-                setTempNewDateRange(dayjs(newValue).startOf('week')),
-              inputFormat: getWeekPeriodInputFormat(
-                selectedDate[periodType].locale('ko'),
-              ),
-              renderInput: (params: any) => (
-                <DateInput params={params} width={'230px'} />
-              ),
-            })}
-          </>
-        )}
-        {periodType === 'BY_MONTH' && (
-          <>
-            {CustomCalendar({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'YYYY년 MM월',
-              renderInput: (params: any) => {
-                return <DateInput params={params} width={'85px'} />;
-              },
-              onChange: setTempNewDateRange,
-              views: ['month', 'year'],
-              openTo: 'month',
-            })}
-          </>
-        )}
-        {periodType === 'BY_YEAR' && (
-          <>
-            {CustomCalendar({
-              value: selectedDate[periodType].locale('ko'),
-              inputFormat: 'YYYY년',
-              renderInput: (params: any) => (
-                <DateInput params={params} width={'55px'} />
-              ),
-              onChange: setTempNewDateRange,
-              views: ['year'],
-              openTo: 'year',
-              minDate: dayjs('2023-01-01'),
-              maxDate: dayjs(currDate),
-            })}
-          </>
-        )}
+        <Box sx={{ flex: '1 1 85%' }}>
+          {periodType === 'BY_DAY' && (
+            <>
+              {CustomCalendar({
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'MM월 DD일 dddd',
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'120px'} />
+                ),
+                onChange: setTempNewDateRange,
+              })}
+            </>
+          )}
+          {periodType === 'BY_WEEK' && (
+            <>
+              {CustomCalendar({
+                value: selectedDate[periodType].locale('ko'),
+                onChange: (newValue: any) =>
+                  setTempNewDateRange(dayjs(newValue).startOf('week')),
+                inputFormat: getWeekPeriodInputFormat(
+                  selectedDate[periodType].locale('ko'),
+                ),
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'255px'} />
+                ),
+              })}
+            </>
+          )}
+          {periodType === 'BY_MONTH' && (
+            <>
+              {CustomCalendar({
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'YYYY년 MM월',
+                renderInput: (params: any) => {
+                  return <DateInput params={params} width={'90px'} />;
+                },
+                onChange: setTempNewDateRange,
+                views: ['month', 'year'],
+                openTo: 'month',
+              })}
+            </>
+          )}
+          {periodType === 'BY_YEAR' && (
+            <>
+              {CustomCalendar({
+                value: selectedDate[periodType].locale('ko'),
+                inputFormat: 'YYYY년',
+                renderInput: (params: any) => (
+                  <DateInput params={params} width={'55px'} />
+                ),
+                onChange: setTempNewDateRange,
+                views: ['year'],
+                openTo: 'year',
+                minDate: dayjs('2023-01-01'),
+                maxDate: dayjs(currDate),
+              })}
+            </>
+          )}
+        </Box>
         <Chevron
           callback={() =>
             setNewDateRange(
