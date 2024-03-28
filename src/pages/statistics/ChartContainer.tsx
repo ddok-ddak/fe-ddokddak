@@ -441,6 +441,7 @@ const ChartContainer = () => {
                     const periodTypeTitle = periodTypeList!.filter(
                       (type) => type.id === periodType,
                     )[0].subTitle;
+
                     if (subCategoryData) {
                       setCategoryDetailData(subCategoryData);
                       setTotalSumTitle(
@@ -451,7 +452,19 @@ const ChartContainer = () => {
                     } else {
                       setCategoryDetailData(statisticsResult);
                       setTotalSumTitle(addPostposition(periodTypeTitle));
+                      setClickedIndex(-1);
                     }
+                    setCategorySum(
+                      () =>
+                        (subCategoryData
+                          ? categoryDetailData
+                          : statisticsResult
+                        )?.reduce(
+                          (accu: number, curr: StatisticsDetail) =>
+                            accu + curr.timeSum,
+                          0,
+                        ) | 0,
+                    );
                   }}
                 />
                 <Box
@@ -511,6 +524,17 @@ const ChartContainer = () => {
     setCalendarType('STAT');
     statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
+
+  useEffect(() => {
+    const timeSum = statisticsResult.length
+      ? statisticsResult.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.timeSum,
+          0,
+        )
+      : 0;
+    setTotalSum(() => timeSum);
+    // setCategorySum(() => 0);
+  }, [totalSumTitle]);
 
   useEffect(() => {
     const timeSum = statisticsResult.length
