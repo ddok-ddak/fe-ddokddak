@@ -1,5 +1,5 @@
 import { buttonText } from '@/constants/message';
-import { currentFormType, stepButtonProps } from '@/store/common';
+import { currentFormType, stepButtonProps, stepInstruction } from '@/store/common';
 import { resetPWMode } from '@/store/resetPW';
 import { Button, Container } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -9,6 +9,7 @@ const ResetPWMode = (props: any) => {
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
   const [pWChgMode, setPWChgMode] = useRecoilState(resetPWMode);
   const setStepType = useSetRecoilState(currentFormType);
+  const setInstruction = useSetRecoilState(stepInstruction);
 
   const getSelectModeButton = (
     text: string,
@@ -47,6 +48,7 @@ const ResetPWMode = (props: any) => {
 
   useEffect(() => {
     setStepType('RESETPW');
+    setInstruction('');
     setNextButtonProps({
       ...nextButtonProps,
       text: buttonText.next,
