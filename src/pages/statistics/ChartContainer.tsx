@@ -407,7 +407,6 @@ const ChartContainer = () => {
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => {
-
     return (
       <>
         {dataArray.length &&
@@ -474,6 +473,23 @@ const ChartContainer = () => {
                   }}
                 >
                   <Typography
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: '18.75px',
+                      fontWeight: 700,
+                      m: 0,
+                      p: 0,
+                    }}
+                  >
+                    {data.categoryName}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
                     sx={{
                       fontSize: '16px',
                       lineHeight: '18.75px',
