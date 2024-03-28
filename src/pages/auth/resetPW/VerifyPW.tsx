@@ -1,7 +1,7 @@
 import { stepButtonProps, stepInstruction } from '@/store/common';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import InputForm from '../common/InputForm';
+import InputForm, { InputItemType } from '../common/InputForm';
 
 const VerifyPW = (props: any) => {
   const [helper, setHelper] = useState('');

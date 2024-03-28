@@ -407,12 +407,12 @@ const ChartContainer = () => {
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => {
-    console.log(dataArray)
     return (
       <>
         {dataArray.length &&
           dataArray.map((data: any, idx) => (
             <Box
+              key={idx}
               sx={{
                 display: 'flex',
                 height: '9.5vh',
@@ -420,7 +420,6 @@ const ChartContainer = () => {
               }}
             >
               <Box
-                key={idx}
                 sx={{
                   padding: '8px',
                   display: 'flex',
@@ -452,7 +451,19 @@ const ChartContainer = () => {
                     } else {
                       setCategoryDetailData(statisticsResult);
                       setTotalSumTitle(addPostposition(periodTypeTitle));
+                      setClickedIndex(-1);
                     }
+                    setCategorySum(
+                      () =>
+                        (subCategoryData
+                          ? categoryDetailData
+                          : statisticsResult
+                        )?.reduce(
+                          (accu: number, curr: StatisticsDetail) =>
+                            accu + curr.timeSum,
+                          0,
+                        ) | 0,
+                    );
                   }}
                 />
                 <Box
@@ -462,6 +473,23 @@ const ChartContainer = () => {
                   }}
                 >
                   <Typography
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: '18.75px',
+                      fontWeight: 700,
+                      m: 0,
+                      p: 0,
+                    }}
+                  >
+                    {data.categoryName}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
                     sx={{
                       fontSize: '16px',
                       lineHeight: '18.75px',
@@ -512,6 +540,17 @@ const ChartContainer = () => {
     setCalendarType('STAT');
     statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
+
+  useEffect(() => {
+    const timeSum = statisticsResult.length
+      ? statisticsResult.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.timeSum,
+          0,
+        )
+      : 0;
+    setTotalSum(() => timeSum);
+    // setCategorySum(() => 0);
+  }, [totalSumTitle]);
 
   useEffect(() => {
     const timeSum = statisticsResult.length
@@ -718,7 +757,6 @@ const ChartContainer = () => {
           </Carousel>
         )}
       </Box>
-
       {setCategoryDetailDataList(
         totalSum ? categoryDetailData : statisticsResult,
       )}

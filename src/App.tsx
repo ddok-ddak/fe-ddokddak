@@ -36,7 +36,7 @@ function App() {
             width: '100vw',
           }}
         >
-          <Box sx={{ width: '100vw', height: '94vh' }}>
+          <Box sx={{ width: '100vw', height: '94vh', overflowY: 'scroll' }}>
             <Routes>
               <Route path="/" element={<Navigate to="/statistics" />} />
               <Route path="/login" element={<Login />} />
