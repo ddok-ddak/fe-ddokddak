@@ -412,6 +412,7 @@ const ChartContainer = () => {
         {dataArray.length &&
           dataArray.map((data: any, idx) => (
             <Box
+              key={idx}
               sx={{
                 display: 'flex',
                 height: '9.5vh',
@@ -419,7 +420,6 @@ const ChartContainer = () => {
               }}
             >
               <Box
-                key={idx}
                 sx={{
                   padding: '8px',
                   display: 'flex',
