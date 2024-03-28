@@ -455,9 +455,7 @@ const ChartContainer = () => {
                     }
                     setCategorySum(
                       () =>
-                        (subCategoryData
-                          ? categoryDetailData
-                          : statisticsResult
+                        (subCategoryData ?? statisticsResult
                         )?.reduce(
                           (accu: number, curr: StatisticsDetail) =>
                             accu + curr.timeSum,
@@ -473,23 +471,6 @@ const ChartContainer = () => {
                   }}
                 >
                   <Typography
-                    sx={{
-                      fontSize: '16px',
-                      lineHeight: '18.75px',
-                      fontWeight: 700,
-                      m: 0,
-                      p: 0,
-                    }}
-                  >
-                    {data.categoryName}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                  >
                     sx={{
                       fontSize: '16px',
                       lineHeight: '18.75px',
@@ -540,17 +521,6 @@ const ChartContainer = () => {
     setCalendarType('STAT');
     statisticsResult = statisticsResult.length ? statisticsResult : [];
   }, []);
-
-  useEffect(() => {
-    const timeSum = statisticsResult.length
-      ? statisticsResult.reduce(
-          (accumulator, currentValue) => accumulator + currentValue.timeSum,
-          0,
-        )
-      : 0;
-    setTotalSum(() => timeSum);
-    // setCategorySum(() => 0);
-  }, [totalSumTitle]);
 
   useEffect(() => {
     const timeSum = statisticsResult.length
