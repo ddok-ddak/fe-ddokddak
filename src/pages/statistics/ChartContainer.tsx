@@ -451,7 +451,6 @@ const ChartContainer = () => {
                     } else {
                       setCategoryDetailData(statisticsResult);
                       setTotalSumTitle(addPostposition(periodTypeTitle));
-                      setClickedIndex(-1);
                     }
                     setCategorySum(
                       () =>
