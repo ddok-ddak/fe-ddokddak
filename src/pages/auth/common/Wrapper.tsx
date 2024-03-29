@@ -1,5 +1,4 @@
 /* eslint-disable import/order */
-import PrevButton from '@/components/common/PrevButton';
 import { Box, Container } from '@mui/material';
 import { ReactNode } from 'react';
 
