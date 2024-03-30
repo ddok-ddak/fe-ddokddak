@@ -219,11 +219,17 @@ const ChartContainer = () => {
         color: palette.common.white,
         labels: {
           title: {
-            formatter: (val: any, ctx: any) =>
-              `${ctx.chart.data.labels[ctx.dataIndex]}\n`,
-            font: {
-              fontWeight: 'bold',
-              size: 17,
+            formatter: (val: any, ctx: any) => {
+              const percentage = Math.round((val * 100) / (totalSum || 100));
+              return percentage > 7
+                ? `${ctx.chart.data.labels[ctx.dataIndex]}\n`
+                : '..';
+            },
+            font: () => {
+              return {
+                fontWeight: 'bold',
+                size: 16,
+              };
             },
           },
           value: {
@@ -231,10 +237,12 @@ const ChartContainer = () => {
               if (!totalSum) {
                 return '';
               }
-              return `\n${Math.round((val * 100) / (totalSum || 100))}%`;
+              const percentage = Math.round((val * 100) / (totalSum || 100));
+              return percentage > 7 ? `\n${percentage}%` : '';
             },
             font: {
-              size: 14,
+              fontWeight: 'bold',
+              size: 12,
             },
           },
         },
@@ -285,12 +293,17 @@ const ChartContainer = () => {
             formatter: (val: number) => {
               const time = timeFormatter(val);
               return (
-                `${time.hour}시간` + (time.minute ? `\n ${time.minute}분` : '')
+                `${time.hour}시간` +
+                (time.hour.toString().length > 2
+                  ? ''
+                  : time.minute
+                  ? `\n ${time.minute}분`
+                  : '\n ')
               );
             },
             font: {
               weight: 'bold',
-              size: 14,
+              size: 12,
             },
           },
         },
@@ -415,18 +428,17 @@ const ChartContainer = () => {
               key={idx}
               sx={{
                 display: 'flex',
-                height: '9.5vh',
-                margin: '0 17px',
+                m: '10px 17px',
+                p: 0,
               }}
             >
               <Box
                 sx={{
-                  padding: '8px',
                   display: 'flex',
                   justifyContent: 'flex-start',
                   alignItems: 'center',
-                  flex: '1 1 60%',
-                  height: '100%',
+                  flex: '1 1 30%',
+                  height: '30%',
                   m: 0,
                   p: 0,
                 }}
@@ -454,8 +466,7 @@ const ChartContainer = () => {
                     }
                     setCategorySum(
                       () =>
-                        (subCategoryData ?? statisticsResult
-                        )?.reduce(
+                        (subCategoryData ?? statisticsResult)?.reduce(
                           (accu: number, curr: StatisticsDetail) =>
                             accu + curr.timeSum,
                           0,
@@ -548,7 +559,9 @@ const ChartContainer = () => {
   return (
     <>
       <Box sx={{ backgroundColor: palette.chart.customBackground }}>
-        <Box sx={{ position: 'relative' }}>
+        <Box 
+          sx={{ position: 'relative' }}
+        >
           <Box
             sx={{
               width: '100%',
@@ -726,9 +739,17 @@ const ChartContainer = () => {
           </Carousel>
         )}
       </Box>
-      {setCategoryDetailDataList(
-        totalSum ? categoryDetailData : statisticsResult,
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+        }}
+      >
+        {setCategoryDetailDataList(
+          totalSum ? categoryDetailData : statisticsResult,
+        )}
+      </Box>
     </>
   );
 };
