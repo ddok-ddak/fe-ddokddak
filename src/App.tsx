@@ -36,7 +36,7 @@ function App() {
             width: '100vw',
           }}
         >
-          <Box sx={{ width: '100vw', height: '94vh', overflowY: 'scroll' }}>
+          <Box sx={{ width: '100vw', flex: '100vh', overflowX: 'hidden',}}>
             <Routes>
               <Route path="/" element={<Navigate to="/statistics" />} />
               <Route path="/login" element={<Login />} />
@@ -53,7 +53,7 @@ function App() {
                   <>
                     <RecordPage />
                     <BottomNav />
-                  </>
+</>
                 }
               />
               <Route
@@ -75,7 +75,6 @@ function App() {
                 }
               />
               <Route path="/settings/account" element={<AccountSetting />} />
-
               <Route path="/record/edit" element={<EditRecordPage />} />
               <Route path="/category" element={<CategoryPage />} />
               <Route path="/category/edit" element={<EditCategoryPage />} />

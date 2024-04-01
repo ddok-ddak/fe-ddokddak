@@ -407,7 +407,6 @@ const ChartContainer = () => {
    * @returns reactElement
    */
   const setCategoryDetailDataList = (dataArray: object[]) => {
-
     return (
       <>
         {dataArray.length &&
@@ -561,190 +560,191 @@ const ChartContainer = () => {
   }, [statisticsResult, periodType]);
 
   return (
-    <>
-      <Box sx={{ backgroundColor: palette.chart.customBackground }}>
-        <Box sx={{ position: 'relative' }}>
-          <Box
-            sx={{
-              width: '100%',
-              height: '57px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottom: '3px solid white',
-              color: paletteGrey[700],
-              fontWeight: 'bold',
-              fontSize: '14px',
+    <Box
+      sx={{
+        backgroundColor: palette.chart.customBackground,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        flex: '1 1 100vh',
+        paddingBottom: '6vh',
+      }}
+    >
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          sx={{
+            width: '100%',
+            height: '57px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderBottom: '3px solid white',
+            color: paletteGrey[700],
+            fontWeight: 'bold',
+            fontSize: '14px',
+          }}
+        >
+          <span>
+            {totalSumTitle} {'‎'}
+          </span>
+          <span
+            style={{
+              fontSize: '16px',
+              color: pink700,
             }}
           >
-            <span>
-              {totalSumTitle} {'‎'}
-            </span>
-            <span
-              style={{
-                fontSize: '16px',
-                color: pink700,
-              }}
-            >
-              {timeFormatter(categorySum).time}
-            </span>
-          </Box>
-          {!!totalSum && (
-            <Box
-              sx={{
-                position: 'absolute',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                top: 0,
-                right: '5%',
-                width: '72px',
-                height: 'calc(100% - 3px)',
-              }}
-            >
-              <Box
-                onClick={() => {
-                  // first page label is 1
-                  const indicator: any = activePageIndicator.current;
-                  if (
-                    Number(
-                      indicator.getAttribute('aria-label').match(/\d+/)[0],
-                    ) !== 1
-                  ) {
-                    const inactiveIndicator: any =
-                      inactivePageIndicator.current;
-                    inactiveIndicator.click();
-                    setIsFirstPage(true);
-                  }
-                  if (clickedIndex > -1) {
-                    const pieChart = pieChartRef.current;
-                    pieChart?.setActiveElements([
-                      { datasetIndex: 0, index: clickedIndex },
-                    ]);
-                  }
-                }}
-                sx={{
-                  border: '1px solid',
-                  borderColor: isFirstPage ? pink700 : paletteGrey[500],
-                  borderRightColor: pink700,
-                  borderRadius: '3px 0 0 3px',
-                  flex: '1 1 50%',
-                  height: '50%',
-                  padding: 'auto',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <DonutIcon
-                  iconColor={isFirstPage ? pink700 : paletteGrey[500]}
-                />
-              </Box>
-              <Box
-                onClick={() => {
-                  // second page label is 2
-                  const indicator: any = activePageIndicator.current;
-                  if (
-                    Number(
-                      indicator.getAttribute('aria-label').match(/\d+/)[0],
-                    ) !== 2
-                  ) {
-                    const inactiveIndicator: any =
-                      inactivePageIndicator.current;
-                    inactiveIndicator.click();
-                    setIsFirstPage(false);
-                  }
-                }}
-                sx={{
-                  border: `1px solid ${
-                    isFirstPage ? paletteGrey[500] : pink700
-                  }`,
-                  borderLeft: 'none',
-                  borderRadius: '0 3px 3px 0',
-                  flex: '1 1 50%',
-                  height: '50%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <BarIcon iconColor={isFirstPage ? paletteGrey[500] : pink700} />
-              </Box>
-            </Box>
-          )}
+            {timeFormatter(categorySum).time}
+          </span>
         </Box>
         {!!totalSum && (
-          <Carousel {...carouselOption}>
+          <Box
+            sx={{
+              position: 'absolute',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              top: 0,
+              right: '5%',
+              width: '72px',
+              height: 'calc(100% - 3px)',
+            }}
+          >
+            <Box
+              onClick={() => {
+                // first page label is 1
+                const indicator: any = activePageIndicator.current;
+                if (
+                  Number(
+                    indicator.getAttribute('aria-label').match(/\d+/)[0],
+                  ) !== 1
+                ) {
+                  const inactiveIndicator: any = inactivePageIndicator.current;
+                  inactiveIndicator.click();
+                  setIsFirstPage(true);
+                }
+                if (clickedIndex > -1) {
+                  const pieChart = pieChartRef.current;
+                  pieChart?.setActiveElements([
+                    { datasetIndex: 0, index: clickedIndex },
+                  ]);
+                }
+              }}
+              sx={{
+                border: '1px solid',
+                borderColor: isFirstPage ? pink700 : paletteGrey[500],
+                borderRightColor: pink700,
+                borderRadius: '3px 0 0 3px',
+                flex: '1 1 50%',
+                height: '50%',
+                padding: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <DonutIcon iconColor={isFirstPage ? pink700 : paletteGrey[500]} />
+            </Box>
+            <Box
+              onClick={() => {
+                // second page label is 2
+                const indicator: any = activePageIndicator.current;
+                if (
+                  Number(
+                    indicator.getAttribute('aria-label').match(/\d+/)[0],
+                  ) !== 2
+                ) {
+                  const inactiveIndicator: any = inactivePageIndicator.current;
+                  inactiveIndicator.click();
+                  setIsFirstPage(false);
+                }
+              }}
+              sx={{
+                border: `1px solid ${isFirstPage ? paletteGrey[500] : pink700}`,
+                borderLeft: 'none',
+                borderRadius: '0 3px 3px 0',
+                flex: '1 1 50%',
+                height: '50%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <BarIcon iconColor={isFirstPage ? paletteGrey[500] : pink700} />
+            </Box>
+          </Box>
+        )}
+      </Box>
+      {!!totalSum && (
+        <Carousel {...carouselOption}>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '274px',
+              justifyContent: 'center',
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            <Chart
+              ref={pieChartRef}
+              type={'doughnut'}
+              data={chartData}
+              options={pieChartOptions}
+              plugins={[ChartDataLabels, customBackground]}
+            />
+          </Box>
+          <Box sx={{ backgroundColor: palette.chart.customBackground }}>
             <Box
               sx={{
                 display: 'flex',
                 height: '274px',
                 justifyContent: 'center',
-                position: 'relative',
+                alignItems: 'center',
+                flexDirection: 'column',
                 width: '100%',
               }}
             >
               <Chart
-                ref={pieChartRef}
-                type={'doughnut'}
+                ref={barChartRef}
+                type={'bar'}
                 data={chartData}
-                options={pieChartOptions}
+                options={barChartOptions}
                 plugins={[ChartDataLabels, customBackground]}
               />
             </Box>
-            <Box sx={{ backgroundColor: palette.chart.customBackground }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  height: '274px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  width: '100%',
-                }}
-              >
-                <Chart
-                  ref={barChartRef}
-                  type={'bar'}
-                  data={chartData}
-                  options={barChartOptions}
-                  plugins={[ChartDataLabels, customBackground]}
-                />
-              </Box>
-            </Box>
-          </Carousel>
-        )}
-        {!!!totalSum && (
-          <Carousel {...carouselOption}>
-            <Box
+          </Box>
+        </Carousel>
+      )}
+      {!!!totalSum && (
+        <Carousel {...carouselOption}>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '278px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            <Typography
               sx={{
-                display: 'flex',
-                height: '278px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative',
-                width: '100%',
+                fontSize: '15px',
+                fontWeight: '600',
+                color: paletteGrey[400],
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: paletteGrey[400],
-                }}
-              >
-                {'아직 데이터가 없어요'}
-                <br />
-                {'기록을 남겨보세요 :)'}
-              </Typography>
-            </Box>
-          </Carousel>
-        )}
-      </Box>
+              {'아직 데이터가 없어요'}
+              <br />
+              {'기록을 남겨보세요 :)'}
+            </Typography>
+          </Box>
+        </Carousel>
+      )}
       {setCategoryDetailDataList(
         totalSum ? categoryDetailData : statisticsResult,
       )}
-    </>
+    </Box>
   );
 };
 
