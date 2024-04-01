@@ -183,7 +183,11 @@ const CategoryPage = () => {
     >
       <Spacer y={20} />
 
-      <Box sx={{ display: categoryMode === 'MODEVISIBLE' ? '' : 'none' }}>
+      <Box
+        sx={{
+          display: categoryMode === 'MODEVISIBLE' ? '' : 'none',
+        }}
+      >
         <Container>
           <Typography
             sx={{
@@ -284,67 +288,64 @@ const CategoryPage = () => {
                   justifyContent: 'center',
                 }}
               >
-                <Box>
-                  <FolderTop color={category.color} />
-                  <Typography
-                    sx={{
-                      position: 'absolute',
-                      left: 'calc(50% - 130px)',
-                      marginTop: '-166px',
-                      marginLeft: '-10px',
-                      color: 'white',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {category.name}
-                  </Typography>
-                </Box>
                 <Box
                   sx={{
-                    position: 'absolute',
-                    padding: '16px',
-                    paddingTop: '50px',
-                    width: '299px',
-                    margin: 'auto',
+                    position: 'relative',
                   }}
-                  key={category.name}
                 >
-                  <Grid container gap={1} sx={{ padding: '15px 0px' }}>
-                    {category.subCategories.map((sub, subIdx) => {
-                      if (subIdx < 5) {
-                        return (
-                          <Grid item key={subIdx} width="50px">
-                            {getCategoryIcon(sub)}
-                          </Grid>
-                        );
-                      }
-                      return <></>;
-                    })}
-                    {category.subCategories.length < 5 && (
-                      <Grid item width="60px">
-                        <Circle
-                          label="추가"
-                          labelSize={'10px'}
-                          color={category.color}
-                          size={40}
-                          iconSize={40}
-                          iconName={'add'}
-                          onClick={() => {
-                            setSelectedMainCategory(category);
-                            setSelectedSubCategory({ name: '', iconFile: {} });
-                            navigation('/category/edit', {
-                              state: {
-                                mode: 'add',
-                              },
-                            });
-                          }}
-                        />
-                      </Grid>
-                    )}
-                  </Grid>
+                  <FolderTop color={category.color} text={category.name} />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      paddingTop: '50px',
+                      paddingLeft: '20px',
+                      height: 'inherit',
+                      width: 'inherit',
+                    }}
+                    key={category.name}
+                  >
+                    <Grid container gap={1} sx={{ padding: '15px 0px' }}>
+                      {category.subCategories.map((sub, subIdx) => {
+                        if (subIdx < 5) {
+                          return (
+                            <Grid item key={subIdx} width="50px">
+                              {getCategoryIcon(sub)}
+                            </Grid>
+                          );
+                        }
+                        return <></>;
+                      })}
+                      {category.subCategories.length < 5 && (
+                        <Grid item width="50px">
+                          <Circle
+                            label="추가"
+                            labelSize={'10px'}
+                            color={category.color}
+                            size={40}
+                            iconSize={40}
+                            iconName={'add'}
+                            onClick={() => {
+                              setSelectedMainCategory(category);
+                              setSelectedSubCategory({
+                                name: '',
+                                iconFile: {},
+                              });
+                              navigation('/category/edit', {
+                                state: {
+                                  mode: 'add',
+                                },
+                              });
+                            }}
+                          />
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Box>
+
                 </Box>
-                <Spacer y={20} />
+
+                {/* <Spacer y={20} /> */}
               </Box>
             );
           })}

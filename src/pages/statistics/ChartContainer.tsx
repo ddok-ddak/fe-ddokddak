@@ -415,8 +415,7 @@ const ChartContainer = () => {
               key={idx}
               sx={{
                 display: 'flex',
-                height: '9.5vh',
-                margin: '0 17px',
+                margin: '5px 17px',
               }}
             >
               <Box
@@ -564,8 +563,6 @@ const ChartContainer = () => {
         backgroundColor: palette.chart.customBackground,
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        flex: '1 1 100vh',
         paddingBottom: '6vh',
       }}
     >
@@ -740,9 +737,17 @@ const ChartContainer = () => {
           </Box>
         </Carousel>
       )}
-      {setCategoryDetailDataList(
-        totalSum ? categoryDetailData : statisticsResult,
-      )}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+        }}
+      >
+        {setCategoryDetailDataList(
+          totalSum ? categoryDetailData : statisticsResult,
+        )}
+      </Box>
     </Box>
   );
 };

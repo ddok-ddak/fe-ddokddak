@@ -1,4 +1,4 @@
-const FolderTop = (props: { color: string }) => {
+const FolderTop = (props: { color: string; text: string }) => {
   return (
     <svg
       width="354"
@@ -33,10 +33,14 @@ const FolderTop = (props: { color: string }) => {
         d="M99.875 12.75C100.496 12.75 101 12.2463 101 11.625C101 11.0037 100.496 10.5 99.875 10.5C99.2537 10.5 98.75 11.0037 98.75 11.625C98.75 12.2463 99.2537 12.75 99.875 12.75Z"
         fill="white"
       />
+
       <path
         d="M102.125 15.75C102.746 15.75 103.25 15.2463 103.25 14.625C103.25 14.0037 102.746 13.5 102.125 13.5C101.504 13.5 101 14.0037 101 14.625C101 15.2463 101.504 15.75 102.125 15.75Z"
         fill="white"
       />
+      <text x="39" y="20" style={{ fill: 'white', font: 'bold 15px' }}>
+        {props.text}
+      </text>
       <defs>
         <filter
           id="filter0_d_1168_1062"

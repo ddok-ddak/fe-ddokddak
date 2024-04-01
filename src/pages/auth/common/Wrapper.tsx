@@ -15,6 +15,7 @@ const Wrapper = ({
   }) => {
   return (
     <Container
+      className='wrapper'
       sx={{
           display: 'flex',
           flexDirection: 'column',
