@@ -532,7 +532,6 @@ const ChartContainer = () => {
         )
       : 0;
     setTotalSum(() => timeSum);
-    // setCategorySum(() => 0);
   }, [totalSumTitle]);
 
   useEffect(() => {
