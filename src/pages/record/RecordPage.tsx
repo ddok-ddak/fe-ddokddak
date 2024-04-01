@@ -240,11 +240,11 @@ const RecordPage = () => {
   }, []);
 
   return (
-    <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'} />}>
+    <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'}/>}>
       <Box
         sx={{
           width: '100vw',
-          height: '100vh',
+          height: '94vh',
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>

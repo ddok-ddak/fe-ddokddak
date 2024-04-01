@@ -269,13 +269,16 @@ export const CustomCalendar = (pickerProps: any) => {
     return (
       <Container
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
+          display: 'grid',
+          grid: 'auto-flow / 1fr 1fr 1fr',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateRows: 'repeat(4, 1fr)',
+          rowGap: '4px',
+          columnGap: '4px',
           height: '225px',
-          width: '300px',
-          p: '16px 8px',
-          m: 1,
+          width: '320px !important',
+          p: 1,
+          m: 0,
         }}
         className="custom-calendar"
       >
@@ -287,15 +290,21 @@ export const CustomCalendar = (pickerProps: any) => {
               : date.month() + 1;
 
           const isSelected = elem === selected;
-          const isPrevDate =
-            switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
-              ? elem < currentYear
-              : elem < currentMonth || date.year() < currentYear;
+          let isPrevDate;
+
+          if (switchView === 'BY_YEAR' || periodType === 'BY_YEAR') {
+            isPrevDate = elem < currentYear;
+          } else {
+            isPrevDate =
+              date.year() === currentYear
+                ? elem < currentMonth
+                : date.year() < currentYear;
+          }
+
           const isCurrentDate =
             switchView === 'BY_YEAR' || periodType === 'BY_YEAR'
               ? elem === currentYear
               : date.year() === currentYear && currentMonth + 1 === elem;
-
           return (
             <Paper
               key={elem}
@@ -304,7 +313,6 @@ export const CustomCalendar = (pickerProps: any) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                flex: '0 1 25%',
                 position: 'relative',
               }}
             >

@@ -7,22 +7,23 @@ const Wrapper = ({
   handlePrevBtn,
   headerComp,
   children,
-}: {
+  }: {
   prevBtnText?: string;
   handlePrevBtn?: () => {} | void;
   headerComp?: ReactNode;
   children: ReactNode;
-}) => {
+  }) => {
   return (
     <Container
+      className='wrapper'
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0 16px 23px 16px',
-        height: '100vh',
-      }}
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 16px 23px 16px',
+          height: '100vh',
+        }}
     >
       <Box
         sx={{
