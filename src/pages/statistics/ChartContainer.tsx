@@ -219,11 +219,17 @@ const ChartContainer = () => {
         color: palette.common.white,
         labels: {
           title: {
-            formatter: (val: any, ctx: any) =>
-              `${ctx.chart.data.labels[ctx.dataIndex]}\n`,
-            font: {
-              fontWeight: 'bold',
-              size: 17,
+            formatter: (val: any, ctx: any) => {
+              const percentage = Math.round((val * 100) / (totalSum || 100));
+              return percentage > 7
+                ? `${ctx.chart.data.labels[ctx.dataIndex]}\n`
+                : '..';
+            },
+            font: () => {
+              return {
+                fontWeight: 'bold',
+                size: 16,
+              };
             },
           },
           value: {
@@ -231,10 +237,12 @@ const ChartContainer = () => {
               if (!totalSum) {
                 return '';
               }
-              return `\n${Math.round((val * 100) / (totalSum || 100))}%`;
+              const percentage = Math.round((val * 100) / (totalSum || 100));
+              return percentage > 7 ? `\n${percentage}%` : '';
             },
             font: {
-              size: 14,
+              fontWeight: 'bold',
+              size: 12,
             },
           },
         },
@@ -285,12 +293,17 @@ const ChartContainer = () => {
             formatter: (val: number) => {
               const time = timeFormatter(val);
               return (
-                `${time.hour}시간` + (time.minute ? `\n ${time.minute}분` : '')
+                `${time.hour}시간` +
+                (time.hour.toString().length > 2
+                  ? ''
+                  : time.minute
+                  ? `\n ${time.minute}분`
+                  : '\n ')
               );
             },
             font: {
               weight: 'bold',
-              size: 14,
+              size: 12,
             },
           },
         },
@@ -415,7 +428,8 @@ const ChartContainer = () => {
               key={idx}
               sx={{
                 display: 'flex',
-                margin: '5px 17px',
+                m: '10px 17px',
+                p: 0,
               }}
             >
               <Box
@@ -458,6 +472,7 @@ const ChartContainer = () => {
                           ? categoryDetailData
                           : statisticsResult
                         )?.reduce(
+
                           (accu: number, curr: StatisticsDetail) =>
                             accu + curr.timeSum,
                           0,
