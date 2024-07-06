@@ -21,6 +21,7 @@ import { theme } from '@/styles';
 import ResetPWMode from './pages/auth/resetPW/ResetPWMode';
 import ResetPWStep from './pages/auth/resetPW/ResetPWSteps';
 import AccountSetting from './pages/settings/AccountSetting';
+import FAQPage from './pages/settings/FAQPage';
 import PopupMessage from './components/common/PopupMessage';
 import LoginRedirect from './pages/auth/login/LoginRedirect';
 
@@ -75,6 +76,7 @@ function App() {
                 }
               />
               <Route path="/settings/account" element={<AccountSetting />} />
+              <Route path="/settings/faq" element={<FAQPage />} />
               <Route path="/record/edit" element={<EditRecordPage />} />
               <Route path="/category" element={<CategoryPage />} />
               <Route path="/category/edit" element={<EditCategoryPage />} />
