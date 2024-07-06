@@ -1,11 +1,11 @@
 /* eslint-disable import/order */
 import {
-  Box, Accordion,
+  Box,
+  Accordion,
   AccordionDetails,
   AccordionSummary,
-  Typography
+  Typography,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect } from 'react';
 
 import { bottomNavigation, stepIndex } from '@/store/common';
@@ -14,6 +14,8 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { modalState } from '@/store/modal';
 import Wrapper from '../auth/common/Wrapper';
 import CommonHeader from '@/components/layout/CommonHeader';
+import ChevronDown from '@/icons/setting/faq/ChevronDown';
+import ChevronUp from '@/icons/setting/faq/ChevronDown';
 
 const FAQPage = () => {
   const navigation = useNavigate();
@@ -36,6 +38,20 @@ const FAQPage = () => {
     },
   ];
 
+  const getTitle = (title: string) => {
+    return (
+      <Typography
+        sx={{
+          color: '#FF7184',
+          fontSize: '16px',
+          fontWeight: '800',
+        }}
+      >
+        {title}
+      </Typography>
+    );
+  };
+
   /**
    * get faq accordion item
    * @param param
@@ -50,24 +66,16 @@ const FAQPage = () => {
     title: string;
     content: string;
   }) => {
+    let state = false;
     return (
-      <Accordion
-        id={`panel${id}-header`}
-      >
-        <AccordionSummary
-          
-          expandIcon={<ExpandMoreIcon/>}
-          // sx={{
-          //   '.MuiExpanded': 'color: red'
-          // }}
-        >
-          <Typography sx={{
-            color: '#FF7184',
-            fontSize: '16px',
-            fontWeight: '800'
-          }}>Q. {title}</Typography>
+      <Accordion id={`panel${id}-header`} onChange={(_, expanded) => {
+        state = expanded;
+        console.log(state);
+      }}>
+        <AccordionSummary id={`panel${id}-summary`} expandIcon={state ? <ChevronDown/> : <ChevronUp/>}>
+          {getTitle(title)}
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails id={`panel${id}-detail`}>
           <Typography>{content}</Typography>
         </AccordionDetails>
       </Accordion>
@@ -79,16 +87,20 @@ const FAQPage = () => {
    */
   const getAccordion = () => {
     return (
-      <Box sx={{
-        // flexDirection: 'row',
-        // justifyContent: 'flex-start',
-        // alignItems: 'flex-start',
-        // outline: '1px solid red',
-        // paddingTop: 0,
-        height: '100vh'
-      }}>
-        {faqTexts.map((faq, idx) => 
-          getAccordionItem({ id: idx, title: faq.title, content: faq.content })
+      <Box
+        sx={{
+          // flexDirection: 'row',
+          // justifyContent: 'flex-start',
+          // alignItems: 'flex-start',
+          // outline: '1px solid red',
+          // paddingTop: 0,
+          outline: '1px solid red',
+          height: '100vh',
+        }}
+        id="header"
+      >
+        {faqTexts.map((faq, idx) =>
+          getAccordionItem({ id: idx, title: faq.title, content: faq.content }),
         )}
       </Box>
     );
