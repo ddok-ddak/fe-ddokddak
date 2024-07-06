@@ -17,7 +17,7 @@ import ListIcon from '@/components/settings/ListIcon';
 import UserAvatar from '@/components/settings/UserAvatar';
 import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
 import { deleteUser, getInfo, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
@@ -26,6 +26,7 @@ import { CategoryViewType, categoryViewMode } from '@/store/category';
 import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
 import Wrapper from '../auth/common/Wrapper';
+import { currentUserInfo } from '@/store/info';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -33,7 +34,7 @@ const SettingPage = () => {
 
   const setStepIndex = useSetRecoilState(stepIndex);
   const { showServerError, closeModal } = useModalCommon();
-
+  const userInfo = useRecoilValue(currentUserInfo);
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
 
@@ -98,13 +99,11 @@ const SettingPage = () => {
    * handle delete account click event
    */
   const deleteAccountClickHandler = async (event: any, reason: any) => {
-    
-    const res = await (await getInfo()).result;
-    console.log(res);
     removeTokenCookie();
     closeModal(event, reason);
     navigation('/');
-    await deleteUser(res)
+    const authProviderType = userInfo.authProviderType || 'DEFAULT';
+    await deleteUser(authProviderType)
       .then((response: CommonResponse) => {
         if (response.status === 'SUCCESS') {
           removeTokenCookie();
