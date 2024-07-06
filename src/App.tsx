@@ -39,7 +39,7 @@ function App() {
         >
           <Box sx={{ width: '100vw', flex: '100vh', overflowY: 'scroll', overflowX: 'hidden' }}>
             <Routes>
-              <Route path="/" element={<Navigate to="/statistics" />} />
+              <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signin/redirect" element={<LoginRedirect />} />
               <Route path="/signUp" element={<SignUp />} />
