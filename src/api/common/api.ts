@@ -19,7 +19,6 @@ export const callAPI = async <T = any>(
     statusCode: '',
     data: {},
   };
-
   try {
     response = await getInstance(isLoading).request({
       url,
