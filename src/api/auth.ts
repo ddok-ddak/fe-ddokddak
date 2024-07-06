@@ -131,9 +131,9 @@ export const addUser = async (request: UserData) => {
  * @param request: UserData
  * @returns response
  */
-export const deleteUser = async (request: UserData) => {
+export const deleteUser = async (authProviderType: AuthProviderType) => {
   const response = await callAPI({
-    url: `/api/v1/auth/withdrawal/${request.authProviderType}`,
+    url: `/api/v1/auth/withdrawal/${authProviderType}`,
     method: 'POST',
   });
   return response as CommonResponse;
