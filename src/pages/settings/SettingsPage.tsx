@@ -174,8 +174,7 @@ const SettingPage = () => {
           })}
 
           {getListSubHeader('고객 센터')}
-          {getListItem({ text: '도움말' })}
-          {getListItem({ text: '문의하기' })}
+          {getListItem({ text: 'FAQ', handler: () => navigation('/settings/faq') })}
 
           {getListSubHeader('계정')}
           {getListItem({
