@@ -42,16 +42,24 @@ const FAQPage = () => {
    * @returns accordion item
    */
   const getAccordionItem = ({
+    id,
     title,
     content,
   }: {
+    id: number;
     title: string;
     content: string;
   }) => {
     return (
-      <Accordion>
+      <Accordion
+        id={`panel${id}-header`}
+      >
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{color: 'grey.500'}}/>}
+          
+          expandIcon={<ExpandMoreIcon/>}
+          // sx={{
+          //   '.MuiExpanded': 'color: red'
+          // }}
         >
           <Typography sx={{
             color: '#FF7184',
@@ -79,8 +87,8 @@ const FAQPage = () => {
         // paddingTop: 0,
         height: '100vh'
       }}>
-        {faqTexts.map((faq) => 
-          getAccordionItem({ title: faq.title, content: faq.content })
+        {faqTexts.map((faq, idx) => 
+          getAccordionItem({ id: idx, title: faq.title, content: faq.content })
         )}
       </Box>
     );
