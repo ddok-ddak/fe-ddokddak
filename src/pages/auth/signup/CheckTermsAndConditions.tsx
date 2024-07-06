@@ -1,5 +1,5 @@
 import { buttonText } from '@/constants/message';
-import { stepButtonProps, stepInstruction } from '@/store/common';
+import { currentFormType, stepButtonProps, stepInstruction } from '@/store/common';
 import { theme } from '@/styles';
 import {
   Box,
@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+
 
 type ItemType = {
   required: boolean;
@@ -52,6 +53,7 @@ const CheckTermsAndConditions = (props: any) => {
   const setInstruction = useSetRecoilState(stepInstruction);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
 
+  const setStepType = useSetRecoilState(currentFormType);
   const [checked, setChecked] = useState([false, false, false, false, false]);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
 
@@ -113,6 +115,7 @@ const CheckTermsAndConditions = (props: any) => {
   };
 
   useEffect(() => {
+    setStepType('SIGNUP');
     setInstruction('서비스를 이용하기 위해 약관에 동의 해주세요.');
     setNextButtonProps({
       ...nextButtonProps,

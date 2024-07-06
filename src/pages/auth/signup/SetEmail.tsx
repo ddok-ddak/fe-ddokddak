@@ -1,7 +1,7 @@
 import { checkDuplicatedEmail, requestCode } from '@/api/auth';
 import { authenticationRequestId, signUpDataState } from '@/store/signUp';
 import { Button, InputAdornment } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { stepButtonProps, stepInstruction } from '@/store/common';
@@ -15,12 +15,17 @@ const SetEmail = (props: any) => {
   const instruction = useSetRecoilState(stepInstruction);
   const [signUpData, setSignUpData] = useRecoilState(signUpDataState);
   const setRequestId = useSetRecoilState(authenticationRequestId);
-
+  const refValue = useRef('');
   const [email, setEmail] = useState(signUpData.email);
   const [disableDuplicateChkBtn, setDisableDuplicateChkBtn] = useState(true);
   const [helper, setHelper] = useState('');
   const [isHelperError, setIsHelperError] = useState(true);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    refValue.current = email;
+  }, [email]);
+
   
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -45,7 +50,7 @@ const SetEmail = (props: any) => {
   };
 
   const duplicateCheckerHandler = async (event: any) => {
-    await checkDuplicatedEmail(email).then((response) => {
+    await checkDuplicatedEmail(refValue.current).then((response) => {
       if (response.status === 'SUCCESS') {
         setHelper('사용 가능한 이메일입니다.');
         setIsHelperError(false);
@@ -55,7 +60,7 @@ const SetEmail = (props: any) => {
           ...nextButtonProps,
           isDisabled: false,
         });
-        setSignUpData({ ...signUpData, email });
+        setSignUpData({ ...signUpData, email: refValue.current });
       } else {
         setHelper('이미 가입된 이메일입니다.');
         setIsHelperError(() => true);
@@ -91,7 +96,7 @@ const SetEmail = (props: any) => {
     setNextButtonProps({
       ...nextButtonProps,
       clickHandler: async () => {
-        await requestCode(email).then((response: any) => {
+        await requestCode(refValue.current).then((response: any) => {
           if (response.status === 'SUCCESS') {
             setRequestId(response.result.id);
             props.handleNextButton();
