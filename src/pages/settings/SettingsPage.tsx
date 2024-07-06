@@ -19,7 +19,7 @@ import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
-import { deleteUser, signOut } from '@/api/auth';
+import { deleteUser, getInfo, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
@@ -79,39 +79,42 @@ const SettingPage = () => {
     closeModal(event, reason);
     removeTokenCookie();
     navigation('/');
-    // await signOut()
-    //   .then((response: CommonResponse) => {
-    //     if (response.status === 'SUCCESS') {
-    //       closeModal(event, reason);
-    //       removeTokenCookie();
-    //       navigation('/');
-    //     } else {
-    //       closeModal(event, reason);
-    //     }
-    //   })
-    //   .catch(() => {
-    //     showServerError();
-    //   });
+    await signOut()
+      .then((response: CommonResponse) => {
+        if (response.status === 'SUCCESS') {
+          closeModal(event, reason);
+          removeTokenCookie();
+          navigation('/');
+        } else {
+          closeModal(event, reason);
+        }
+      })
+      .catch(() => {
+        showServerError();
+      });
   };
 
   /**
    * handle delete account click event
    */
   const deleteAccountClickHandler = async (event: any, reason: any) => {
+    
+    const res = await (await getInfo()).result;
+    console.log(res);
     removeTokenCookie();
     closeModal(event, reason);
     navigation('/');
-    // await deleteUser()
-    //   .then((response: CommonResponse) => {
-    //     if (response.status === 'SUCCESS') {
-    //       removeTokenCookie();
-    //       closeModal(event, reason);
-    //       navigation('/');
-    //     }
-    //   })
-    //   .catch(() => {
-    //     showServerError();
-    //   });
+    await deleteUser(res)
+      .then((response: CommonResponse) => {
+        if (response.status === 'SUCCESS') {
+          removeTokenCookie();
+          closeModal(event, reason);
+          navigation('/');
+        }
+      })
+      .catch(() => {
+        showServerError();
+      });
   };
 
   useEffect(() => {
