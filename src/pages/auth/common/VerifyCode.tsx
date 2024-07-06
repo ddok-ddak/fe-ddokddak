@@ -1,5 +1,5 @@
 import { Box, Button, InputAdornment, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Countdown from 'react-countdown';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -29,6 +29,12 @@ const VerifyCode = (props: any) => {
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const signUpData = useRecoilValue(signUpDataState);
   const [code, setCode] = useState('');
+
+  const refValue = useRef('');
+
+  useEffect(() => {
+    refValue.current = code;
+  }, [code]);
 
   const itemArray: InputItemType[] = [
     {
@@ -99,7 +105,7 @@ const VerifyCode = (props: any) => {
       ) => {
         const value = event.target.value;
         if (value.length) {
-          setCode(value);
+          setCode(() => value);
           setIsNextButtonDisabled(false);
           setNextButtonProps({
             ...nextButtonProps,
@@ -109,6 +115,27 @@ const VerifyCode = (props: any) => {
       },
     },
   ];
+
+  const getCodeVerified = async () => {
+    await verifyCode({
+      authenticationRequestId: refValue.current,
+      authenticationNumber: code,
+    })
+      .then((response) => {
+        if (response.status === 'SUCCESS') {
+          setCurrentStepIndex(currentStepIndex + 1);
+          props.handleNextButton();
+        } else {
+          let newAttemptCount = verificationAttemptCount + 1;
+          setVerificationAttemptCount(newAttemptCount);
+          setHelper(
+            `인증코드가 일치하지 않습니다. 다시 한번 확인 후 입력해주세요. (${newAttemptCount} / 5 회)`,
+          );
+          setIsHelperError(() => true);
+        }
+      })
+      .catch();
+  };
 
   useEffect(() => {
     setInstruction('인증코드를 입력해주세요.');
@@ -133,25 +160,7 @@ const VerifyCode = (props: any) => {
           });
           return true;
         }
-
-        await verifyCode({
-          authenticationRequestId: requestId,
-          authenticationNumber: code,
-        })
-          .then((response) => {
-            if (response.status === 'SUCCESS') {
-              setCurrentStepIndex(currentStepIndex + 1);
-              props.handleNextButton();
-            } else {
-              let newAttemptCount = verificationAttemptCount + 1;
-              setVerificationAttemptCount(newAttemptCount);
-              setHelper(
-                `인증코드가 일치하지 않습니다. 다시 한번 확인 후 입력해주세요. (${newAttemptCount} / 5 회)`,
-              );
-              setIsHelperError(() => true);
-            }
-          })
-          .catch();
+        getCodeVerified();
       },
       isDisabled: true,
     });
@@ -166,7 +175,7 @@ const VerifyCode = (props: any) => {
         isHelperError={isHelperError}
         value={code}
       />
-      <Box sx={{ position: 'relative', top: '15%' }}>
+      <Box sx={{ position: 'relative', top: '20%' }}>
         <Typography
           sx={{
             fontSize: '11px',
