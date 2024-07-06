@@ -165,32 +165,18 @@ export default function Login() {
             component={Link}
             to="/signUp"
           >
-            {'회원가입'}
-          </Button>
-          <Box
+            <Typography
+            align="center"
             sx={{
-              width: '1px',
-              height: '13px',
-              backgroundColor: 'text.secondary',
+              fontSize: '12px',
+              color: 'common.black',
+              textDecoration: 'underline',
             }}
-          />
-          <Box
-            sx={{
-              width: '1px',
-              height: '13px',
-              backgroundColor: 'text.secondary',
-            }}
-          />
-          <Button
-            sx={{ color: 'text.primary' }}
-            variant="text"
-            component={Link}
-            to="/resetPW"
           >
-            비밀번호 재설정
+            {'회원가입'}
+          </Typography>
           </Button>
         </Box>
-
         <Box
           sx={{
             display: 'flex',
@@ -233,7 +219,7 @@ export default function Login() {
             fontSize: '12px',
           }}
         >
-          Copyright 2024 DDOK-DDAK All Right Reserved.
+          {'Copyright 2024 DDOK-DDAK All Right Reserved.'}
         </Typography>
       </Container>
     </>
