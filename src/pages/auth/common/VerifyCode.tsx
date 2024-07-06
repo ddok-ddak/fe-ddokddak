@@ -118,8 +118,8 @@ const VerifyCode = (props: any) => {
 
   const getCodeVerified = async () => {
     await verifyCode({
-      authenticationRequestId: refValue.current,
-      authenticationNumber: code,
+      authenticationRequestId: requestId,
+      authenticationNumber: refValue.current,
     })
       .then((response) => {
         if (response.status === 'SUCCESS') {
