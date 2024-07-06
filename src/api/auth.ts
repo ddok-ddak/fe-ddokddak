@@ -8,13 +8,15 @@ import CommonResponse from './http';
  * WORKER 직장인
  */
 export type UserTemplateType = 'NONE' | 'UNEMPLOYED' | 'STUDENT' | 'WORKER';
+
+export type AuthProviderType = 'DEFAULT' | 'KAKAO' | 'GOOGLE' | 'NAVER';
 export interface UserData {
   email: string;
   nickname: string;
   password?: string;
   role?: string;
   status?: string;
-  authProviderType?: string;
+  authProviderType?: AuthProviderType;
   templateType?: UserTemplateType;
   startDay?: string;
   startTime?: string;
@@ -55,6 +57,13 @@ export const checkDuplicatedNickname = async (nickname: string) => {
 
   return response as CommonResponse;
 };
+
+/**
+ * 인증 타입
+ * JOIN 회원 가입
+ * SEARCH_PWD 비밀번호 찾기
+ */
+type AuthentificationType = 'JOIN' | 'SEARCH_PWD'; 
 
 /**
  * verify code
@@ -122,12 +131,11 @@ export const addUser = async (request: UserData) => {
  * @param request: UserData
  * @returns response
  */
-export const deleteUser = async () => {
+export const deleteUser = async (request: UserData) => {
   const response = await callAPI({
-    url: '/api/v1/auth/withdrawal',
+    url: `/api/v1/auth/withdrawal/${request.authProviderType}`,
     method: 'POST',
   });
-  console.log(response);
   return response as CommonResponse;
 };
 
