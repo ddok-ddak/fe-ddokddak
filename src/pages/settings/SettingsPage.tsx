@@ -25,6 +25,7 @@ import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
 import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
+import Wrapper from '../auth/common/Wrapper';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -119,18 +120,8 @@ const SettingPage = () => {
   });
 
   return (
-    <Container
-      sx={{
-        m: 0,
-        p: 0,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'justify-content',
-        alignItems: 'center',
-      }}
-    >
-      <SettingWrapper>
+    <Wrapper>
+      <SettingWrapper >
         <Button
           onClick={() => navigation('/settings/account')}
           sx={{
@@ -236,7 +227,7 @@ const SettingPage = () => {
           </Typography>
         </Button>
       </SettingWrapper>
-    </Container>
+    </Wrapper>
   );
 };
 
