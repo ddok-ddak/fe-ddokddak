@@ -160,6 +160,7 @@ const SettingPage = () => {
             </Typography>
             <Typography
               align="left"
+              textTransform=""
               sx={{ fontSize: '14px', fontWeight: '400' }}
             >
               {userInfo.email}
