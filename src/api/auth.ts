@@ -201,7 +201,7 @@ export const setTemplate = async (templateType: UserTemplateType) => {
 export const updateTemplate = async (templateType: UserTemplateType) => {
   const response = await callAPI({
     url: '/api/v1/members/custom/category-template',
-    method: 'PUT',
+    method: 'PATCH',
     body: { templateType },
   });
 

@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 
 import { BaseSyntheticEvent, ReactElement, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 
@@ -53,6 +52,7 @@ import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
+import { categoryViewMode } from '@/store/category';
 
 export interface SelectedRangeData {
   start: Date;
@@ -130,6 +130,8 @@ const EditRecordPage = (): ReactElement => {
   const [popupMsg, setPopupMsg] = useState<string>('');
 
   const [eventTimeType, setEventTimeType] = useState<string>('start');
+
+  const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
 
   /**
    * render time picker swiper
@@ -757,8 +759,10 @@ const EditRecordPage = (): ReactElement => {
         <Container sx={{ textAlign: 'right' }}>
           <Button
             variant="text"
-            component={Link}
-            to="/category"
+            onClick={() => {
+              setCategoryMode('');
+              navigate('/category');
+            }}
             sx={{ color: 'grey.500', paddingTop: '17px' }}
           >
             카테고리 설정

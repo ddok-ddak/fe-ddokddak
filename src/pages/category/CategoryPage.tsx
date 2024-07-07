@@ -7,9 +7,9 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Circle from '../../components/common/Circle';
 import FolderTop from '../../components/common/FolderTop';
@@ -27,7 +27,7 @@ import { currentUserInfo } from '@/store/info';
 import { getCategories } from '@/api/category.api';
 import { modalState } from '@/store/modal';
 import { modalAnswer } from '@/constants/message';
-import { UserData, UserTemplateType } from '@/api/auth';
+import { updateTemplate, UserData, UserTemplateType } from '@/api/auth';
 import { useModalCommon } from '@/hooks/modalCommon';
 
 export interface MainCategoryProps {
@@ -71,7 +71,7 @@ export const UserModeList: ModeProps[] = [
     name: '일반인',
     modalTitle: '일반인 모드 선택 시 기존 데이터가 삭제됩니다.',
     modalMsg:
-      '학업, 직장 카테고리와 데이터가 삭제됩니다. 그래도 변경 하시겠습니까?',
+      '학업, 직장 카테고리와 데이터가 삭제됩니다.\n그래도 변경 하시겠습니까?',
   },
   {
     id: 'worker',
@@ -79,7 +79,7 @@ export const UserModeList: ModeProps[] = [
     name: '직장인',
     modalTitle: '직장인 모드 선택 시 기존 데이터가 삭제됩니다.',
     modalMsg:
-      '학업 카테고리와 데이터가 삭제되고 직장 카테고리가 새롭게 추가됩니다. 그래도 변경 하시겠습니까?',
+      '학업 카테고리와 데이터가 삭제되고 직장 카테고리가 새롭게 추가됩니다.\n그래도 변경 하시겠습니까?',
   },
   {
     id: 'student',
@@ -87,7 +87,7 @@ export const UserModeList: ModeProps[] = [
     name: '학생',
     modalTitle: '학생 모드 선택 시 기존 데이터가 삭제됩니다.',
     modalMsg:
-      '직장 카테고리와 데이터가 삭제되고 학업 카테고리가 새롭게 추가됩니다. 그래도 변경 하시겠습니까?',
+      '직장 카테고리와 데이터가 삭제되고 학업 카테고리가 새롭게 추가됩니다.\n그래도 변경 하시겠습니까?',
   },
 ];
 
@@ -103,19 +103,22 @@ const CategoryPage = () => {
     selectedSubCategoryState,
   );
 
-  const setUserInfo = useSetRecoilState<UserData>(currentUserInfo);
+  const [userInfo, setUserInfo] = useRecoilState<UserData>(currentUserInfo);
   const setModalInfo = useSetRecoilState(modalState);
   const categoryMode = useRecoilValue<CategoryViewType>(categoryViewMode);
 
   const [categories, setCategories] = useState<MainCategoryProps[]>([]);
   const [currentUserMode, setCurrentUserMode] = useState<ModeProps>();
+  const refValue = useRef(currentUserMode);
+
+  useEffect(() => {
+    refValue.current = currentUserMode;
+  }, [currentUserMode]);
 
   const getUserInfo = () => {
-    const data: UserData = { email: '', nickname: '', templateType: 'STUDENT' };
-    setUserInfo(data);
     setCurrentUserMode(
       UserModeList.filter((userMode: ModeProps) => {
-        return userMode.type === data.templateType;
+        return userMode.type === userInfo.templateType;
       })[0],
     );
   };
@@ -171,7 +174,21 @@ const CategoryPage = () => {
       btn1Text: modalAnswer.no,
       btn1ClickHandler: closeModal,
       btn2Text: modalAnswer.yes,
-      btn2ClickHandler: closeModal,
+      btn2ClickHandler: async (event: any, reason: any) => {
+        const type = refValue.current!.type;
+        closeModal(event, reason);
+
+        await updateTemplate(type).then((response) => {
+          if (response.status === 'SUCCESS') {
+            setUserInfo({
+              ...userInfo,
+              templateType: type
+            });
+          } else {
+            alert('error');
+          }
+        });
+      },
     });
   };
 
@@ -203,6 +220,7 @@ const CategoryPage = () => {
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-evenly',
+              gap: '15px'
             }}
           >
             {UserModeList.map((mode, idx) => {
@@ -252,9 +270,7 @@ const CategoryPage = () => {
           </Box>
         </Container>
         <Spacer y={27} />
-      </Box>
-
-      <Divider
+        <Divider
         sx={{
           width: '100vw',
           height: '3px',
@@ -262,6 +278,8 @@ const CategoryPage = () => {
           border: 'none',
         }}
       />
+      </Box>
+
 
       <Spacer y={27} />
 
