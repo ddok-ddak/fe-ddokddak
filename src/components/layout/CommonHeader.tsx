@@ -76,7 +76,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
         </Typography>
       </Box>
       <Box sx={{ ml: 2, flex: '0 0 10vw' }}>
-        {props.isShowNextButton && (
+        {props.isShowNextButton && (props.nextButtonIcon ?? (
           <IconButton
             size="large"
             edge="start"
@@ -87,7 +87,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
               {props.nextButtonText ?? '완료'}
             </Typography>
           </IconButton>
-        )}
+        ))}
       </Box>
     </AppBar>
   );

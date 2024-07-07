@@ -104,8 +104,9 @@ export default function Login() {
       <Container
         sx={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           width: '100vw',
+          height: '75vh',
           flex: '1 1 497px',
         }}
       >
@@ -124,18 +125,20 @@ export default function Login() {
               >
                 <Logo />
               </Box>
-              <InputForm
-                key="id"
-                itemArray={itemArray1}
-                helper={helper1}
-                isHelperError={true}
-              />
-              <InputForm
-                key="password"
-                itemArray={itemArray2}
-                helper={helper2}
-                isHelperError={true}
-              />
+              <Box sx={{paddingBottom: '20px'}}>
+                <InputForm
+                  key="id"
+                  itemArray={itemArray1}
+                  helper={helper1}
+                  isHelperError={true}
+                />
+                <InputForm
+                  key="password"
+                  itemArray={itemArray2}
+                  helper={helper2}
+                  isHelperError={true}
+                />
+              </Box>
             </>
           }
         />
@@ -147,7 +150,8 @@ export default function Login() {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '315px',
+          height: '25vh',
+          paddingBottom: 2
         }}
       >
         <Box

@@ -2,7 +2,6 @@
 import {
   Box,
   Button,
-  Container,
   List,
   ListItemButton,
   ListItemText,
@@ -19,7 +18,7 @@ import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import SettingWrapper from '../auth/common/Wrapper';
-import { deleteUser, getInfo, signOut } from '@/api/auth';
+import { deleteUser, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
 import { CategoryViewType, categoryViewMode } from '@/store/category';
@@ -27,6 +26,7 @@ import { modalAnswer } from '@/constants/message';
 import { useModalCommon } from '@/hooks/modalCommon';
 import Wrapper from '../auth/common/Wrapper';
 import { currentUserInfo } from '@/store/info';
+import { UserModeList } from '../category/CategoryPage';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -116,6 +116,17 @@ const SettingPage = () => {
       });
   };
 
+  /**
+   * get user mode & nickname
+   * @returns
+   */
+  const getUserNickname = () => {
+    const type = UserModeList.filter(
+      (mode) => mode.type === userInfo.templateType,
+    )[0]?.name || 'TEST ACCOUNT';
+    return `#${type} ${userInfo.nickname}님`;
+  };
+
   useEffect(() => {
     setNavPage(2);
     setStepIndex(0);
@@ -123,7 +134,7 @@ const SettingPage = () => {
 
   return (
     <Wrapper>
-      <SettingWrapper >
+      <SettingWrapper>
         <Button
           onClick={() => navigation('/settings/account')}
           sx={{
@@ -145,13 +156,13 @@ const SettingPage = () => {
               align="left"
               sx={{ fontSize: '16px', fontWeight: '600' }}
             >
-              {'#직장인 수달님'}
+              {getUserNickname()}
             </Typography>
             <Typography
               align="left"
               sx={{ fontSize: '14px', fontWeight: '400' }}
             >
-              {'dodone@gmail.com'}
+              {userInfo.email}
             </Typography>
           </Box>
           <>
@@ -176,7 +187,10 @@ const SettingPage = () => {
           })}
 
           {getListSubHeader('고객 센터')}
-          {getListItem({ text: 'FAQ', handler: () => navigation('/settings/faq') })}
+          {getListItem({
+            text: 'FAQ',
+            handler: () => navigation('/settings/faq'),
+          })}
 
           {getListSubHeader('계정')}
           {getListItem({

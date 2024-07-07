@@ -12,7 +12,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalButtonState, modalState, modalValue } from '@/store/modal';
 import BottomButton from '@/components/common/BottomButton';
 import Spacer from './Spacer';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useModalCommon } from '@/hooks/modalCommon';
 
 const Modal = () => {
@@ -21,7 +21,12 @@ const Modal = () => {
   const modalInfo = useRecoilValue(modalState);
   const [nextButtonProps, setNextButtonProps] =
     useRecoilState(modalButtonState);
-  const setSelectedValue = useSetRecoilState(modalValue);
+  const [selectedValue, setSelectedValue] = useRecoilState(modalValue);
+  const refValue = useRef('');
+  
+  useEffect(() => {
+    refValue.current = selectedValue
+  }, [selectedValue]);
 
   useEffect(() => {
     setNextButtonProps({
@@ -120,7 +125,8 @@ const Modal = () => {
                         label={`${name} 모드`}
                         control={
                           <Radio
-                            checked={!idx}
+                            // checked={!idx}
+                            checked={id === refValue.current.id}
                             onChange={() => {
                               setSelectedValue(() => option);
                               setNextButtonProps({

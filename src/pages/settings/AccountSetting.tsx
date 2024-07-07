@@ -1,18 +1,56 @@
 /* eslint-disable import/order */
-import { Box, IconButton, Input } from '@mui/material';
+import { Box, IconButton, Input, Typography } from '@mui/material';
 
 import UserAvatar from '@/components/settings/UserAvatar';
 import { useNavigate } from 'react-router-dom';
 import Wrapper from '../auth/common/Wrapper';
 import CommonHeader from '@/components/layout/CommonHeader';
+import { useRecoilValue } from 'recoil';
+import { currentUserInfo } from '@/store/info';
+import { useState, useEffect, useRef } from 'react';
 
 const AccountSetting = () => {
   const navigation = useNavigate();
+  const userInfo = useRecoilValue(currentUserInfo);
+  const [newNickname, setNewNickname] = useState(userInfo.nickname);
+
+  const refValue = useRef(newNickname);
+
+  useEffect(() => {
+    refValue.current = newNickname;
+  }, [newNickname]);
 
   return (
     <Wrapper
       headerComp={
-        <CommonHeader title={'수정하기'} isShowPrevButton={true} />
+        <CommonHeader
+          title={'수정하기'}
+          isShowPrevButton={true}
+          isShowNextButton={true}
+          nextButtonIcon={
+            <IconButton
+              size="large"
+              edge="start"
+              aria-label="menu"
+              onClick={() => {
+                if (refValue.current === userInfo.nickname && refValue.current !== "") {
+                  return;
+                }
+                // TODO: 회원 정보 변경
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  color:
+                    newNickname !== userInfo.nickname ? 'pink.700' : 'grey.500',
+                }}
+              >
+                {'완료'}
+              </Typography>
+            </IconButton>
+          }
+        />
       }
       handlePrevBtn={() => navigation('/settings')}
     >
@@ -51,7 +89,13 @@ const AccountSetting = () => {
         </Box>
         <Input
           id="standard-textarea"
-          defaultValue="수달"
+          defaultValue={newNickname}
+          onChange={(event) => {
+            const newValue = event.target.value;
+            setNewNickname(newValue);
+            if (newValue !== userInfo.nickname) {
+            }
+          }}
           multiline
           sx={{
             fontSize: '20px',
