@@ -13,13 +13,12 @@ import InputForm, { InputItemType } from '../common/InputForm';
 
 import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
-import { signIn } from '@/api/auth';
+import { signIn, testLogIn } from '@/api/auth';
 import Spacer from '@/components/common/Spacer';
 
 const { checkEmailValidity } = checkPattern();
 
 export default function Login() {
-  const navigate = useNavigate();
 
   const setStepType = useSetRecoilState(currentFormType);
   const [nextButtonProps, setNextButtonProps] = useRecoilState(stepButtonProps);
@@ -199,8 +198,16 @@ export default function Login() {
         <Spacer y={70} />
 
         <Button
-          onClick={() => {
-            navigate('/record');
+          onClick={async () => {
+            await testLogIn()
+              .then((response) => {
+                if (response.status !== 'SUCCESS') {
+                  setHelper2('오류가 발생했습니다. 다시 시도 해주세요.');
+                }
+              })
+              .catch(() => {
+                setHelper2('오류가 발생했습니다. 다시 시도 해주세요.');
+              });
           }}
         >
           <Typography

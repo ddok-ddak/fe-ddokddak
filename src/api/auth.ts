@@ -160,7 +160,7 @@ export const signIn = async (request: any) => {
 /************************  SIGN OUT  ************************/
 
 /**
- * user sign in
+ * user sign out
  * @param request: sign in user data
  * @returns response
  */
@@ -168,6 +168,22 @@ export const signOut = async () => {
   const response = await callAPI({
     url: '/api/v1/auth/signout',
     method: 'POST',
+  });
+
+  return response as CommonResponse;
+};
+
+/************************  TEST ACCOUNT LOG IN  ************************/
+
+/**
+ * user test account sign in
+ * @param request: sign in user data
+ * @returns response
+ */
+export const testLogIn = async () => {
+  const response = await callAPI({
+    url: '/api/v1/auth/lookaround',
+    method: 'GET',
   });
 
   return response as CommonResponse;
