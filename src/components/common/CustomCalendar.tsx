@@ -105,6 +105,7 @@ export const CustomCalendar = (pickerProps: any) => {
         onClick={() => {
           setTempNewDateRange(elementDate);
           if (isSelectedDate) {
+            console.log(isSelectedDate)
             closeAndSavePickerDate();
           }
         }}

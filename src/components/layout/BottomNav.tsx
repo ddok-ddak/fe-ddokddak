@@ -1,11 +1,12 @@
 import { bottomNavigation } from '@/store/common';
+import { isDatePickerOpen } from '@/store/statistics';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 const BottomNav = () => {
   const [navPage, setNavPage] = useRecoilState(bottomNavigation);
-
+  const setIsPickerOpen = useSetRecoilState<boolean>(isDatePickerOpen);
   return (
     <BottomNavigation
       sx={{
@@ -19,6 +20,7 @@ const BottomNav = () => {
       value={navPage}
       onChange={(event, newValue) => {
         setNavPage(newValue);
+        setIsPickerOpen(false);
       }}
     >
       <BottomNavigationAction
