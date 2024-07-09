@@ -61,6 +61,9 @@ export const statisticsStartHour = atom({
   default: '04:00:00',
 });
 
+
+
+
 /**
  * CALENDAR
  */
@@ -73,6 +76,11 @@ export interface IPeriodTypeForStat extends IPeriodType {
   id: PeriodTypeForStat;
   subTitle: string;
 }
+
+export const isDatePickerOpen = atom<boolean>({
+  key: 'IsDatePickerOpen',
+  default: false
+})
 
 export type PeriodTypeForStat = 'BY_DAY' | 'BY_WEEK' | 'BY_MONTH' | 'BY_YEAR';
 

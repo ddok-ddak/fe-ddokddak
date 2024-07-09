@@ -5,13 +5,14 @@ import { currentPeriod, currentSelectedDate } from '@/store/common';
 import {
   PeriodTypeForView,
   currentPeriodForView,
+  isDatePickerOpen,
   tempSelectedDateForStat,
 } from '@/store/statistics';
 import { theme } from '@/styles';
 import { Box, Button, Container, Grid, Paper, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 const calendarPalette = theme.palette.calendar!;
@@ -44,6 +45,8 @@ export const CustomCalendar = (pickerProps: any) => {
     useRecoilState<PeriodTypeForView>(currentPeriodForView);
 
   const { setNewDateRange, setTempNewDateRange } = useStatisticView();
+
+  const [isPickerOpen, setIsPickerOpen] = useRecoilState<boolean>(isDatePickerOpen);
 
   /**
    * render custom calendar day elements (day, week type only)
@@ -101,6 +104,9 @@ export const CustomCalendar = (pickerProps: any) => {
       <Paper
         onClick={() => {
           setTempNewDateRange(elementDate);
+          if (isSelectedDate) {
+            closeAndSavePickerDate();
+          }
         }}
         key={elementDate}
         sx={{
@@ -255,6 +261,11 @@ export const CustomCalendar = (pickerProps: any) => {
     );
   };
 
+  const closeAndSavePickerDate = () => {
+    setIsPickerOpen(false);
+    setSelectedDate(tempSelectedDate);
+  };
+
   /**
    * render customized calendar (month, year type only)
    * @param props
@@ -324,6 +335,16 @@ export const CustomCalendar = (pickerProps: any) => {
                       ? oldDate.year(elem)
                       : oldDate.month(elem - 1);
                   setTempNewDateRange(newDate);
+
+                  if (switchView === 'BY_YEAR' || periodType === 'BY_YEAR') {
+                    if (newDate.year() === oldDate.year()) {
+                      closeAndSavePickerDate();
+                    }
+                  } else {
+                    if (newDate.month() === oldDate.month() && newDate.year() === oldDate.year()) {
+                      closeAndSavePickerDate();
+                    }
+                  }
                 }}
                 sx={{
                   p: 0,
@@ -378,6 +399,8 @@ export const CustomCalendar = (pickerProps: any) => {
       showDaysOutsideCurrentMonth={true}
       showToolbar={true}
       orientation="portrait"
+      open={isPickerOpen}
+      onClose={closeAndSavePickerDate}
       // render customized upper tool bar
       ToolbarComponent={() => renderToolbar()}
       components={{
@@ -402,9 +425,6 @@ export const CustomCalendar = (pickerProps: any) => {
       }}
       // day element (day and week type only)
       renderDay={(date: Dayjs) => renderCustomCalendarDay(date)}
-      onClose={() => {
-        setSelectedDate(tempSelectedDate);
-      }}
       {...pickerProps}
     />
   );

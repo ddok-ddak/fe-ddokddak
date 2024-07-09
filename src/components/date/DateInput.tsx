@@ -1,6 +1,10 @@
+import { isDatePickerOpen } from '@/store/statistics';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { useSetRecoilState } from 'recoil';
 
 const DateInput = ({ params, width }: any) => {
+  const setIsPickerOpen = useSetRecoilState<boolean>(isDatePickerOpen);
+
   return (
     <TextField
       {...params}
@@ -8,7 +12,11 @@ const DateInput = ({ params, width }: any) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end" sx={{ m: 0 }}>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                setIsPickerOpen(true);
+              }}
+            >
               <svg
                 width="15"
                 height="15"

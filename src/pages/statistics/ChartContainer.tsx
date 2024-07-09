@@ -1,5 +1,11 @@
 /* eslint-disable no-template-curly-in-string */
-import { Box, LinearProgress, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  LinearProgress,
+  Typography,
+} from '@mui/material';
 import {
   ArcElement,
   CategoryScale,
@@ -336,6 +342,7 @@ const ChartContainer = () => {
             size: 14,
           },
         },
+
         border: {
           display: false,
         },
@@ -368,7 +375,7 @@ const ChartContainer = () => {
       <Box
         sx={{
           display: 'flex',
-          flex: '1 1 35%',
+          flex: '0 0 7rem',
           justifyContent: 'flex-end',
           alignItems: 'baseline',
         }}
@@ -377,8 +384,7 @@ const ChartContainer = () => {
           sx={{
             display: 'block',
             fontWeight: 'bold',
-            fontSize: '20px',
-            lineHeight: '18.75px',
+            fontSize: '1.2rem',
           }}
         >
           {timeObject.hour}
@@ -386,8 +392,7 @@ const ChartContainer = () => {
         <Typography
           sx={{
             display: 'block',
-            fontSize: '16px',
-            lineHeight: '18.75px',
+            fontSize: '1rem',
           }}
         >
           {timeObject.hourUnit}
@@ -397,14 +402,14 @@ const ChartContainer = () => {
             <Typography
               sx={{
                 fontWeight: 'bold',
-                fontSize: '20px',
+                fontSize: '1.2rem',
                 marginLeft: '3px',
                 lineHeight: '18.75px',
               }}
             >
               {timeObject.minute}
             </Typography>
-            <Typography sx={{ fontSize: '16px', lineHeight: '18.75px' }}>
+            <Typography sx={{ fontSize: '1rem', lineHeight: '18.75px' }}>
               {timeObject.minuteUnit}
             </Typography>
           </>
@@ -507,7 +512,12 @@ const ChartContainer = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Box sx={{ width: '100%', flex: '1 1 60%' }}>
+                      <Box
+                        sx={{
+                          width: '100%',
+                          flex: '1 1 60%',
+                        }}
+                      >
                         <LinearProgress
                           variant="determinate"
                           value={(data.timeSum * 100) / (categorySum || 100)}
@@ -582,16 +592,14 @@ const ChartContainer = () => {
         backgroundColor: palette.chart.customBackground,
         display: 'flex',
         flexDirection: 'column',
-        // height: '100vh',
         marginBottom: '6vh',
-        overflow: 'hidden'
-
+        overflow: 'hidden',
       }}
     >
       <Box
         sx={{
           position: 'relative',
-          flex: '0 1 7%', 
+          flex: '0 1 7%',
         }}
       >
         <Box
@@ -620,7 +628,7 @@ const ChartContainer = () => {
           </span>
         </Box>
         {!!totalSum && (
-          <Box
+          <ButtonGroup
             sx={{
               position: 'absolute',
               display: 'flex',
@@ -632,7 +640,7 @@ const ChartContainer = () => {
               height: 'calc(100% - 3px)',
             }}
           >
-            <Box
+            <Button
               onClick={() => {
                 // first page label is 1
                 const indicator: any = activePageIndicator.current;
@@ -653,21 +661,20 @@ const ChartContainer = () => {
                 }
               }}
               sx={{
-                border: '1px solid',
-                borderColor: isFirstPage ? pink700 : paletteGrey[500],
+                border: `1px solid ${!isFirstPage ? paletteGrey[500] : pink700}`,
                 borderRightColor: pink700,
                 borderRadius: '3px 0 0 3px',
-                flex: '1 1 50%',
+                width: '48%',
                 height: '50%',
-                padding: 'auto',
+                p: '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
-              <DonutIcon iconColor={isFirstPage ? pink700 : paletteGrey[500]} />
-            </Box>
-            <Box
+              <DonutIcon iconColor={!isFirstPage ? paletteGrey[500] : pink700} />
+            </Button>
+            <Button
               onClick={() => {
                 // second page label is 2
                 const indicator: any = activePageIndicator.current;
@@ -683,25 +690,28 @@ const ChartContainer = () => {
               }}
               sx={{
                 border: `1px solid ${isFirstPage ? paletteGrey[500] : pink700}`,
-                borderLeft: 'none',
+                borderLeftColor: pink700,
                 borderRadius: '0 3px 3px 0',
-                flex: '1 1 50%',
+                width: '48%',
                 height: '50%',
+                p: '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
               <BarIcon iconColor={isFirstPage ? paletteGrey[500] : pink700} />
-            </Box>
-          </Box>
+            </Button>
+          </ButtonGroup>
         )}
       </Box>
+
       <Box
-      sx={{
-        position: 'relative',
-        flex: '0 1 40%', 
-      }}>
+        sx={{
+          position: 'relative',
+          flex: '0 1 40%',
+        }}
+      >
         {!!totalSum && (
           <Carousel {...carouselOption}>
             <Box
