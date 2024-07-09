@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Container,
   List,
   ListItemButton,
   ListItemText,
@@ -27,6 +28,7 @@ import { useModalCommon } from '@/hooks/modalCommon';
 import Wrapper from '../auth/common/Wrapper';
 import { currentUserInfo } from '@/store/info';
 import { UserModeList } from '../category/CategoryPage';
+import CommonHeader from '@/components/layout/CommonHeader';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -121,9 +123,9 @@ const SettingPage = () => {
    * @returns
    */
   const getUserNickname = () => {
-    const type = UserModeList.filter(
-      (mode) => mode.type === userInfo.templateType,
-    )[0]?.name || 'TEST ACCOUNT';
+    const type =
+      UserModeList.filter((mode) => mode.type === userInfo.templateType)[0]
+        ?.name || 'TEST ACCOUNT';
     return `#${type} ${userInfo.nickname}님`;
   };
 
@@ -133,116 +135,160 @@ const SettingPage = () => {
   });
 
   return (
-    <Wrapper>
-      <SettingWrapper>
-        <Button
-          onClick={() => navigation('/settings/account')}
+    <Wrapper
+      headerComp={
+        <Container
           sx={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '15vh',
-            borderRadius: '10px',
-            color: 'common.black',
-            backgroundColor: '#FFF8F8',
-            padding: '0',
+            justifyContent: 'center',
           }}
         >
-          <Box sx={{ margin: '0 10px', width: 72, height: 72 }}>
-            <UserAvatar />
-          </Box>
-          <Box sx={{ flex: 1, margin: '0 10px' }}>
-            <Typography
-              align="left"
-              sx={{ fontSize: '16px', fontWeight: '600' }}
-            >
-              {getUserNickname()}
-            </Typography>
-            <Typography
-              align="left"
-              textTransform=""
-              sx={{ fontSize: '14px', fontWeight: '400' }}
-            >
-              {userInfo.email}
-            </Typography>
-          </Box>
-          <>
-            <ChevronRightIcon
-              sx={{ margin: '0 10px', color: 'common.black' }}
-            />
-          </>
-        </Button>
-        <List
-          sx={{
-            flex: 1,
-            height: '70vh',
-          }}
-        >
-          {getListSubHeader('커스텀화')}
-          {getListItem({
-            text: '모드 및 카테고리 설정',
-            handler: () => {
-              setCategoryMode('MODEVISIBLE');
-              navigation('/category');
-            },
-          })}
+          <Button
+            onClick={() => navigation('/settings/account')}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              height: '15vh',
+              margin: '30px 0 0 0',
+              borderRadius: '10px',
+              color: 'common.black',
+              backgroundColor: '#FFF8F8',
+            }}
+          >
+            <Box sx={{ margin: '0 10px', width: 72, height: 72 }}>
+              <UserAvatar />
+            </Box>
+            <Box sx={{ flex: 1, margin: '0 10px' }}>
+              <Typography
+                align="left"
+                sx={{ fontSize: '16px', fontWeight: '600' }}
+              >
+                {getUserNickname()}
+              </Typography>
+              <Typography
+                align="left"
+                sx={{ fontSize: '14px', fontWeight: '400' }}
+              >
+                {userInfo.email}
+              </Typography>
+            </Box>
+            <>
+              <ChevronRightIcon
+                sx={{ margin: '0 10px', color: 'common.black' }}
+              />
+            </>
+          </Button>
+        </Container>
+      }
+    >
+      {/* <SettingWrapper> */}
+      {/* <Button
+        onClick={() => navigation('/settings/account')}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '15vh',
+          margin: 0,
+          outline: '1px solid red',
+          paddingTop: '-10px',
+          borderRadius: '10px',
+          color: 'common.black',
+          backgroundColor: '#FFF8F8',
+          padding: '0',
+        }}
+      >
+        <Box sx={{ margin: '0 10px', width: 72, height: 72 }}>
+          <UserAvatar />
+        </Box>
+        <Box sx={{ flex: 1, margin: '0 10px' }}>
+          <Typography align="left" sx={{ fontSize: '16px', fontWeight: '600' }}>
+            {getUserNickname()}
+          </Typography>
+          <Typography
+            align="left"
+            textTransform=""
+            sx={{ fontSize: '14px', fontWeight: '400' }}
+          >
+            {userInfo.email}
+          </Typography>
+        </Box>
+        <>
+          <ChevronRightIcon sx={{ margin: '0 10px', color: 'common.black' }} />
+        </>
+      </Button> */}
+      <List
+        sx={{
+          flex: 1,
+          height: '70vh',
+        }}
+      >
+        {getListSubHeader('커스텀화')}
+        {getListItem({
+          text: '모드 및 카테고리 설정',
+          handler: () => {
+            setCategoryMode('MODEVISIBLE');
+            navigation('/category');
+          },
+        })}
 
-          {getListSubHeader('고객 센터')}
-          {getListItem({
-            text: 'FAQ',
-            handler: () => navigation('/settings/faq'),
-          })}
+        {getListSubHeader('고객 센터')}
+        {getListItem({
+          text: 'FAQ',
+          handler: () => navigation('/settings/faq'),
+        })}
 
-          {getListSubHeader('계정')}
-          {getListItem({
-            text: '비밀번호 변경',
-            handler: () => navigation('/resetPW'),
-          })}
-          {getListItem({
-            text: '로그아웃',
-            handler: async () => {
-              setModalInfo({
-                ...modalInfo,
-                open: true,
-                title: '로그아웃',
-                msg: '로그아웃 하시겠습니까?',
-                optionList: null,
-                btn1Text: modalAnswer.no,
-                btn1ClickHandler: closeModal,
-                btn2Text: modalAnswer.yes,
-                btn2ClickHandler: logoutClickHandler,
-              });
-              return true;
-            },
-          })}
-        </List>
-        <Button
-          sx={{ height: '15vh' }}
-          onClick={async () => {
+        {getListSubHeader('계정')}
+        {getListItem({
+          text: '비밀번호 변경',
+          handler: () => navigation('/resetPW'),
+        })}
+        {getListItem({
+          text: '로그아웃',
+          handler: async () => {
             setModalInfo({
               ...modalInfo,
               open: true,
-              title: '탈퇴시 계정은 복구되지 않습니다.',
-              msg: '정말 탈퇴 하시겠습니까?',
+              title: '로그아웃',
+              msg: '로그아웃 하시겠습니까?',
+              optionList: null,
               btn1Text: modalAnswer.no,
               btn1ClickHandler: closeModal,
               btn2Text: modalAnswer.yes,
-              btn2ClickHandler: deleteAccountClickHandler,
+              btn2ClickHandler: logoutClickHandler,
             });
             return true;
+          },
+        })}
+      </List>
+      <Button
+        sx={{ height: '15vh' }}
+        onClick={async () => {
+          setModalInfo({
+            ...modalInfo,
+            open: true,
+            title: '탈퇴시 계정은 복구되지 않습니다.',
+            msg: '정말 탈퇴 하시겠습니까?',
+            btn1Text: modalAnswer.no,
+            btn1ClickHandler: closeModal,
+            btn2Text: modalAnswer.yes,
+            btn2ClickHandler: deleteAccountClickHandler,
+          });
+          return true;
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: '12px',
+            color: 'grey.500',
+            textDecoration: 'underline',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: '12px',
-              color: 'grey.500',
-              textDecoration: 'underline',
-            }}
-          >
-            {'회원 탈퇴'}
-          </Typography>
-        </Button>
-      </SettingWrapper>
+          {'회원 탈퇴'}
+        </Typography>
+      </Button>
+      {/* </SettingWrapper> */}
     </Wrapper>
   );
 };

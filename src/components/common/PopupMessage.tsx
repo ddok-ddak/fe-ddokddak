@@ -19,7 +19,7 @@ const PopupMessage = () => {
     <Popover
       id={isPopupShow ? 'virtual-element-popover' : undefined}
       anchorEl={(element: Element) => {
-        return element;
+        return element || <></>;
       }}
       open={isPopupShow}
       onClose={() => {

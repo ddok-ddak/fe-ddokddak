@@ -539,6 +539,7 @@ const EditRecordPage = (): ReactElement => {
         setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
       });
   }
+  
   /**
    * update event record
    * @param startedAt start time
