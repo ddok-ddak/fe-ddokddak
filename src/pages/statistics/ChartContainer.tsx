@@ -423,112 +423,116 @@ const ChartContainer = () => {
     return (
       <>
         {dataArray.length &&
-          dataArray.map((data: any, idx) => (
-            <Box
-              key={idx}
-              sx={{
-                display: 'flex',
-                m: '10px 17px',
-                p: 0,
-              }}
-            >
+          dataArray.map((data: any, idx) => {
+            if (!data.timeSum) {
+              return <Box key={idx}></Box>;
+            }
+            return (
               <Box
+                key={idx}
                 sx={{
-                  padding: '8px',
                   display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  flex: '1 1 60%',
-                  height: '100%',
-                  m: 0,
+                  m: '10px 17px',
                   p: 0,
                 }}
               >
-                <Circle
-                  color={data.categoryColor}
-                  size={62}
-                  iconSize={40}
-                  iconName={''}
-                  onClick={() => {
-                    const subCategoryData = data.children;
-                    const periodTypeTitle = periodTypeList!.filter(
-                      (type) => type.id === periodType,
-                    )[0].subTitle;
-                    if (subCategoryData) {
-                      setCategoryDetailData(subCategoryData);
-                      setTotalSumTitle(
-                        addPostposition(
-                          `${periodTypeTitle} ${data.categoryName}`,
-                        ),
-                      );
-                    } else {
-                      setCategoryDetailData(statisticsResult);
-                      setTotalSumTitle(addPostposition(periodTypeTitle));
-                      setClickedIndex(-1);
-                    }
-                    setCategorySum(
-                      () =>
-                        (subCategoryData
-                          ? categoryDetailData
-                          : statisticsResult
-                        )?.reduce(
-
-                          (accu: number, curr: StatisticsDetail) =>
-                            accu + curr.timeSum,
-                          0,
-                        ) | 0,
-                    );
-                  }}
-                />
                 <Box
                   sx={{
-                    marginLeft: '12px',
-                    flex: '1 1 100%',
+                    padding: '8px',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flex: '1 1 60%',
+                    height: '100%',
+                    m: 0,
+                    p: 0,
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontSize: '16px',
-                      lineHeight: '18.75px',
-                      fontWeight: 700,
-                      m: 0,
-                      p: 0,
+                  <Circle
+                    color={data.categoryColor}
+                    size={62}
+                    iconSize={40}
+                    iconName={''}
+                    onClick={() => {
+                      const subCategoryData = data.children;
+                      const periodTypeTitle = periodTypeList!.filter(
+                        (type) => type.id === periodType,
+                      )[0].subTitle;
+                      if (subCategoryData) {
+                        setCategoryDetailData(subCategoryData);
+                        setTotalSumTitle(
+                          addPostposition(
+                            `${periodTypeTitle} ${data.categoryName}`,
+                          ),
+                        );
+                      } else {
+                        setCategoryDetailData(statisticsResult);
+                        setTotalSumTitle(addPostposition(periodTypeTitle));
+                        setClickedIndex(-1);
+                      }
+                      setCategorySum(
+                        () =>
+                          (subCategoryData
+                            ? categoryDetailData
+                            : statisticsResult
+                          )?.reduce(
+                            (accu: number, curr: StatisticsDetail) =>
+                              accu + curr.timeSum,
+                            0,
+                          ) | 0,
+                      );
                     }}
-                  >
-                    {data.categoryName}
-                  </Typography>
+                  />
                   <Box
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
+                      marginLeft: '12px',
+                      flex: '1 1 100%',
                     }}
                   >
-                    <Box sx={{ width: '100%', flex: '1 1 60%' }}>
-                      <LinearProgress
-                        variant="determinate"
-                        value={(data.timeSum * 100) / (categorySum || 100)}
-                        sx={{
-                          top: '3px',
-                          height: '11px',
-                          '&.MuiLinearProgress-root': {
-                            backgroundColor: `${paletteGrey[100]} !important`,
-                            borderRadius: 5,
-                          },
-                          '& > .MuiLinearProgress-bar': {
-                            backgroundColor: data.categoryColor,
-                            borderRadius: 5,
-                          },
-                        }}
-                      />
+                    <Typography
+                      sx={{
+                        fontSize: '16px',
+                        lineHeight: '18.75px',
+                        fontWeight: 700,
+                        m: 0,
+                        p: 0,
+                      }}
+                    >
+                      {data.categoryName}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box sx={{ width: '100%', flex: '1 1 60%' }}>
+                        <LinearProgress
+                          variant="determinate"
+                          value={(data.timeSum * 100) / (categorySum || 100)}
+                          sx={{
+                            top: '3px',
+                            height: '11px',
+                            '&.MuiLinearProgress-root': {
+                              backgroundColor: `${paletteGrey[100]} !important`,
+                              borderRadius: 5,
+                            },
+                            '& > .MuiLinearProgress-bar': {
+                              backgroundColor: data.categoryColor,
+                              borderRadius: 5,
+                            },
+                          }}
+                        />
+                      </Box>
+                      <Spacer x={10} />
+                      {setCategoryDetailDataTime(data.timeSum)}
                     </Box>
-                    <Spacer x={10} />
-                    {setCategoryDetailDataTime(data.timeSum)}
                   </Box>
                 </Box>
               </Box>
-            </Box>
-          ))}
+            );
+          })}
       </>
     );
   };
@@ -578,10 +582,18 @@ const ChartContainer = () => {
         backgroundColor: palette.chart.customBackground,
         display: 'flex',
         flexDirection: 'column',
-        paddingBottom: '6vh',
+        // height: '100vh',
+        marginBottom: '6vh',
+        overflow: 'hidden'
+
       }}
     >
-      <Box sx={{ position: 'relative' }}>
+      <Box
+        sx={{
+          position: 'relative',
+          flex: '0 1 7%', 
+        }}
+      >
         <Box
           sx={{
             width: '100%',
@@ -685,78 +697,87 @@ const ChartContainer = () => {
           </Box>
         )}
       </Box>
-      {!!totalSum && (
-        <Carousel {...carouselOption}>
-          <Box
-            sx={{
-              display: 'flex',
-              height: '274px',
-              justifyContent: 'center',
-              position: 'relative',
-              width: '100%',
-            }}
-          >
-            <Chart
-              ref={pieChartRef}
-              type={'doughnut'}
-              data={chartData}
-              options={pieChartOptions}
-              plugins={[ChartDataLabels, customBackground]}
-            />
-          </Box>
-          <Box sx={{ backgroundColor: palette.chart.customBackground }}>
+      <Box
+      sx={{
+        position: 'relative',
+        flex: '0 1 40%', 
+      }}>
+        {!!totalSum && (
+          <Carousel {...carouselOption}>
             <Box
               sx={{
                 display: 'flex',
                 height: '274px',
                 justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
+                position: 'relative',
                 width: '100%',
+                backgroundColor: palette.chart.customBackground,
               }}
             >
               <Chart
-                ref={barChartRef}
-                type={'bar'}
+                ref={pieChartRef}
+                type={'doughnut'}
                 data={chartData}
-                options={barChartOptions}
+                options={pieChartOptions}
                 plugins={[ChartDataLabels, customBackground]}
               />
             </Box>
-          </Box>
-        </Carousel>
-      )}
-      {!!!totalSum && (
-        <Carousel {...carouselOption}>
-          <Box
-            sx={{
-              display: 'flex',
-              height: '278px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              position: 'relative',
-              width: '100%',
-            }}
-          >
-            <Typography
+            <Box sx={{ backgroundColor: palette.chart.customBackground }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  height: '274px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  width: '100%',
+                }}
+              >
+                <Chart
+                  ref={barChartRef}
+                  type={'bar'}
+                  data={chartData}
+                  options={barChartOptions}
+                  plugins={[ChartDataLabels, customBackground]}
+                />
+              </Box>
+            </Box>
+          </Carousel>
+        )}
+        {!!!totalSum && (
+          <Carousel {...carouselOption}>
+            <Box
               sx={{
-                fontSize: '15px',
-                fontWeight: '600',
-                color: paletteGrey[400],
+                display: 'flex',
+                height: '278px',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                width: '100%',
               }}
             >
-              {'아직 데이터가 없어요'}
-              <br />
-              {'기록을 남겨보세요 :)'}
-            </Typography>
-          </Box>
-        </Carousel>
-      )}
+              <Typography
+                sx={{
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: paletteGrey[400],
+                }}
+              >
+                {'아직 데이터가 없어요'}
+                <br />
+                {'기록을 남겨보세요 :)'}
+              </Typography>
+            </Box>
+          </Carousel>
+        )}
+      </Box>
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
+          backgroundColor: 'white',
+          overflow: 'scroll',
         }}
       >
         {setCategoryDetailDataList(
