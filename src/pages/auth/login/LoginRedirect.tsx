@@ -15,26 +15,30 @@ function LoginRedirect() {
   const getUserInfo = async () => {
     await getInfo()
       .then((response: any) => {
-        const info = response.result;
-        setUserInfo(info);
-        if (info.templateType === 'NONE') {
-          setModalInfo({
-            open: true,
-            title: `${info.nickname}님 환영합니다!`,
-            msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
-            optionList: UserModeList.map(
-              (userMode: { id: string; type: UserTemplateType; name: string }) => {
-                return {
-                  id: userMode.id,
-                  type: userMode.type,
-                  name: userMode.name,
-                };
-              },
-            ),
-            isShowConfirmBtn: true,
-          });
+        if (response.status === 'SUCCESS') {
+          const info = response.result;
+          setUserInfo(info);
+          if (info.templateType === 'NONE') {
+            setModalInfo({
+              open: true,
+              title: `${info.nickname}님 환영합니다!`,
+              msg: '두던에서 나만의 시간 기록을 남겨보세요.\n사용 전 모드를 선택 해주세요 :)',
+              optionList: UserModeList.map(
+                (userMode: { id: string; type: UserTemplateType; name: string }) => {
+                  return {
+                    id: userMode.id,
+                    type: userMode.type,
+                    name: userMode.name,
+                  };
+                },
+              ),
+              isShowConfirmBtn: true,
+            });
+          }
+        } else {
+          // console.log(response)
         }
-      });
+      }).catch(error => console.log(error));
   };
 
 
