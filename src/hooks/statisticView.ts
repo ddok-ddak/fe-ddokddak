@@ -59,6 +59,7 @@ export function useStatisticView() {
    * @param newValue newly selected date
    */
   const setNewDateRange = (newValue: any) => {
+    console.log('newValue', newValue)
     if (newValue) {
       setSelectedDate({ ...selectedDate, [periodType]: newValue });
     }

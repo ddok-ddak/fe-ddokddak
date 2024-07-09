@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Box, Container } from '@mui/system';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -91,7 +91,10 @@ const RecordPage = () => {
 
   const calendarRef = useRef<any>(null);
 
-  const { getWeekPeriodInputFormat, setNewDateRange } = useStatisticView();
+  const dateRef = useRef<any>(null);
+
+  const { getWeekPeriodInputFormat, setNewDateRange, setTempNewDateRange } =
+    useStatisticView();
 
   const interval = '00:30:00';
 
@@ -125,7 +128,85 @@ const RecordPage = () => {
     setRecordType('UPDATE');
     navigation('/record/edit');
   };
+  useEffect(() => {
+    dateRef.current = selectedDate;
+  }, [selectedDate])
 
+  // const getAllRecords = useCallback(async (info: any) => {
+  //   console.log('getAllRecords')
+
+  //   const startedAt = dayjs(info.start)
+  //     .day(0)
+  //     .format(`YYYY-MM-DDT${startHour}`);
+  //   const finishedAt = dayjs(info.start)
+  //     .add(1, 'week')
+  //     .day(0)
+  //     .format(`YYYY-MM-DDT${startHour}`);
+  //   try {
+  //     const response = await getRecord(startedAt, finishedAt);
+  //     if (response.result) {
+  //       const activityRecords = response.result;
+  //       let events: Event[] = [];
+  //       let currentEvent: Event | null = null;
+
+  //       // 각 activity record에 대해 처리
+  //       if (activityRecords.length) {
+  //         activityRecords.forEach((item: any) => {
+  //           const startedAt = dayjs(
+  //             item.startedAt.replace(' KST', ''),
+  //           ).toDate();
+  //           const finishedAt = dayjs(
+  //             item.finishedAt.replace(' KST', ''),
+  //           ).toDate();
+
+  //           const event: Event = {
+  //             id: item.activityRecordId,
+  //             title: item.categoryName,
+  //             content: item.content,
+  //             start: startedAt,
+  //             end: finishedAt,
+  //             categoryId: item.categoryId,
+  //             color: item.categoryColor,
+  //           };
+
+  //           if (currentEvent) {
+  //             // 이전 이벤트가 존재하는 경우
+  //             if (
+  //               dayjs(event.start).isSame(currentEvent.end) &&
+  //               event.title === currentEvent.title
+  //             ) {
+  //               // 연속된 이벤트인 경우 이어서 표시
+  //               currentEvent.end = event.end;
+  //             } else {
+  //               // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
+  //               events.push(currentEvent);
+  //               currentEvent = event;
+  //             }
+  //           } else {
+  //             // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
+  //             currentEvent = event;
+  //           }
+  //         });
+  //       }
+
+  //       // 마지막 이벤트가 남아 있는 경우 events에 추가
+  //       if (currentEvent !== null) {
+  //         events.push(currentEvent);
+  //       }
+
+  //       setEvents(events);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [dateRef.current, selectedDate]);
+
+
+  const cb = useCallback(async (startedAt: any, finishedAt: any) => {
+    const response = await getRecord(startedAt, finishedAt);
+  }, [dateRef.current, selectedDate]);
+
+  
   const getAllRecords = async (info: any) => {
     const startedAt = dayjs(info.start)
       .day(0)
@@ -136,58 +217,63 @@ const RecordPage = () => {
       .format(`YYYY-MM-DDT${startHour}`);
     try {
       const response = await getRecord(startedAt, finishedAt);
-      if (response.result) {
-        const activityRecords = response.result;
-        let events: Event[] = [];
-        let currentEvent: Event | null = null;
 
-        // 각 activity record에 대해 처리
-        if (activityRecords.length) {
-          activityRecords.forEach((item: any) => {
-            const startedAt = dayjs(
-              item.startedAt.replace(' KST', ''),
-            ).toDate();
-            const finishedAt = dayjs(
-              item.finishedAt.replace(' KST', ''),
-            ).toDate();
-
-            const event: Event = {
-              id: item.activityRecordId,
-              title: item.categoryName,
-              content: item.content,
-              start: startedAt,
-              end: finishedAt,
-              categoryId: item.categoryId,
-              color: item.categoryColor,
-            };
-
-            if (currentEvent) {
-              // 이전 이벤트가 존재하는 경우
-              if (
-                dayjs(event.start).isSame(currentEvent.end) &&
-                event.title === currentEvent.title
-              ) {
-                // 연속된 이벤트인 경우 이어서 표시
-                currentEvent.end = event.end;
+      //   const response = await getRecord(startedAt, finishedAt);
+        if (response.result) {
+          const activityRecords = response.result;
+          let events: Event[] = [];
+          let currentEvent: Event | null = null;
+  
+          // 각 activity record에 대해 처리
+          if (activityRecords.length) {
+            activityRecords.forEach((item: any) => {
+              const startedAt = dayjs(
+                item.startedAt.replace(' KST', ''),
+              ).toDate();
+              const finishedAt = dayjs(
+                item.finishedAt.replace(' KST', ''),
+              ).toDate();
+  
+              const event: Event = {
+                id: item.activityRecordId,
+                title: item.categoryName,
+                content: item.content,
+                start: startedAt,
+                end: finishedAt,
+                categoryId: item.categoryId,
+                color: item.categoryColor,
+              };
+  
+              if (currentEvent) {
+                // 이전 이벤트가 존재하는 경우
+                if (
+                  dayjs(event.start).isSame(currentEvent.end) &&
+                  event.title === currentEvent.title
+                ) {
+                  // 연속된 이벤트인 경우 이어서 표시
+                  currentEvent.end = event.end;
+                } else {
+                  // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
+                  events.push(currentEvent);
+                  currentEvent = event;
+                }
               } else {
-                // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
-                events.push(currentEvent);
+                // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
                 currentEvent = event;
               }
-            } else {
-              // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
-              currentEvent = event;
-            }
-          });
-        }
-
-        // 마지막 이벤트가 남아 있는 경우 events에 추가
-        if (currentEvent !== null) {
-          events.push(currentEvent);
-        }
-
-        setEvents(events);
+            });
+          }
+  
+          // 마지막 이벤트가 남아 있는 경우 events에 추가
+          if (currentEvent !== null) {
+            events.push(currentEvent);
+          }
+  
+          setEvents(events);
+      // }, [dateRef.current, selectedDate]);
       }
+
+
     } catch (error) {
       console.error(error);
     }
@@ -240,7 +326,7 @@ const RecordPage = () => {
   }, []);
 
   return (
-    <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'}/>}>
+    <Wrapper headerComp={<CommonHeader title={'일주일 기록하기'} />}>
       <Box
         sx={{
           width: '100vw',
@@ -266,7 +352,6 @@ const RecordPage = () => {
                   '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-left',
                 )!;
                 prevIcon?.click();
-
                 setNewDateRange(selectedDate[periodType].subtract(1, 'w'));
               }}
               direction="left"
@@ -275,6 +360,8 @@ const RecordPage = () => {
               value: selectedDate[periodType].locale('ko'),
               onChange: (newValue: any) =>
                 setNewDateRange(dayjs(newValue).startOf('week')),
+              // onChange: (newValue: any) =>
+              // setTempNewDateRange(dayjs(newValue).startOf('week')),
               inputFormat: getWeekPeriodInputFormat(
                 selectedDate[periodType].locale('ko'),
               ),
