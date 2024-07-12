@@ -206,12 +206,14 @@ export const currentPeriod = selector({
  * RECORD: Calendar for Record Page
  * SETTEMPLATE 템플릿 모드 (유저 모드) 설정
  * CATEGORY 카테고리 (삭제)
+ * NICKNAME 닉네임 (수정)
  */
 export type PopupMessageType =
   'RESETPW'
   | 'RECORD'
   | 'SETTEMPLATE'
-  | 'CATEGORY';
+  | 'CATEGORY'
+  | 'NICKNAME';
 
 export const popupMessageShowStatus = atom({
   key: 'PopupMessageShowStatus',

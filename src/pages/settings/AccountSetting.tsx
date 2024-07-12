@@ -5,16 +5,23 @@ import UserAvatar from '@/components/settings/UserAvatar';
 import { useNavigate } from 'react-router-dom';
 import Wrapper from '../auth/common/Wrapper';
 import CommonHeader from '@/components/layout/CommonHeader';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentUserInfo } from '@/store/info';
 import { useState, useEffect, useRef } from 'react';
+import { updateNickname, UserData } from '@/api/auth';
+import { popupShowState, popupSuccessState } from '@/store/popupMessage';
+import { currentPopupMessageType, popupMessageText } from '@/store/common';
 
 const AccountSetting = () => {
   const navigation = useNavigate();
-  const userInfo = useRecoilValue(currentUserInfo);
+  const [userInfo, setUserInfo] = useRecoilState<UserData>(currentUserInfo);
   const [newNickname, setNewNickname] = useState(userInfo.nickname);
-
   const refValue = useRef(newNickname);
+
+  const setIsPopupShow = useSetRecoilState(popupShowState);
+  const setIsSuccessPopup = useSetRecoilState(popupSuccessState);
+  const setPopupText = useSetRecoilState(popupMessageText);
+  const setPopupMessageType = useSetRecoilState(currentPopupMessageType);
 
   useEffect(() => {
     refValue.current = newNickname;
@@ -32,11 +39,27 @@ const AccountSetting = () => {
               size="large"
               edge="start"
               aria-label="menu"
-              onClick={() => {
-                if (refValue.current === userInfo.nickname && refValue.current !== "") {
+              onClick={async () => {
+                const newNickname = refValue.current;
+                if (newNickname === userInfo.nickname && newNickname !== '') {
                   return;
                 }
-                // TODO: 회원 정보 변경
+                const result = await updateNickname(newNickname);
+                let popupText = '';
+                if (result.status === 'SUCCESS') {
+                  setUserInfo({
+                    ...userInfo,
+                    nickname: newNickname,
+                  });
+                  navigation('/settings');
+                  popupText = '닉네임 변경 성공!';
+                } else {
+                  popupText = '닉네임 변경 실패!';
+                }
+
+                setPopupMessageType('NICKNAME');
+                setIsPopupShow(() => true);
+                setPopupText(popupText);
               }}
             >
               <Typography
@@ -93,8 +116,6 @@ const AccountSetting = () => {
           onChange={(event) => {
             const newValue = event.target.value;
             setNewNickname(newValue);
-            if (newValue !== userInfo.nickname) {
-            }
           }}
           multiline
           sx={{
