@@ -223,3 +223,15 @@ export const updateTemplate = async (templateType: UserTemplateType) => {
 
   return response as CommonResponse;
 };
+
+/************************ UPDATE USER NICKNAME ************************/
+
+export const updateNickname = async (nickname: UserData["nickname"]) => {
+  const response = await callAPI({
+    url: '/api/v1/members/nickname',
+    method: 'PUT',
+    body: { nickname },
+  });
+
+  return response as CommonResponse;
+};
