@@ -128,84 +128,6 @@ const RecordPage = () => {
     setRecordType('UPDATE');
     navigation('/record/edit');
   };
-  useEffect(() => {
-    dateRef.current = selectedDate;
-  }, [selectedDate])
-
-  // const getAllRecords = useCallback(async (info: any) => {
-  //   console.log('getAllRecords')
-
-  //   const startedAt = dayjs(info.start)
-  //     .day(0)
-  //     .format(`YYYY-MM-DDT${startHour}`);
-  //   const finishedAt = dayjs(info.start)
-  //     .add(1, 'week')
-  //     .day(0)
-  //     .format(`YYYY-MM-DDT${startHour}`);
-  //   try {
-  //     const response = await getRecord(startedAt, finishedAt);
-  //     if (response.result) {
-  //       const activityRecords = response.result;
-  //       let events: Event[] = [];
-  //       let currentEvent: Event | null = null;
-
-  //       // 각 activity record에 대해 처리
-  //       if (activityRecords.length) {
-  //         activityRecords.forEach((item: any) => {
-  //           const startedAt = dayjs(
-  //             item.startedAt.replace(' KST', ''),
-  //           ).toDate();
-  //           const finishedAt = dayjs(
-  //             item.finishedAt.replace(' KST', ''),
-  //           ).toDate();
-
-  //           const event: Event = {
-  //             id: item.activityRecordId,
-  //             title: item.categoryName,
-  //             content: item.content,
-  //             start: startedAt,
-  //             end: finishedAt,
-  //             categoryId: item.categoryId,
-  //             color: item.categoryColor,
-  //           };
-
-  //           if (currentEvent) {
-  //             // 이전 이벤트가 존재하는 경우
-  //             if (
-  //               dayjs(event.start).isSame(currentEvent.end) &&
-  //               event.title === currentEvent.title
-  //             ) {
-  //               // 연속된 이벤트인 경우 이어서 표시
-  //               currentEvent.end = event.end;
-  //             } else {
-  //               // 연속된 이벤트가 아닌 경우 이전 이벤트를 events에 추가하고 현재 이벤트를 currentEvent로 설정
-  //               events.push(currentEvent);
-  //               currentEvent = event;
-  //             }
-  //           } else {
-  //             // 이전 이벤트가 없는 경우 현재 이벤트를 currentEvent로 설정
-  //             currentEvent = event;
-  //           }
-  //         });
-  //       }
-
-  //       // 마지막 이벤트가 남아 있는 경우 events에 추가
-  //       if (currentEvent !== null) {
-  //         events.push(currentEvent);
-  //       }
-
-  //       setEvents(events);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [dateRef.current, selectedDate]);
-
-
-  const cb = useCallback(async (startedAt: any, finishedAt: any) => {
-    const response = await getRecord(startedAt, finishedAt);
-  }, [dateRef.current, selectedDate]);
-
   
   const getAllRecords = async (info: any) => {
     const startedAt = dayjs(info.start)
@@ -215,10 +137,9 @@ const RecordPage = () => {
       .add(1, 'week')
       .day(0)
       .format(`YYYY-MM-DDT${startHour}`);
-    try {
-      const response = await getRecord(startedAt, finishedAt);
 
-      //   const response = await getRecord(startedAt, finishedAt);
+      try {
+      const response = await getRecord(startedAt, finishedAt);
         if (response.result) {
           const activityRecords = response.result;
           let events: Event[] = [];
@@ -268,12 +189,8 @@ const RecordPage = () => {
           if (currentEvent !== null) {
             events.push(currentEvent);
           }
-  
           setEvents(events);
-      // }, [dateRef.current, selectedDate]);
       }
-
-
     } catch (error) {
       console.error(error);
     }
@@ -298,14 +215,34 @@ const RecordPage = () => {
     });
   }, [selectedValue]);
 
+
+
+  const goToDate = (date: Date) => {
+    calendarRef.current.getApi().gotoDate(date);
+  }
+
+  useEffect(() => {
+    const startedAt = dayjs(selectedDate[periodType])
+    .day(0)
+    .format(`YYYY-MM-DDT${startHour}`);
+    goToDate(new Date(startedAt))
+
+  }, [selectedDate]);
+
+  
   useEffect(() => {
     setNavPage(0);
+
+    // set type for custom calendar
+    setCalendarType('RECORD');
 
     const initialInfo = { start: new Date() };
     getAllRecords(initialInfo);
 
+
     // apply custom style to the table
     const calendarElem = calendarRef.current.elRef.current;
+
     const timeSlotTdList = calendarElem.querySelectorAll(
       'table tbody td tr td:first-of-type',
     );
@@ -317,9 +254,6 @@ const RecordPage = () => {
         td.setAttribute('rowspan', '2');
       }
     });
-
-    // set type for custom calendar
-    setCalendarType('RECORD');
 
     // set type for next button (for template mode setting modal)
     setCurrentFormType('SETTEMPLATE');
@@ -348,10 +282,6 @@ const RecordPage = () => {
           >
             <Chevron
               callback={() => {
-                const prevIcon: HTMLElement = document.querySelector(
-                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-left',
-                )!;
-                prevIcon?.click();
                 setNewDateRange(selectedDate[periodType].subtract(1, 'w'));
               }}
               direction="left"
@@ -371,10 +301,6 @@ const RecordPage = () => {
             })}
             <Chevron
               callback={() => {
-                const nextIcon: HTMLElement = document.querySelector(
-                  '.fc-toolbar .fc-toolbar-chunk .fc-icon-chevron-right',
-                )!;
-                nextIcon?.click();
                 setNewDateRange(selectedDate[periodType].add(1, 'w'));
               }}
               direction="right"
