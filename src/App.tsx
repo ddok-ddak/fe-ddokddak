@@ -1,5 +1,13 @@
 import { Box, ThemeProvider } from '@mui/material';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Navigate,
+  Route,
+  RouterProvider,
+  Routes,
+} from 'react-router-dom';
 
 import './App.css';
 import BottomNav from './components/layout/BottomNav';
@@ -26,68 +34,117 @@ import PopupMessage from './components/common/PopupMessage';
 import LoginRedirect from './pages/auth/login/LoginRedirect';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-            width: '100vw',
-          }}
-        >
-          <Box sx={{ width: '100vw', flex: '100vh', overflowY: 'scroll', overflowX: 'hidden' }}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signin/redirect" element={<LoginRedirect />} />
-              <Route path="/signUp" element={<SignUp />} />
-              <Route path="/findID" element={<FindID />} />
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: (
+        <>
+          <RecordPage />
+          <BottomNav />
+        </>
+      ),
+      errorElement: <Login />,
 
-              <Route path="/resetPW" element={<ResetPWStep />} />
-              <Route path="/resetPWMode" element={<ResetPWMode />} />
+      loader: async ({ params }) => {
+        console.log(params);
 
-              <Route
-                path="/record"
-                element={
-                  <>
-                    <RecordPage />
-                    <BottomNav />
-                  </>
-                }
-              />
-              <Route
-                path="/statistics"
-                element={
-                  <>
-                    <StatisticsPage />
-                    <BottomNav />
-                  </>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <>
-                    <SettingsPage />
-                    <BottomNav />
-                  </>
-                }
-              />
-              <Route path="/settings/account" element={<AccountSetting />} />
-              <Route path="/settings/faq" element={<FAQPage />} />
-              <Route path="/record/edit" element={<EditRecordPage />} />
-              <Route path="/category" element={<CategoryPage />} />
-              <Route path="/category/edit" element={<EditCategoryPage />} />
-            </Routes>
-          </Box>
-        </Box>
-        <PopupMessage />
-        <Modal />
-      </ThemeProvider>
-    </BrowserRouter>
-  );
+        return fetch(`/fake/api/teams/${params.teamId}.json`);
+      },
+      children: [
+        // {
+        //   element: <Team />,
+        //   path: ":teamId",
+        //   loader: async ({ params }) => {
+        //     return fetch(`/api/teams/${params.teamId}.json`);
+        //   },
+        // },
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+
+  // return (
+  //   <BrowserRouter>
+  //     <ThemeProvider theme={theme}>
+  //       <Box
+  //         sx={{
+  //           display: 'flex',
+  //           flexDirection: 'column',
+  //           height: '100vh',
+  //           width: '100vw',
+  //         }}
+  //       >
+  //         <Box
+  //           sx={{
+  //             width: '100vw',
+  //             flex: '100vh',
+  //             overflowY: 'scroll',
+  //             overflowX: 'hidden',
+  //           }}
+  //         >
+  //           <Routes>
+  //           <Route
+  //             path="/"
+  //             element={<Login />}
+
+  //             loader={async ({ params }) => {
+  //               alert(params)
+  //               // return fetch(
+  //               //   `/fake/api/teams/${params.teamId}.json`
+  //               // );
+  //             }}
+
+  //           />
+  //             {/* <Route path="/" element={<Navigate to="/record" />} /> */}
+  //             <Route path="/login" element={<Login />} />
+  //             <Route path="/signin/redirect" element={<LoginRedirect />} />
+  //             <Route path="/signUp" element={<SignUp />} />
+  //             <Route path="/findID" element={<FindID />} />
+
+  //             <Route path="/resetPW" element={<ResetPWStep />} />
+  //             <Route path="/resetPWMode" element={<ResetPWMode />} />
+
+  //             <Route
+  //               path="/record"
+  //               element={
+  //                 <>
+  //                   <RecordPage />
+  //                   <BottomNav />
+  //                 </>
+  //               }
+  //             />
+  //             <Route
+  //               path="/statistics"
+  //               element={
+  //                 <>
+  //                   <StatisticsPage />
+  //                   <BottomNav />
+  //                 </>
+  //               }
+  //             />
+  //             <Route
+  //               path="/settings"
+  //               element={
+  //                 <>
+  //                   <SettingsPage />
+  //                   <BottomNav />
+  //                 </>
+  //               }
+  //             />
+  //             <Route path="/settings/account" element={<AccountSetting />} />
+  //             <Route path="/settings/faq" element={<FAQPage />} />
+  //             <Route path="/record/edit" element={<EditRecordPage />} />
+  //             <Route path="/category" element={<CategoryPage />} />
+  //             <Route path="/category/edit" element={<EditCategoryPage />} />
+  //           </Routes>
+  //         </Box>
+  //       </Box>
+  //       <PopupMessage />
+  //       <Modal />
+  //     </ThemeProvider>
+  //   </BrowserRouter>
+  // );
 }
 
 export default App;

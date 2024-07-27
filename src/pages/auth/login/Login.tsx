@@ -6,7 +6,7 @@ import {
 } from '@/store/common';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import FormWrapper from '../common/FormWrapper';
 import InputForm, { InputItemType } from '../common/InputForm';
@@ -15,6 +15,9 @@ import SocialLogin from './SocialLogin';
 import { checkPattern } from '@/hooks/checkPattern';
 import { signIn, testLogIn } from '@/api/auth';
 import Spacer from '@/components/common/Spacer';
+
+import { useLocation } from 'react-router-dom';
+
 
 const { checkEmailValidity } = checkPattern();
 
@@ -88,8 +91,9 @@ export default function Login() {
       clickHandler: loginButtonClickHandler,
     });
   }, [email, password]);
-
+  const navigate = useNavigate();
   useEffect(() => {
+    // navigate('/record')
     setStepType('LOGIN');
     setInstruction('');
     setNextButtonProps({
