@@ -1,12 +1,6 @@
 import { Box, ThemeProvider } from '@mui/material';
 import {
-  BrowserRouter,
-  createBrowserRouter,
-  createRoutesFromElements,
-  Navigate,
-  Route,
-  RouterProvider,
-  Routes,
+  createBrowserRouter, RouterProvider
 } from 'react-router-dom';
 
 import './App.css';
@@ -32,11 +26,65 @@ import AccountSetting from './pages/settings/AccountSetting';
 import FAQPage from './pages/settings/FAQPage';
 import PopupMessage from './components/common/PopupMessage';
 import LoginRedirect from './pages/auth/login/LoginRedirect';
+import { getCookie } from './api/http';
+
+/**
+ * dynamically change start page (token)
+ * @returns start page
+ */
+function StartPage() {
+  const token = getCookie();
+  const page = token ? (
+    <>
+      <RecordPage />
+      <BottomNav />
+    </>
+  ) : (
+    <Login />
+  );
+
+  return page;
+}
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
+      element: <StartPage />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/login',
+      element: <Login />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/signin/redirect',
+      element: <LoginRedirect />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/signUp',
+      element: <SignUp />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/findID',
+      element: <FindID />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/resetPW',
+      element: <ResetPWStep />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/resetPWMode',
+      element: <ResetPWMode />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/record',
       element: (
         <>
           <RecordPage />
@@ -44,107 +92,74 @@ function App() {
         </>
       ),
       errorElement: <Login />,
-
-      loader: async ({ params }) => {
-        console.log(params);
-
-        return fetch(`/fake/api/teams/${params.teamId}.json`);
-      },
-      children: [
-        // {
-        //   element: <Team />,
-        //   path: ":teamId",
-        //   loader: async ({ params }) => {
-        //     return fetch(`/api/teams/${params.teamId}.json`);
-        //   },
-        // },
-      ],
+    },
+    {
+      path: '/statistics',
+      element: (
+        <>
+          <StatisticsPage />
+          <BottomNav />
+        </>
+      ),
+      errorElement: <Login />,
+    },
+    {
+      path: '/settings',
+      element: (
+        <>
+          <SettingsPage />
+          <BottomNav />
+        </>
+      ),
+      errorElement: <Login />,
+    },
+    {
+      path: '/settings/account',
+      element: <AccountSetting />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/settings/faq',
+      element: <FAQPage />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/record/edit',
+      element: <EditRecordPage />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/category',
+      element: <CategoryPage />,
+      errorElement: <Login />,
+    },
+    {
+      path: '/category/edit',
+      element: <EditCategoryPage />,
+      errorElement: <Login />,
     },
   ]);
 
-  return <RouterProvider router={router} />;
-
-  // return (
-  //   <BrowserRouter>
-  //     <ThemeProvider theme={theme}>
-  //       <Box
-  //         sx={{
-  //           display: 'flex',
-  //           flexDirection: 'column',
-  //           height: '100vh',
-  //           width: '100vw',
-  //         }}
-  //       >
-  //         <Box
-  //           sx={{
-  //             width: '100vw',
-  //             flex: '100vh',
-  //             overflowY: 'scroll',
-  //             overflowX: 'hidden',
-  //           }}
-  //         >
-  //           <Routes>
-  //           <Route
-  //             path="/"
-  //             element={<Login />}
-
-  //             loader={async ({ params }) => {
-  //               alert(params)
-  //               // return fetch(
-  //               //   `/fake/api/teams/${params.teamId}.json`
-  //               // );
-  //             }}
-
-  //           />
-  //             {/* <Route path="/" element={<Navigate to="/record" />} /> */}
-  //             <Route path="/login" element={<Login />} />
-  //             <Route path="/signin/redirect" element={<LoginRedirect />} />
-  //             <Route path="/signUp" element={<SignUp />} />
-  //             <Route path="/findID" element={<FindID />} />
-
-  //             <Route path="/resetPW" element={<ResetPWStep />} />
-  //             <Route path="/resetPWMode" element={<ResetPWMode />} />
-
-  //             <Route
-  //               path="/record"
-  //               element={
-  //                 <>
-  //                   <RecordPage />
-  //                   <BottomNav />
-  //                 </>
-  //               }
-  //             />
-  //             <Route
-  //               path="/statistics"
-  //               element={
-  //                 <>
-  //                   <StatisticsPage />
-  //                   <BottomNav />
-  //                 </>
-  //               }
-  //             />
-  //             <Route
-  //               path="/settings"
-  //               element={
-  //                 <>
-  //                   <SettingsPage />
-  //                   <BottomNav />
-  //                 </>
-  //               }
-  //             />
-  //             <Route path="/settings/account" element={<AccountSetting />} />
-  //             <Route path="/settings/faq" element={<FAQPage />} />
-  //             <Route path="/record/edit" element={<EditRecordPage />} />
-  //             <Route path="/category" element={<CategoryPage />} />
-  //             <Route path="/category/edit" element={<EditCategoryPage />} />
-  //           </Routes>
-  //         </Box>
-  //       </Box>
-  //       <PopupMessage />
-  //       <Modal />
-  //     </ThemeProvider>
-  //   </BrowserRouter>
-  // );
+  return (
+    <ThemeProvider theme={theme}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+          width: '100vw',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+          m: 0,
+          p: 0,
+        }}
+      >
+        <RouterProvider router={router} />
+      </Box>
+      
+      <PopupMessage />
+      <Modal />
+    </ThemeProvider>
+  );
 }
-
 export default App;
