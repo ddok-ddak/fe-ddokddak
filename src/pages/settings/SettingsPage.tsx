@@ -80,7 +80,6 @@ const SettingPage = () => {
    */
   const logoutClickHandler = async (event: any, reason: any) => {
     closeModal(event, reason);
-    removeTokenCookie();
     navigation('/');
     await signOut()
       .then((response: CommonResponse) => {
@@ -101,7 +100,6 @@ const SettingPage = () => {
    * handle delete account click event
    */
   const deleteAccountClickHandler = async (event: any, reason: any) => {
-    removeTokenCookie();
     closeModal(event, reason);
     navigation('/');
     const authProviderType = userInfo.authProviderType || 'DEFAULT';
