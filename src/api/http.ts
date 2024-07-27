@@ -41,6 +41,10 @@ export const removeTokenCookie = () => {
   cookie.remove(REFRESH_TOKEN, getTokenCookieOption());
 };
 
+export const getCookie = () => {
+  return cookie.get(ACCESS_TOKEN);
+};
+
 export default interface CommonResponse<T = any> {
   status: string;
   statusCode: string;
@@ -65,7 +69,7 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     ): Promise<InternalAxiosRequestConfig> => {
       // set bearer authorization token to the header
       if (config.headers) {
-        const accessToken = cookie.get(ACCESS_TOKEN);
+        const accessToken = getCookie();
         if (accessToken) {
           config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
