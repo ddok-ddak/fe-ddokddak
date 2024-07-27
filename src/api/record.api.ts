@@ -36,7 +36,7 @@ export const getRecord = async (fromStartedAt: string, toStartedAt: string) => {
  */
 export const addRecord = async (record: any) => {
   const response = await callAPI({
-    url: `/api/v1/activity-records`,
+    url: `/api/v1/activity-records/list`,
     method: 'POST',
     body: record,
   });

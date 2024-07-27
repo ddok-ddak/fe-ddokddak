@@ -52,7 +52,8 @@ import { theme } from '@/styles';
 import { buttonText } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
-import { categoryViewMode } from '@/store/category';
+import { categoryViewMode, CategoryViewType } from '@/store/category';
+import { modalState } from '@/store/modal';
 
 export interface SelectedRangeData {
   start: Date;
@@ -132,6 +133,8 @@ const EditRecordPage = (): ReactElement => {
   const [eventTimeType, setEventTimeType] = useState<string>('start');
 
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
+  
+  const [modalInfo, setModalInfo] = useRecoilState(modalState);
 
   /**
    * render time picker swiper
@@ -509,19 +512,25 @@ const EditRecordPage = (): ReactElement => {
    * @param finishedAt end time
    * @returns result
    */
-  async function createEventRecord(
-    startedAt: string,
-    finishedAt: string,
-  ): Promise<any> {
-    await addRecord({
-      categoryId: selectedSubCategoryIdx,
-      startedAt,
-      finishedAt,
-      content,
-      timeUnit: 30,
-    })
+  async function createEventRecord(): Promise<any> {
+    const { start, end } = selectedEvent;
+    const firstSelectedDay = selectedDays[0];
+    const records = [];
+    for (const dayIndex of selectedDays) {
+      const diff = dayIndex - firstSelectedDay;
+      const startedAtOfDay = formatDate(new Date(addDays(start, diff)));
+      const finishedAtOfDay = formatDate(new Date(addDays(end, diff)));
+      records.push({
+        categoryId: selectedSubCategoryIdx,
+        startedAt: startedAtOfDay,
+        finishedAt: finishedAtOfDay,
+        content,
+        timeUnit: 30,
+      });
+    }
+
+    await addRecord(records)
       .then((response) => {
-        // TODO: category 선택 안했을시 팝업 띄우기
         if (response.status === 'SUCCESS') {
           setIsPopupShow(() => true);
           setIsSuccessPopup(true);
@@ -539,23 +548,24 @@ const EditRecordPage = (): ReactElement => {
         setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
       });
   }
-  
+
   /**
    * update event record
    * @param startedAt start time
    * @param finishedAt end time
    * @returns result
    */
-  async function updateEventRecord(
-    startedAt: string,
-    finishedAt: string,
-  ): Promise<any> {
+  async function updateEventRecord(): Promise<any> {
     try {
+      const { start, end } = selectedEvent;
+      const startedAtOfDay = formatDate(new Date(start));
+      const finishedAtOfDay = formatDate(new Date(end));
+
       const response = await updateRecord({
         id: selectedEvent.id,
         categoryId: selectedSubCategoryIdx,
-        startedAt,
-        finishedAt,
+        startedAt: startedAtOfDay,
+        finishedAt: finishedAtOfDay,
         content,
       });
       setIsPopupShow(() => true);
@@ -571,28 +581,6 @@ const EditRecordPage = (): ReactElement => {
     } catch (err) {
       setIsSuccessPopup(false);
       setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
-    }
-  }
-
-  /**
-   * post record (create / update) for selected days
-   */
-  async function postAllDays(): Promise<void> {
-    const { start, end } = selectedEvent;
-    const currentSelectedDay = dayjs(selectedEvent.start).day();
-    const firstSelectedDay = selectedDays[0];
-
-    for (const dayIndex of selectedDays) {
-      const diff = dayIndex - firstSelectedDay;
-      const startedAtOfDay = formatDate(new Date(addDays(start, diff)));
-      const finishedAtOfDay = formatDate(new Date(addDays(end, diff)));
-
-      // update currently being edited event
-      if (recordType === 'UPDATE' && currentSelectedDay === dayIndex) {
-        await updateEventRecord(startedAtOfDay, finishedAtOfDay);
-      } else {
-        await createEventRecord(startedAtOfDay, finishedAtOfDay);
-      }
     }
   }
 
@@ -619,9 +607,17 @@ const EditRecordPage = (): ReactElement => {
    */
   const handleDayChipClick = (dayIndex: number) => {
     // at least a option should be selected
-    if (selectedDays.length === 1 && selectedDays[0] === dayIndex) {
-      return true;
+    if (selectedDays.length === 1) {
+      if (selectedDays[0] === dayIndex) {
+        return true;
+      }
+      // in UPDATE mode, only one option can be selected
+      if (recordType === 'UPDATE') {
+        setSelectedDays([dayIndex]);
+        return true;
+      }
     }
+
     if (selectedDays.includes(dayIndex)) {
       setSelectedDays(() =>
         selectedDays.filter((selectedDay) => selectedDay !== dayIndex),
@@ -683,7 +679,17 @@ const EditRecordPage = (): ReactElement => {
           title={'기록하기'}
           isShowPrevButton={true}
           isShowNextButton={true}
-          onClickNextButton={postAllDays}
+          onClickNextButton={
+            () => {
+              if (!selectedSubCategoryIdx) {
+                setIsSuccessPopup(false);
+                setIsPopupShow(() => true);
+                setPopupText('세부 카테고리를 선택해 주세요');
+                return;
+              }
+              recordType === 'CREATE' ? createEventRecord() : updateEventRecord();
+            }
+          }
         />
       }
     >
