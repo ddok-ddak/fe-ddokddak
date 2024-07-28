@@ -133,8 +133,42 @@ const EditRecordPage = (): ReactElement => {
   const [eventTimeType, setEventTimeType] = useState<string>('start');
 
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
-  
-  const [modalInfo, setModalInfo] = useRecoilState(modalState);
+
+  // const [modalInfo, setModalInfo] = useRecoilState(modalState);
+
+  /**
+   * get category data
+   */
+  const getAllCategories = async () => {
+    await getCategories().then((response) => {
+      const result = response.result;
+      if (recordType === 'UPDATE') {
+        const currentCategoryId = selectedEvent.categoryId; // currently selected subCategory Id
+        result
+          .sort((a: MainCategoryProps, b: MainCategoryProps) => {
+            // return b.categoryId - a.categoryId;
+          })
+          .forEach((category: MainCategoryProps) => {
+            const subCategories: SubCategoryProps[] = category.subCategories;
+            subCategories?.forEach((sub) => {
+              const subCategoryId = Number(sub.categoryId);
+              if (subCategoryId === currentCategoryId) {
+                setMainCategory(category);
+                setSelectedCategoryIdx(category.categoryId);
+                console.log(category, subCategoryId);
+                setSelectedSubCategoryIdx(subCategoryId);
+                return true;
+              }
+            });
+          });
+        setCategories(result);
+      } else {
+        setSelectedCategoryIdx(result[0].categoryId);
+        setSelectedSubCategoryIdx(result[0].subCategories[0].categoryId);
+        setCategories(result);
+      }
+    });
+  };
 
   /**
    * render time picker swiper
@@ -481,32 +515,6 @@ const EditRecordPage = (): ReactElement => {
   };
 
   /**
-   * get category data
-   */
-  const getAllCategories = async () => {
-    await getCategories().then((response) => {
-      const result = response.result;
-      setCategories(result);
-      if (recordType === 'UPDATE') {
-        result.forEach((category: MainCategoryProps) => {
-          const subCategories: SubCategoryProps[] = category.subCategories;
-          subCategories?.forEach((subCategory) => {
-            if (
-              Number(subCategory.categoryId) ===
-              Number(selectedEvent.categoryId)
-            ) {
-              setMainCategory(category);
-              setSelectedCategoryIdx(category.categoryId - 1);
-              setSelectedSubCategoryIdx(subCategory.categoryId);
-              return true;
-            }
-          });
-        });
-      }
-    });
-  };
-
-  /**
    * create event record
    * @param startedAt start time
    * @param finishedAt end time
@@ -542,7 +550,8 @@ const EditRecordPage = (): ReactElement => {
           setPopupText('기록 등록에 실패했습니다.');
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        // TODO: error handling messages
         setIsPopupShow(() => true);
         setIsSuccessPopup(false);
         setPopupText('서버에 오류가 발생했습니다. 다시 시도 해주세요.');
@@ -629,14 +638,14 @@ const EditRecordPage = (): ReactElement => {
 
   useEffect(() => {
     if (recordType === 'CREATE') {
-      setSelectedSubCategoryIdx(0);
+      // setSelectedSubCategoryIdx(0);
     }
   }, [selectedCategoryIdx]);
 
   // 선택한 메인카테고리, sub카테고리 recoil에 저장
   useEffect(() => {
     if (recordType === 'CREATE') {
-      setSelectedSubCategoryIdx(0);
+      // setSelectedSubCategoryIdx(0);
     }
     setRecoilCategoryValue(selectedCategoryIdx);
   }, [selectedCategoryIdx, setRecoilCategoryValue, recoilCategoryValue]);
@@ -679,17 +688,15 @@ const EditRecordPage = (): ReactElement => {
           title={'기록하기'}
           isShowPrevButton={true}
           isShowNextButton={true}
-          onClickNextButton={
-            () => {
-              if (!selectedSubCategoryIdx) {
-                setIsSuccessPopup(false);
-                setIsPopupShow(() => true);
-                setPopupText('세부 카테고리를 선택해 주세요');
-                return;
-              }
-              recordType === 'CREATE' ? createEventRecord() : updateEventRecord();
+          onClickNextButton={() => {
+            if (!selectedSubCategoryIdx) {
+              setIsSuccessPopup(false);
+              setIsPopupShow(() => true);
+              setPopupText('세부 카테고리를 선택해 주세요');
+              return;
             }
-          }
+            recordType === 'CREATE' ? createEventRecord() : updateEventRecord();
+          }}
         />
       }
     >
@@ -790,15 +797,17 @@ const EditRecordPage = (): ReactElement => {
         >
           {categories.length &&
             categories.map((category: MainCategoryProps, idx) => {
-              const isSelected = idx === selectedCategoryIdx;
+              const isSelected = category.categoryId === selectedCategoryIdx;
+              // console.log(isSelected, category.name, category.categoryId, selectedCategoryIdx)
               return (
                 <StyledChip
                   key={category.categoryId}
-                  label={category.name}
+                  // label={category.name}
+                  label={`${category.name} ${category.categoryId}`}
                   variant={isSelected ? 'filled' : 'outlined'}
                   onClick={() => {
-                    setSelectedSubCategoryIdx(() => 0);
                     setSelectedCategoryIdx(idx);
+                    setSelectedSubCategoryIdx(() => 0);
                   }}
                   props={{
                     isSelected,
@@ -819,9 +828,16 @@ const EditRecordPage = (): ReactElement => {
             paddingBottom: '30px',
           }}
         >
-          {categories[selectedCategoryIdx]?.subCategories.map(
-            (sub: SubCategoryProps) => {
+          {selectedCategoryIdx}
+          {categories[selectedCategoryIdx]?.subCategories
+            .sort((a: any, b: any) => {
+              // console.log(a, b)
+              return b.categoryId - a.categoryId;
+            })
+            .map((sub: SubCategoryProps) => {
+              console.log(sub);
               const subSelected = selectedSubCategoryIdx === sub.categoryId;
+              console.log(subSelected, subSelected, selectedSubCategoryIdx);
               return (
                 <Circle
                   key={sub.name}
@@ -839,8 +855,7 @@ const EditRecordPage = (): ReactElement => {
                   }
                 />
               );
-            },
-          )}
+            })}
         </Container>
 
         <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
