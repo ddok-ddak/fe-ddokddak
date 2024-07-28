@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { BaseSyntheticEvent, ReactElement, useEffect, useState } from 'react';
+import { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 
@@ -53,7 +53,6 @@ import { buttonText } from '@/constants/message';
 import { popupShowState, popupSuccessState } from '@/store/popupMessage';
 import { MainCategoryProps, SubCategoryProps } from '../category/CategoryPage';
 import { categoryViewMode, CategoryViewType } from '@/store/category';
-import { modalState } from '@/store/modal';
 
 export interface SelectedRangeData {
   start: Date;
@@ -65,6 +64,8 @@ interface StyledChipProps extends ChipProps {
   onClick?: () => void;
   props: any;
 }
+
+const pink200 = theme.palette.pink![200];
 
 const StyledChip = styled(Chip)<StyledChipProps>(({ theme, props }) => {
   const isSelected = props.isSelected;
@@ -91,8 +92,6 @@ const StyledChip = styled(Chip)<StyledChipProps>(({ theme, props }) => {
 const formatDate = (date: any): string =>
   dayjs(date).format('YYYY-MM-DDTHH:mm:ss');
 
-const pink200 = theme.palette.pink![200];
-
 const EditRecordPage = (): ReactElement => {
   const navigate = useNavigate();
   const currentDay = new Date().getDay();
@@ -115,6 +114,10 @@ const EditRecordPage = (): ReactElement => {
     useRecoilState(currentSelectedEvent);
 
   const [selectedDays, setSelectedDays] = useRecoilState(selectedDaysState);
+
+  const currentCategoryId = useRef(null);
+  const currentSubCategoryId = useRef(null);
+  
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
   const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
 
@@ -146,21 +149,32 @@ const EditRecordPage = (): ReactElement => {
         const currentCategoryId = selectedEvent.categoryId; // currently selected subCategory Id
         result
           .sort((a: MainCategoryProps, b: MainCategoryProps) => {
-            // return b.categoryId - a.categoryId;
-          })
-          .forEach((category: MainCategoryProps) => {
-            const subCategories: SubCategoryProps[] = category.subCategories;
-            subCategories?.forEach((sub) => {
-              const subCategoryId = Number(sub.categoryId);
+            // putting currently selected category first
+            return a.subCategories.some((sub: SubCategoryProps) => {
+              const subCategoryId = sub.categoryId;
               if (subCategoryId === currentCategoryId) {
-                setMainCategory(category);
-                setSelectedCategoryIdx(category.categoryId);
-                console.log(category, subCategoryId);
-                setSelectedSubCategoryIdx(subCategoryId);
+                setMainCategory(a);
+                setSelectedCategoryIdx(a.categoryId);
+                // console.log(subCategoryId, sub);
+                setSelectedSubCategoryIdx(subCategoryId!);
                 return true;
+              } else {
+                return false;
               }
-            });
-          });
+            })
+              ? -1
+              : a.categoryId - b.categoryId;
+          })
+          // .forEach((category: MainCategoryProps) => {
+          //   const subCategories: SubCategoryProps[] = category.subCategories;
+          //   subCategories?.forEach((sub) => {
+          //     const subCategoryId = Number(sub.categoryId);
+          //     if (subCategoryId === currentCategoryId) {
+                
+          //       return true;
+          //     }
+          //   });
+          // });
         setCategories(result);
       } else {
         setSelectedCategoryIdx(result[0].categoryId);
@@ -831,13 +845,13 @@ const EditRecordPage = (): ReactElement => {
           {selectedCategoryIdx}
           {categories[selectedCategoryIdx]?.subCategories
             .sort((a: any, b: any) => {
-              // console.log(a, b)
+              console.log(a, b)
               return b.categoryId - a.categoryId;
             })
             .map((sub: SubCategoryProps) => {
-              console.log(sub);
+              // console.log(sub);
               const subSelected = selectedSubCategoryIdx === sub.categoryId;
-              console.log(subSelected, subSelected, selectedSubCategoryIdx);
+              // console.log(subSelected, subSelected, selectedSubCategoryIdx);
               return (
                 <Circle
                   key={sub.name}
