@@ -11,7 +11,13 @@ import {
   Typography,
 } from '@mui/material';
 
-import { BaseSyntheticEvent, ReactElement, useEffect, useRef, useState } from 'react';
+import {
+  BaseSyntheticEvent,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 
@@ -115,9 +121,9 @@ const EditRecordPage = (): ReactElement => {
 
   const [selectedDays, setSelectedDays] = useRecoilState(selectedDaysState);
 
-  const currentCategoryId = useRef(null);
-  const currentSubCategoryId = useRef(null);
-  
+  const currentCategoryId = useRef<string>('');
+  const currentSubCategoryId = useRef<string>('');
+
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
   const [selectedSubCategoryIdx, setSelectedSubCategoryIdx] = useState(0);
 
@@ -146,35 +152,28 @@ const EditRecordPage = (): ReactElement => {
     await getCategories().then((response) => {
       const result = response.result;
       if (recordType === 'UPDATE') {
-        const currentCategoryId = selectedEvent.categoryId; // currently selected subCategory Id
+        const currCateId = selectedEvent.categoryId; // currently selected subCategory Id
         result
           .sort((a: MainCategoryProps, b: MainCategoryProps) => {
             // putting currently selected category first
-            return a.subCategories.some((sub: SubCategoryProps) => {
-              const subCategoryId = sub.categoryId;
-              if (subCategoryId === currentCategoryId) {
-                setMainCategory(a);
-                setSelectedCategoryIdx(a.categoryId);
-                // console.log(subCategoryId, sub);
-                setSelectedSubCategoryIdx(subCategoryId!);
-                return true;
-              } else {
-                return false;
-              }
-            })
+            return a.subCategories.some(
+              (sub: SubCategoryProps) => sub.categoryId === currCateId,
+            )
               ? -1
               : a.categoryId - b.categoryId;
           })
-          // .forEach((category: MainCategoryProps) => {
-          //   const subCategories: SubCategoryProps[] = category.subCategories;
-          //   subCategories?.forEach((sub) => {
-          //     const subCategoryId = Number(sub.categoryId);
-          //     if (subCategoryId === currentCategoryId) {
-                
-          //       return true;
-          //     }
-          //   });
-          // });
+          .forEach((category: MainCategoryProps) => {
+            const subCategories: SubCategoryProps[] = category.subCategories;
+            subCategories?.forEach((sub) => {
+              const subCategoryId = Number(sub.categoryId);
+              if (subCategoryId === currCateId) {
+                setMainCategory(category);
+                setSelectedCategoryIdx(category.categoryId);
+                setSelectedSubCategoryIdx(subCategoryId!);
+                return true;
+              }
+            });
+          });
         setCategories(result);
       } else {
         setSelectedCategoryIdx(result[0].categoryId);
@@ -543,7 +542,7 @@ const EditRecordPage = (): ReactElement => {
       const startedAtOfDay = formatDate(new Date(addDays(start, diff)));
       const finishedAtOfDay = formatDate(new Date(addDays(end, diff)));
       records.push({
-        categoryId: selectedSubCategoryIdx,
+        categoryId: currentSubCategoryId.current,
         startedAt: startedAtOfDay,
         finishedAt: finishedAtOfDay,
         content,
@@ -558,7 +557,7 @@ const EditRecordPage = (): ReactElement => {
           setIsSuccessPopup(true);
           setPopupText('기록 등록에 성공했습니다.');
           setSelectedDays([]);
-          navigate('/record');
+          // navigate('/record');
         } else {
           setIsSuccessPopup(false);
           setPopupText('기록 등록에 실패했습니다.');
@@ -651,10 +650,12 @@ const EditRecordPage = (): ReactElement => {
   };
 
   useEffect(() => {
-    if (recordType === 'CREATE') {
-      // setSelectedSubCategoryIdx(0);
-    }
+    currentCategoryId.current = selectedCategoryIdx.toString();
   }, [selectedCategoryIdx]);
+
+  useEffect(() => {
+    currentSubCategoryId.current = selectedSubCategoryIdx.toString();
+  }, [selectedSubCategoryIdx]);
 
   // 선택한 메인카테고리, sub카테고리 recoil에 저장
   useEffect(() => {
@@ -694,6 +695,67 @@ const EditRecordPage = (): ReactElement => {
 
     setContent(selectedEvent.content || '');
   }, []);
+
+  const getMainCategories = () => {
+    return categories.length ? (
+      categories.map((category: MainCategoryProps) => {
+        const currCateId = category.categoryId;
+        const isSelected = currCateId === Number(currentCategoryId.current);
+        return (
+          <StyledChip
+            key={currCateId}
+            label={category.name}
+            variant={isSelected ? 'filled' : 'outlined'}
+            onClick={() => {
+              setSelectedCategoryIdx(currCateId);
+              setSelectedSubCategoryIdx(
+                category.subCategories.filter(
+                  (s) => s.categoryId === selectedEvent.categoryId,
+                ).length
+                  ? selectedEvent.categoryId
+                  : category.subCategories[0].categoryId!,
+              );
+            }}
+            props={{
+              isSelected,
+              backgroundColor: category.highlightColor,
+            }}
+          />
+        );
+      })
+    ) : (
+      <></>
+    );
+  };
+
+  const getSubCategories = () => {
+    const selectedMainCategory = categories.filter(
+      (c) => c.categoryId === Number(currentCategoryId.current),
+    )[0];
+    const subCategoryList = selectedMainCategory ? (
+      selectedMainCategory.subCategories.map((sub: SubCategoryProps) => {
+        const subSelected = selectedSubCategoryIdx === sub.categoryId;
+        return (
+          <Circle
+            key={sub.name}
+            label={sub.name}
+            variant={subSelected ? 'filled' : 'outlined'}
+            color={sub.color}
+            fontColor={subSelected ? sub.highlightColor : ''}
+            borderColor={subSelected ? sub.highlightColor : ''}
+            size={40}
+            iconName={sub.iconFile.filename!}
+            iconSize={26}
+            selected={subSelected}
+            onClick={() => setSelectedSubCategoryIdx(sub.categoryId!)}
+          />
+        );
+      })
+    ) : (
+      <></>
+    );
+    return subCategoryList;
+  };
 
   return (
     <Wrapper
@@ -809,32 +871,13 @@ const EditRecordPage = (): ReactElement => {
             padding: '2% 0 3% 0',
           }}
         >
-          {categories.length &&
-            categories.map((category: MainCategoryProps, idx) => {
-              const isSelected = category.categoryId === selectedCategoryIdx;
-              // console.log(isSelected, category.name, category.categoryId, selectedCategoryIdx)
-              return (
-                <StyledChip
-                  key={category.categoryId}
-                  // label={category.name}
-                  label={`${category.name} ${category.categoryId}`}
-                  variant={isSelected ? 'filled' : 'outlined'}
-                  onClick={() => {
-                    setSelectedCategoryIdx(idx);
-                    setSelectedSubCategoryIdx(() => 0);
-                  }}
-                  props={{
-                    isSelected,
-                    backgroundColor: category.highlightColor,
-                  }}
-                />
-              );
-            })}
+          {getMainCategories()}
         </Container>
 
         <Spacer y={8} />
 
         {/* Sub Categories */}
+
         <Container
           sx={{
             display: 'flex',
@@ -842,34 +885,7 @@ const EditRecordPage = (): ReactElement => {
             paddingBottom: '30px',
           }}
         >
-          {selectedCategoryIdx}
-          {categories[selectedCategoryIdx]?.subCategories
-            .sort((a: any, b: any) => {
-              console.log(a, b)
-              return b.categoryId - a.categoryId;
-            })
-            .map((sub: SubCategoryProps) => {
-              // console.log(sub);
-              const subSelected = selectedSubCategoryIdx === sub.categoryId;
-              // console.log(subSelected, subSelected, selectedSubCategoryIdx);
-              return (
-                <Circle
-                  key={sub.name}
-                  label={sub.name}
-                  variant={subSelected ? 'filled' : 'outlined'}
-                  color={sub.color}
-                  fontColor={subSelected ? sub.highlightColor : ''}
-                  borderColor={subSelected ? sub.highlightColor : ''}
-                  size={40}
-                  iconName={sub.iconName}
-                  iconSize={26}
-                  selected={subSelected}
-                  onClick={() =>
-                    setSelectedSubCategoryIdx(() => sub.categoryId)
-                  }
-                />
-              );
-            })}
+          {getSubCategories()}
         </Container>
 
         <Divider sx={{ bgcolor: pink200, border: `3px solid ${pink200}` }} />
