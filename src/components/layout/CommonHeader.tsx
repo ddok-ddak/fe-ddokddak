@@ -27,7 +27,7 @@ const CommonHeader = (props: CommonHeaderProps) => {
         width: '100%',
         height: '7vh',
         flexDirection: 'row',
-        flex: '0 0 10%',
+        flex: '0 0 7vh',
       }}
     >
       <Box sx={{ mr: 2, flex: '0 0 10vw' }}>
