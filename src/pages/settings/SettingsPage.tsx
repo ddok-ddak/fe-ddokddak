@@ -80,13 +80,12 @@ const SettingPage = () => {
    */
   const logoutClickHandler = async (event: any, reason: any) => {
     closeModal(event, reason);
-    navigation('/');
     await signOut()
       .then((response: CommonResponse) => {
         if (response.status === 'SUCCESS') {
           closeModal(event, reason);
           removeTokenCookie();
-          navigation('/');
+          navigation('/login');
         } else {
           closeModal(event, reason);
         }
@@ -101,14 +100,13 @@ const SettingPage = () => {
    */
   const deleteAccountClickHandler = async (event: any, reason: any) => {
     closeModal(event, reason);
-    navigation('/');
     const authProviderType = userInfo.authProviderType || 'DEFAULT';
     await deleteUser(authProviderType)
       .then((response: CommonResponse) => {
         if (response.status === 'SUCCESS') {
-          removeTokenCookie();
           closeModal(event, reason);
-          navigation('/');
+          removeTokenCookie();
+          navigation('/login');
         }
       })
       .catch(() => {
@@ -180,42 +178,6 @@ const SettingPage = () => {
         </Container>
       }
     >
-      {/* <SettingWrapper> */}
-      {/* <Button
-        onClick={() => navigation('/settings/account')}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: '15vh',
-          margin: 0,
-          outline: '1px solid red',
-          paddingTop: '-10px',
-          borderRadius: '10px',
-          color: 'common.black',
-          backgroundColor: '#FFF8F8',
-          padding: '0',
-        }}
-      >
-        <Box sx={{ margin: '0 10px', width: 72, height: 72 }}>
-          <UserAvatar />
-        </Box>
-        <Box sx={{ flex: 1, margin: '0 10px' }}>
-          <Typography align="left" sx={{ fontSize: '16px', fontWeight: '600' }}>
-            {getUserNickname()}
-          </Typography>
-          <Typography
-            align="left"
-            textTransform=""
-            sx={{ fontSize: '14px', fontWeight: '400' }}
-          >
-            {userInfo.email}
-          </Typography>
-        </Box>
-        <>
-          <ChevronRightIcon sx={{ margin: '0 10px', color: 'common.black' }} />
-        </>
-      </Button> */}
       <List
         sx={{
           flex: 1,
@@ -286,7 +248,6 @@ const SettingPage = () => {
           {'회원 탈퇴'}
         </Typography>
       </Button>
-      {/* </SettingWrapper> */}
     </Wrapper>
   );
 };
