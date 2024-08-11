@@ -557,13 +557,13 @@ const EditRecordPage = (): ReactElement => {
           setIsSuccessPopup(true);
           setPopupText('기록 등록에 성공했습니다.');
           setSelectedDays([]);
-          // navigate('/record');
+          navigate('/record');
         } else {
           setIsSuccessPopup(false);
           setPopupText('기록 등록에 실패했습니다.');
         }
       })
-      .catch((error) => {
+      .catch(() => {
         // TODO: error handling messages
         setIsPopupShow(() => true);
         setIsSuccessPopup(false);
