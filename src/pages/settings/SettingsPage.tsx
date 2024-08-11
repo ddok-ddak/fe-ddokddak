@@ -49,17 +49,6 @@ const SettingPage = () => {
   }, [userInfo]);
 
 
-  
-    /**
-   * get user mode & nickname
-   * @returns
-   */
-    // const getUserNickname = () => {
-    //   const type =
-    //     UserModeList.filter((mode) => mode.type === userInfo.templateType)[0]
-    //       ?.name || 'TEST ACCOUNT';
-    //   return `#${type} ${userInfo.nickname}님`;
-    // };
   /**
    * get list sub header
    * @param text test
@@ -106,6 +95,7 @@ const SettingPage = () => {
           closeModal(event, reason);
           removeTokenCookie();
           resetUserInfo();
+          navigation('/login');
         } else {
           closeModal(event, reason);
         }
