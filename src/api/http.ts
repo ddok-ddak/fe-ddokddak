@@ -94,7 +94,6 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
     },
     async (error: any): Promise<any> => {
       console.log(error)
-      debugger;
       // invalid token error (expired token)
       const errorStatusCode = error.response.status;
       if (errorStatusCode === 401) {
