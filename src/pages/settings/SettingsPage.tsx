@@ -9,7 +9,7 @@ import {
   ListSubheader,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -17,8 +17,7 @@ import ListIcon from '@/components/settings/ListIcon';
 import UserAvatar from '@/components/settings/UserAvatar';
 import { bottomNavigation, stepIndex } from '@/store/common';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import SettingWrapper from '../auth/common/Wrapper';
+import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { deleteUser, signOut } from '@/api/auth';
 import CommonResponse, { removeTokenCookie } from '@/api/http';
 import { modalState } from '@/store/modal';
@@ -28,7 +27,6 @@ import { useModalCommon } from '@/hooks/modalCommon';
 import Wrapper from '../auth/common/Wrapper';
 import { currentUserInfo } from '@/store/info';
 import { UserModeList } from '../category/CategoryPage';
-import CommonHeader from '@/components/layout/CommonHeader';
 
 const SettingPage = () => {
   const navigation = useNavigate();
@@ -39,7 +37,29 @@ const SettingPage = () => {
   const userInfo = useRecoilValue(currentUserInfo);
   const [modalInfo, setModalInfo] = useRecoilState(modalState);
   const setCategoryMode = useSetRecoilState<CategoryViewType>(categoryViewMode);
+  const resetUserInfo = useResetRecoilState(currentUserInfo);
 
+  const [userNickname, setUserNickname] = useState('TEST ACCOUNT 님');
+
+  useEffect(() => {
+    const type =
+        UserModeList.filter((mode) => mode.type === userInfo.templateType)[0]
+          ?.name || 'TEST ACCOUNT';
+    setUserNickname(`#${type} ${userInfo.nickname}님`);
+  }, [userInfo]);
+
+
+  
+    /**
+   * get user mode & nickname
+   * @returns
+   */
+    // const getUserNickname = () => {
+    //   const type =
+    //     UserModeList.filter((mode) => mode.type === userInfo.templateType)[0]
+    //       ?.name || 'TEST ACCOUNT';
+    //   return `#${type} ${userInfo.nickname}님`;
+    // };
   /**
    * get list sub header
    * @param text test
@@ -85,7 +105,7 @@ const SettingPage = () => {
         if (response.status === 'SUCCESS') {
           closeModal(event, reason);
           removeTokenCookie();
-          navigation('/login');
+          resetUserInfo();
         } else {
           closeModal(event, reason);
         }
@@ -106,6 +126,7 @@ const SettingPage = () => {
         if (response.status === 'SUCCESS') {
           closeModal(event, reason);
           removeTokenCookie();
+          resetUserInfo();
           navigation('/login');
         }
       })
@@ -114,16 +135,7 @@ const SettingPage = () => {
       });
   };
 
-  /**
-   * get user mode & nickname
-   * @returns
-   */
-  const getUserNickname = () => {
-    const type =
-      UserModeList.filter((mode) => mode.type === userInfo.templateType)[0]
-        ?.name || 'TEST ACCOUNT';
-    return `#${type} ${userInfo.nickname}님`;
-  };
+
 
   useEffect(() => {
     setNavPage(2);
@@ -160,7 +172,7 @@ const SettingPage = () => {
                 align="left"
                 sx={{ fontSize: '16px', fontWeight: '600' }}
               >
-                {getUserNickname()}
+                {userNickname}
               </Typography>
               <Typography
                 align="left"
