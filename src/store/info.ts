@@ -8,7 +8,7 @@ export const currentUserInfo = atom<UserData>({
     nickname: '',
     role: '',
     status: '',
-    authProviderType: '',
+    authProviderType: undefined,
     templateType: 'NONE',
     startDay: '',
     startTime: '',
