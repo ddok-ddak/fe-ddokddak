@@ -93,13 +93,10 @@ export const getInstance = (isLoading = true, params?: any): AxiosInstance => {
       return response.data;
     },
     async (error: any): Promise<any> => {
-      console.log(error)
       // invalid token error (expired token)
       const errorStatusCode = error.response.status;
       if (errorStatusCode === 401) {
         removeTokenCookie();
-        window.location.href = '/login';
-      } else if (errorStatusCode === 400) {
         window.location.href = '/login';
       }
 
